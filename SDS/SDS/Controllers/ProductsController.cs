@@ -25,6 +25,7 @@ namespace SDS.Controllers
             return View(await _context.Products.ToListAsync());
         }
 
+        //tasks
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
