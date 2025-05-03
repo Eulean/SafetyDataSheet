@@ -1,0 +1,1192 @@
+﻿@model SdsViewModel
+@{
+    ViewData["Title"] = "Create Safety Data Sheet";
+}
+
+
+<div class="container-fluid mt-4">
+    <h1 class="mb-4">Create Safety Data Sheet</h1>
+
+    <form id="sdsForm">
+        <!-- Anti-forgery token -->
+        <input type="hidden" id="csrfToken" value="@ViewData["CSRFToken"]" />
+
+        <!-- Product Image Upload -->
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h3>Product Image</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="productImageUpload" accept="image/*">
+                            <button class="btn btn-outline-secondary" type="button"
+                                id="uploadProductImage">Upload</button>
+                        </div>
+                        <div id="productImagePreview" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two-column layout for main sections -->
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-md-6">
+                <!-- Section 1: Identification -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2 id="mainHeader">01. IDENTIFICATION</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="productName" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="productCode" class="form-label">Product Code</label>
+                            <input type="text" class="form-control" id="productCode" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="biologicalDefinition" class="form-label">Biological Definition</label>
+                            <input type="text" class="form-control" id="biologicalDefinition" />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="inciName" class="form-label">INCI Name</label>
+                                <input type="text" class="form-control" id="inciName" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="casNumber" class="form-label">CAS #</label>
+                                <input type="text" class="form-control" id="casNumber" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="femaNumber" class="form-label">FEMA #</label>
+                                <input type="text" class="form-control" id="femaNumber" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="einecsNumber" class="form-label">EINECS #</label>
+                                <input type="text" class="form-control" id="einecsNumber" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="identifiedUses" class="form-label">Identified Uses</label>
+                            <input type="text" class="form-control" id="identifiedUses" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="supplierDetails" class="form-label">Supplier Details</label>
+                            <input type="text" class="form-control" id="supplierDetails" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="emergencyPhone" class="form-label">Emergency Tel. No.</label>
+                            <input type="text" class="form-control" id="emergencyPhone" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Composition -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>03. COMPOSITION</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="substancesContent" class="form-label">Substances</label>
+                            <textarea class="form-control" id="substancesContent" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Firefighting -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>05. FIREFIGHTING</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="extinguishingMediaContent" class="form-label">Extinguishing Media</label>
+                            <input type="text" class="form-control" id="extinguishingMediaContent" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="specialHazardsContent" class="form-label">Special Hazards</label>
+                            <input type="text" class="form-control" id="specialHazardsContent" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="firefighterAdviceContent" class="form-label">Advice for Firefighters</label>
+                            <input type="text" class="form-control" id="firefighterAdviceContent" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7: Handling and Storage -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>07. HANDLING & STORAGE</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="safeHandlingPrecautions" class="form-label">Safe Handling</label>
+                            <input type="text" class="form-control" id="safeHandlingPrecautions" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="safeStorageConditions" class="form-label">Storage Conditions</label>
+                            <input type="text" class="form-control" id="safeStorageConditions" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="specificEndUses" class="form-label">Specific End Uses</label>
+                            <input type="text" class="form-control" id="specificEndUses" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 9: Physical Properties -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>09. PHYSICAL PROPERTIES</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="appearance" class="form-label">Appearance</label>
+                                <input type="text" class="form-control" id="appearance" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="colour" class="form-label">Colour</label>
+                                <input type="text" class="form-control" id="colour" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="odour" class="form-label">Odour</label>
+                                <input type="text" class="form-control" id="odour" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="relativeDensity" class="form-label">Relative Density</label>
+                                <input type="text" class="form-control" id="relativeDensity" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="flashPoint" class="form-label">Flash Point (°C)</label>
+                                <input type="text" class="form-control" id="flashPoint" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="meltingPoint" class="form-label">Melting Point (°C)</label>
+                                <input type="text" class="form-control" id="meltingPoint" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="refractiveIndex" class="form-label">Refractive Index</label>
+                                <input type="text" class="form-control" id="refractiveIndex" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="boilingPoint" class="form-label">Boiling Point (°C)</label>
+                                <input type="text" class="form-control" id="boilingPoint" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="vapourPressure" class="form-label">Vapour Pressure</label>
+                                <input type="text" class="form-control" id="vapourPressure" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="solubilityInWater" class="form-label">Solubility in Water</label>
+                                <input type="text" class="form-control" id="solubilityInWater" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="autoIgnitionTemp" class="form-label">Auto-ignition Temp (°C)</label>
+                            <input type="text" class="form-control" id="autoIgnitionTemp" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="otherChemicalInfo" class="form-label">Other Information</label>
+                            <input type="text" class="form-control" id="otherChemicalInfo" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 11: Toxicological -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>11. TOXICOLOGICAL</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="toxicologicalEffects" class="form-label">Toxicological Effects</label>
+                            <input type="text" class="form-control" id="toxicologicalEffects" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 13: Disposal -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>13. DISPOSAL</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="wasteTreatmentMethod" class="form-label">Waste Treatment Method</label>
+                            <input type="text" class="form-control" id="wasteTreatmentMethod" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 15: Regulatory -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>15. REGULATORY</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="safetyRegulations" class="form-label">Safety Regulations</label>
+                            <input type="text" class="form-control" id="safetyRegulations" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="chemicalSafetyAssessment" class="form-label">Chemical Safety Assessment</label>
+                            <input type="text" class="form-control" id="chemicalSafetyAssessment" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-6">
+                <!-- Section 2: Hazards -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>02. HAZARDS</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="classificationContent" class="form-label">Classification</label>
+                            <textarea class="form-control" id="classificationContent" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="labelContent" class="form-label">Label Elements</label>
+                            <textarea class="form-control" id="labelContent" rows="3"></textarea>
+                        </div>
+
+                        <!-- Label Images Upload (up to 5) -->
+                        <div class="mb-3">
+                            <label class="form-label">Label Images (up to 5)</label>
+                            <div class="input-group mb-2">
+                                <input type="file" class="form-control" id="labelImageUpload" accept="image/*">
+                                <button class="btn btn-outline-secondary" type="button"
+                                    id="uploadLabelImage">Add</button>
+                            </div>
+                            <div id="labelImagesPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+                            <input type="hidden" id="labelImagesData" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="signalWord" class="form-label">Signal Word</label>
+                            <input type="text" class="form-control" id="signalWord" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="containsInfo" class="form-label">Contains</label>
+                            <input type="text" class="form-control" id="containsInfo" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="hazardStatements" class="form-label">Hazard Statements</label>
+                            <input type="text" class="form-control" id="hazardStatements" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="otherHazards" class="
+                            <label for=" otherHazards" class="form-label">Other Hazards</label>
+                            <input type="text" class="form-control" id="otherHazards" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: First Aid -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>04. FIRST AID</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="inhalationFirstAid" class="form-label">Inhalation</label>
+                            <input type="text" class="form-control" id="inhalationFirstAid" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="ingestionFirstAid" class="form-label">Ingestion</label>
+                            <input type="text" class="form-control" id="ingestionFirstAid" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="skinContactFirstAid" class="form-label">Skin Contact</label>
+                            <input type="text" class="form-control" id="skinContactFirstAid" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="eyeContactFirstAid" class="form-label">Eye Contact</label>
+                            <input type="text" class="form-control" id="eyeContactFirstAid" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="symptomsEffects" class="form-label">Symptoms & Effects</label>
+                            <input type="text" class="form-control" id="symptomsEffects" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="medicalAttention" class="form-label">Medical Attention</label>
+                            <input type="text" class="form-control" id="medicalAttention" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Accidental Release -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>06. ACCIDENTAL RELEASE</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="personalPrecautions" class="form-label">Personal Precautions</label>
+                            <input type="text" class="form-control" id="personalPrecautions" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="environmentalPrecautions" class="form-label">Environmental Precautions</label>
+                            <input type="text" class="form-control" id="environmentalPrecautions" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="containmentMethods" class="form-label">Containment Methods</label>
+                            <input type="text" class="form-control" id="containmentMethods" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="sectionReferences" class="form-label">Section References</label>
+                            <input type="text" class="form-control" id="sectionReferences" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 8: Exposure Controls -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>08. EXPOSURE CONTROLS</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Protective Equipment Images Upload -->
+                        <div class="mb-3">
+                            <label class="form-label">Protective Equipment Images (up to 5)</label>
+                            <div class="input-group mb-2">
+                                <input type="file" class="form-control" id="protectiveEquipmentUpload" accept="image/*">
+                                <button class="btn btn-outline-secondary" type="button"
+                                    id="uploadProtectiveEquipment">Add</button>
+                            </div>
+                            <div id="protectiveEquipmentPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+                            <input type="hidden" id="protectiveEquipmentData" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="processConditions" class="form-label">Process Conditions</label>
+                            <input type="text" class="form-control" id="processConditions" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="engineeringMeasures" class="form-label">Engineering Measures</label>
+                            <input type="text" class="form-control" id="engineeringMeasures" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="respiratoryEquipment" class="form-label">Respiratory Equipment</label>
+                            <input type="text" class="form-control" id="respiratoryEquipment" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="handProtection" class="form-label">Hand Protection</label>
+                            <input type="text" class="form-control" id="handProtection" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="eyeProtection" class="form-label">Eye Protection</label>
+                            <input type="text" class="form-control" id="eyeProtection" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="otherProtection" class="form-label">Other Protection</label>
+                            <input type="text" class="form-control" id="otherProtection" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="hygieneMeasures" class="form-label">Hygiene Measures</label>
+                            <input type="text" class="form-control" id="hygieneMeasures" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="personalProtection" class="form-label">Personal Protection</label>
+                            <input type="text" class="form-control" id="personalProtection" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="skinProtection" class="form-label">Skin Protection</label>
+                            <input type="text" class="form-control" id="skinProtection" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="environmentalExposure" class="form-label">Environmental Exposure</label>
+                            <input type="text" class="form-control" id="environmentalExposure" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 10: Stability -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>10. STABILITY & REACTIVITY</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="reactivityInfo" class="form-label">Reactivity</label>
+                            <input type="text" class="form-control" id="reactivityInfo" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="chemicalStability" class="form-label">Chemical Stability</label>
+                            <input type="text" class="form-control" id="chemicalStability" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="hazardousReactions" class="form-label">Hazardous Reactions</label>
+                            <input type="text" class="form-control" id="hazardousReactions" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="conditionsToAvoid" class="form-label">Conditions to Avoid</label>
+                            <input type="text" class="form-control" id="conditionsToAvoid" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="incompatibleMaterials" class="form-label">Incompatible Materials</label>
+                            <input type="text" class="form-control" id="incompatibleMaterials" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="hazardousDecomposition" class="form-label">Hazardous Decomposition</label>
+                            <input type="text" class="form-control" id="hazardousDecomposition" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 12: Ecological -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>12. ECOLOGICAL</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="ecoToxicity" class="form-label">Toxicity</label>
+                            <input type="text" class="form-control" id="ecoToxicity" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="persistenceDegradability" class="form-label">Persistence & Degradability</label>
+                            <input type="text" class="form-control" id="persistenceDegradability" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="bioaccumulationPotential" class="form-label">Bioaccumulation Potential</label>
+                            <input type="text" class="form-control" id="bioaccumulationPotential" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="soilMobility" class="form-label">Mobility in Soil</label>
+                            <input type="text" class="form-control" id="soilMobility" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="pbtAssessment" class="form-label">PBT Assessment</label>
+                            <input type="text" class="form-control" id="pbtAssessment" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="otherAdverseEffects" class="form-label">Other Adverse Effects</label>
+                            <input type="text" class="form-control" id="otherAdverseEffects" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 14: Transport -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>14. TRANSPORT</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="unRoad" class="form-label">UN No. Road</label>
+                                <input type="text" class="form-control" id="unRoad" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="unSea" class="form-label">UN No. Sea</label>
+                                <input type="text" class="form-control" id="unSea" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="unAir" class="form-label">UN No. Air</label>
+                                <input type="text" class="form-control" id="unAir" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="shippingName" class="form-label">Shipping Name</label>
+                            <input type="text" class="form-control" id="shippingName" />
+                        </div>
+
+                        <!-- Transport Hazard Class Images + Text -->
+                        <div class="mb-3">
+                            <label for="hazardClass" class="form-label">Hazard Class</label>
+                            <input type="text" class="form-control mb-2" id="hazardClass" />
+
+                            <label class="form-label">Hazard Class Images (up to 5)</label>
+                            <div class="input-group mb-2">
+                                <input type="file" class="form-control" id="hazardClassImageUpload" accept="image/*">
+                                <button class="btn btn-outline-secondary" type="button"
+                                    id="uploadHazardClassImage">Add</button>
+                            </div>
+                            <div id="hazardClassImagesPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+                            <input type="hidden" id="hazardClassImagesData" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="packingGroup" class="form-label">Packing Group</label>
+                            <input type="text" class="form-control" id="packingGroup" />
+                        </div>
+
+                        <!-- Environmental Hazards Images + Text -->
+                        <div class="mb-3">
+                            <label for="environmentalHazards" class="form-label">Environmental Hazards</label>
+                            <input type="text" class="form-control mb-2" id="environmentalHazards" />
+
+                            <label class="form-label">Environmental Hazards Images (up to 5)</label>
+                            <div class="input-group mb-2">
+                                <input type="file" class="form-control" id="environmentalHazardsImageUpload"
+                                    accept="image/*">
+                                <button class="btn btn-outline-secondary" type="button"
+                                    id="uploadEnvironmentalHazardsImage">Add</button>
+                            </div>
+                            <div id="environmentalHazardsImagesPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+                            <input type="hidden" id="environmentalHazardsImagesData" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 16: Other Information -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2>16. OTHER INFORMATION</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="otherInformation" class="form-label">Other Information</label>
+                            <textarea class="form-control" id="otherInformation" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+            <button class="btn btn-primary me-md-2" type="button" id="saveButton">Save</button>
+            <button class="btn btn-outline-secondary" type="button" id="
+            <button class=" btn btn-outline-secondary" type="button" id="cancelButton">Cancel</button>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Replace textareas with CKEditor
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                CKEDITOR.replace(textarea.id);
+            });
+
+            // List of specific input fields that should have rich text editing
+            @*  const richTextInputs = [
+                'classificationContent', 'labelContent', 'substancesContent',
+                'otherHazards', 'inhalationFirstAid', 'ingestionFirstAid',
+                'skinContactFirstAid', 'eyeContactFirstAid', 'symptomsEffects',
+                'medicalAttention', 'extinguishingMediaContent', 'specialHazardsContent',
+                'firefighterAdviceContent', 'personalPrecautions', 'environmentalPrecautions',
+                'containmentMethods', 'safeHandlingPrecautions', 'safeStorageConditions',
+                'toxicologicalEffects', 'wasteTreatmentMethod', 'otherInformation'
+               
+            ]; *@
+
+                                                // List of specific input fields that should have rich text editing
+                                    const richTextInputs = [
+                // Section 1: Identification
+                'productName', 'productCode', 'biologicalDefinition', 'inciName', 'casNumber',
+                'femaNumber', 'einecsNumber', 'identifiedUses', 'supplierDetails', 'emergencyPhone',
+
+                // Section 2: Hazard Identification
+                'classificationContent', 'labelContent', 'signalWord', 'containsInfo',
+                'hazardStatements', 'otherHazards',
+
+                // Section 3: Composition
+                'substancesContent',
+
+                // Section 4: First Aid
+                'inhalationFirstAid', 'ingestionFirstAid', 'skinContactFirstAid',
+                'eyeContactFirstAid', 'symptomsEffects', 'medicalAttention',
+
+                // Section 5: Firefighting
+                'extinguishingMediaContent', 'specialHazardsContent', 'firefighterAdviceContent',
+
+                // Section 6: Accidental Release
+                'personalPrecautions', 'environmentalPrecautions', 'containmentMethods', 'sectionReferences',
+
+                // Section 7: Handling & Storage
+                'safeHandlingPrecautions', 'safeStorageConditions', 'specificEndUses',
+
+                // Section 8: Exposure Controls
+                'processConditions', 'engineeringMeasures', 'respiratoryEquipment', 'handProtection',
+                'eyeProtection', 'otherProtection', 'hygieneMeasures', 'personalProtection',
+                'skinProtection', 'environmentalExposure',
+
+                // Section 9: Physical Properties
+                'appearance', 'colour', 'odour', 'relativeDensity', 'flashPoint', 'meltingPoint',
+                'refractiveIndex', 'boilingPoint', 'vapourPressure', 'solubilityInWater',
+                'autoIgnitionTemp', 'otherChemicalInfo',
+
+                // Section 10: Stability & Reactivity
+                'reactivityInfo', 'chemicalStability', 'hazardousReactions', 'conditionsToAvoid',
+                'incompatibleMaterials', 'hazardousDecomposition',
+
+                // Section 11: Toxicological
+                'toxicologicalEffects',
+
+                // Section 12: Ecological
+                'ecoToxicity', 'persistenceDegradability', 'bioaccumulationPotential',
+                'soilMobility', 'pbtAssessment', 'otherAdverseEffects',
+
+                // Section 13: Disposal
+                'wasteTreatmentMethod',
+
+                // Section 14: Transport
+                'unRoad', 'unSea', 'unAir', 'shippingName', 'hazardClass',
+                'packingGroup', 'environmentalHazards',
+
+                // Section 15: Regulatory
+                'safetyRegulations', 'chemicalSafetyAssessment',
+
+                // Section 16: Other Information
+                'otherInformation'
+            ];
+
+
+            richTextInputs.forEach(inputId => {
+                const element = document.getElementById(inputId);
+                if (element) {
+                    CKEDITOR.replace(inputId);
+                }
+            });
+        });
+
+        // Add this to your script section
+CKEDITOR.editorConfig = function(config) {
+    config.toolbar = [
+        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+        { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+        @* { name: 'links', items: ['Link', 'Unlink'] }, *@
+        { name: 'styles', items: ['Styles', 'Format'] },
+        @* { name: 'tools', items: ['Maximize'] } *@
+    ];
+    
+    // Remove unwanted plugins
+    @* config.removePlugins = 'elementspath,resize'; *@
+    
+    // Set the most common block elements
+    @* config.format_tags = 'p;h1;h2;h3;pre'; *@
+    
+    // Make dialogs simpler
+    @* config.removeDialogTabs = 'image:advanced;link:advanced'; *@
+};
+
+        // Global object to store all image data
+        const imageData = {
+            productImages: [],
+            labelImages: [],
+            protectiveEquipment: [],
+            hazardClass: [],
+            environmentalHazards: []
+        };
+
+
+        // Function to handle image uploads
+        function handleImageUpload(fileInput, previewContainer, dataArray, contentId) {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Check if we already have 5 images
+                if (dataArray.length >= 5) {
+                    alert('Maximum 5 images allowed');
+                    return;
+                }
+
+                // Create image object
+                const imageObj = {
+                    contentId: contentId,
+                    imageName: file.name,
+                    contentType: file.type,
+                    imageData: e.target.result.split(',')[1], // Remove the data:image/jpeg;base64, part
+                    order: dataArray.length + 1
+                };
+
+                // Add to array
+                dataArray.push(imageObj);
+
+                // Create preview
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'position-relative';
+                previewDiv.innerHTML = `
+                                                                                                                                                                            <img src="${e.target.result}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                                                                                                                                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                                                                                                                                                                                    data-index="${dataArray.length - 1}">×</button>
+                                                                                                                                                                        `;
+
+                // Add delete handler
+                previewDiv.querySelector('button').addEventListener('click', function () {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    dataArray.splice(index, 1);
+
+                    // Reorder remaining images
+                    dataArray.forEach((img, idx) => {
+                        img.order = idx + 1;
+                    });
+
+                    // Rebuild preview
+                    previewContainer.innerHTML = '';
+                    dataArray.forEach((img, idx) => {
+                        const div = document.createElement('div');
+                        div.className = 'position-relative';
+                        div.innerHTML = `
+                                                                                                                                                                                    <img src="data:${img.contentType};base64,${img.imageData}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                                                                                                                                                                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                                                                                                                                                                                            data-index="${idx}">×</button>
+                                                                                                                                                                                `;
+                        div.querySelector('button').addEventListener('click', function () {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            dataArray.splice(index, 1);
+
+                            // Reorder remaining images
+                            dataArray.forEach((img, idx) => {
+                                img.order = idx + 1;
+                            });
+
+                            // Rebuild preview
+                            previewContainer.innerHTML = '';
+                            dataArray.forEach((img, idx) => {
+                                const newDiv = document.createElement('div');
+                                newDiv.className = 'position-relative';
+                                newDiv.innerHTML = `
+                                                                                                                                                                                            <img src="data:${img.contentType};base64,${img.imageData}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                                                                                                                                                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                                                                                                                                                                                                    data-index="${idx}">×</button>
+                                                                                                                                                                                        `;
+                                newDiv.querySelector('button').addEventListener('click', arguments.callee);
+                                previewContainer.appendChild(newDiv);
+                            });
+                        });
+                        previewContainer.appendChild(div);
+                    });
+                });
+
+                previewContainer.appendChild(previewDiv);
+                fileInput.value = ''; // Clear the file input
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Set up event listeners for image uploads
+
+        document.getElementById('uploadProductImage').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('productImageUpload'), // File input
+                document.getElementById('productImagePreview'), // Preview container
+                imageData.productImages || (imageData.productImages = []), // Initialize dataArray if not already
+                'productImage' // Content ID
+            );
+        });
+
+        document.getElementById('uploadLabelImage').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('labelImageUpload'), // File input
+                document.getElementById('labelImagesPreview'), // Preview container
+                imageData.labelImages || (imageData.labelImages = []), // Initialize dataArray if not already
+                'labelImage' // Content ID
+            );
+        });
+
+        document.getElementById('uploadProtectiveEquipment').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('protectiveEquipmentUpload'),
+                document.getElementById('protectiveEquipmentPreview'),
+                imageData.protectiveEquipment,
+                'protectiveEquipmentImage'
+            );
+        });
+
+        document.getElementById('uploadHazardClassImage').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('hazardClassImageUpload'),
+                document.getElementById('hazardClassImagesPreview'),
+                imageData.hazardClass,
+                'hazardClassImage'
+            );
+        });
+
+        document.getElementById('uploadEnvironmentalHazardsImage').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('environmentalHazardsImageUpload'),
+                document.getElementById('environmentalHazardsImagesPreview'),
+                imageData.environmentalHazards,
+                'environmentalHazardsImage'
+            );
+        });
+
+        // Save button click handler
+        document.getElementById('saveButton').addEventListener('click', function () {
+            // Collect all form data
+            const formData = {
+
+                    @* // Function to get value from either CKEditor or regular input
+                function getFieldValue(elementId) {
+                    if (CKEDITOR.instances[elementId]) {
+                return CKEDITOR.instances[elementId].getData();
+            } else {
+                const element = document.getElementById(elementId);
+                return element ? element.value : '';
+            }
+        }
+
+                            // Collect all form data
+                            const formData = {
+            // Section 1: Identification
+            productName: getFieldValue('productName'),
+            productCode: getFieldValue('productCode'),
+            biologicalDefinition: getFieldValue('biologicalDefinition'),
+            inciName: getFieldValue('inciName'),
+            casNumber: getFieldValue('casNumber'),
+            femaNumber: getFieldValue('femaNumber'),
+            einecsNumber: getFieldValue('einecsNumber'),
+            identifiedUses: getFieldValue('identifiedUses'),
+            supplierDetails: getFieldValue('supplierDetails'),
+            emergencyPhone: getFieldValue('emergencyPhone'),
+
+            // Section 2: Hazard Identification
+            classificationContent: getFieldValue('classificationContent'),
+            labelContent: getFieldValue('labelContent'),
+            signalWord: getFieldValue('signalWord'),
+            containsInfo: getFieldValue('containsInfo'),
+            hazardStatements: getFieldValue('hazardStatements'),
+            otherHazards: getFieldValue('otherHazards'),
+
+            // Section 3: Composition
+            substancesContent: getFieldValue('substancesContent'),
+
+            // Section 4: First Aid
+            inhalationFirstAid: getFieldValue('inhalationFirstAid'),
+            ingestionFirstAid: getFieldValue('ingestionFirstAid'),
+            skinContactFirstAid: getFieldValue('skinContactFirstAid'),
+            eyeContactFirstAid: getFieldValue('eyeContactFirstAid'),
+            symptomsEffects: getFieldValue('symptomsEffects'),
+            medicalAttention: getFieldValue('medicalAttention'),
+
+            // Section 5: Firefighting
+            extinguishingMediaContent: getFieldValue('extinguishingMediaContent'),
+            specialHazardsContent: getFieldValue('specialHazardsContent'),
+            firefighterAdviceContent: getFieldValue('firefighterAdviceContent'),
+
+            // Section 6: Accidental Release
+            personalPrecautions: getFieldValue('personalPrecautions'),
+            environmentalPrecautions: getFieldValue('environmentalPrecautions'),
+            containmentMethods: getFieldValue('containmentMethods'),
+            sectionReferences: getFieldValue('sectionReferences'),
+
+            // Section 7: Handling & Storage
+            safeHandlingPrecautions: getFieldValue('safeHandlingPrecautions'),
+            safeStorageConditions: getFieldValue('safeStorageConditions'),
+            specificEndUses: getFieldValue('specificEndUses'),
+
+            // Section 8: Exposure Controls
+            processConditions: getFieldValue('processConditions'),
+            engineeringMeasures: getFieldValue('engineeringMeasures'),
+            respiratoryEquipment: getFieldValue('respiratoryEquipment'),
+            handProtection: getFieldValue('handProtection'),
+            eyeProtection: getFieldValue('eyeProtection'),
+            otherProtection: getFieldValue('otherProtection'),
+            hygieneMeasures: getFieldValue('hygieneMeasures'),
+            personalProtection: getFieldValue('personalProtection'),
+            skinProtection: getFieldValue('skinProtection'),
+            environmentalExposure: getFieldValue('environmentalExposure'),
+
+            // Section 9: Physical Properties
+            appearance: getFieldValue('appearance'),
+            colour: getFieldValue('colour'),
+            odour: getFieldValue('odour'),
+            relativeDensity: getFieldValue('relativeDensity'),
+            flashPoint: getFieldValue('flashPoint'),
+            meltingPoint: getFieldValue('meltingPoint'),
+            refractiveIndex: getFieldValue('refractiveIndex'),
+            boilingPoint: getFieldValue('boilingPoint'),
+            vapourPressure: getFieldValue('vapourPressure'),
+            solubilityInWater: getFieldValue('solubilityInWater'),
+            autoIgnitionTemp: getFieldValue('autoIgnitionTemp'),
+            otherChemicalInfo: getFieldValue('otherChemicalInfo'),
+
+            // Section 10: Stability & Reactivity
+            reactivityInfo: getFieldValue('reactivityInfo'),
+            chemicalStability: getFieldValue('chemicalStability'),
+            hazardousReactions: getFieldValue('hazardousReactions'),
+            conditionsToAvoid: getFieldValue('conditionsToAvoid'),
+            incompatibleMaterials: getFieldValue('incompatibleMaterials'),
+            hazardousDecomposition: getFieldValue('hazardousDecomposition'),
+
+            // Section 11: Toxicological
+            toxicologicalEffects: getFieldValue('toxicologicalEffects'),
+
+            // Section 12: Ecological
+            ecoToxicity: getFieldValue('ecoToxicity'),
+            persistenceDegradability: getFieldValue('persistenceDegradability'),
+            bioaccumulationPotential: getFieldValue('bioaccumulationPotential'),
+            soilMobility: getFieldValue('soilMobility'),
+            pbtAssessment: getFieldValue('pbtAssessment'),
+            otherAdverseEffects: getFieldValue('otherAdverseEffects'),
+
+            // Section 13: Disposal
+            wasteTreatmentMethod: getFieldValue('wasteTreatmentMethod'),
+
+            // Section 14: Transport
+            unRoad: getFieldValue('unRoad'),
+            unSea: getFieldValue('unSea'),
+            unAir: getFieldValue('unAir'),
+            shippingName: getFieldValue('shippingName'),
+            hazardClass: getFieldValue('hazardClass'),
+            packingGroup: getFieldValue('packingGroup'),
+            environmentalHazards: getFieldValue('environmentalHazards'),
+
+            // Section 15: Regulatory
+            safetyRegulations: getFieldValue('safetyRegulations'),
+            chemicalSafetyAssessment: getFieldValue('chemicalSafetyAssessment'),
+
+            // Section 16: Other Information
+            otherInformation: getFieldValue('otherInformation'), *@
+                @* // Section 1: Identification
+
+                productName: document.getElementById('productName').value,
+                productCode: document.getElementById('productCode').value,
+                biologicalDefinition: document.getElementById('biologicalDefinition').value,
+                inciName: document.getElementById('inciName').value,
+                casNumber: document.getElementById('casNumber').value,
+                femaNumber: document.getElementById('femaNumber').value,
+                einecsNumber: document.getElementById('einecsNumber').value,
+                identifiedUses: document.getElementById('identifiedUses').value,
+                supplierDetails: document.getElementById('supplierDetails').value,
+                emergencyPhone: document.getElementById('emergencyPhone').value,
+
+                // Section 2: Hazard Identification
+                classificationContent: document.getElementById('classificationContent').value,
+                labelContent: document.getElementById('labelContent').value,
+                signalWord: document.getElementById('signalWord').value,
+                containsInfo: document.getElementById('containsInfo').value,
+                hazardStatements: document.getElementById('hazardStatements').value,
+                otherHazards: document.getElementById('otherHazards').value,
+
+                // Section 4: First Aid
+                inhalationFirstAid: document.getElementById('inhalationFirstAid').value,
+                ingestionFirstAid: document.getElementById('ingestionFirstAid').value,
+                skinContactFirstAid: document.getElementById('skinContactFirstAid').value,
+                eyeContactFirstAid: document.getElementById('eyeContactFirstAid').value,
+                symptomsEffects: document.getElementById('symptomsEffects').value,
+                medicalAttention: document.getElementById('medicalAttention').value,
+
+                // Section 6: Accidental Release
+                personalPrecautions: document.getElementById('personalPrecautions').value,
+                environmentalPrecautions: document.getElementById('environmentalPrecautions').value,
+                containmentMethods: document.getElementById('containmentMethods').value,
+                sectionReferences: document.getElementById('sectionReferences').value,
+
+                // Section 8: Exposure Controls
+                processConditions: document.getElementById('processConditions').value,
+                engineeringMeasures: document.getElementById('engineeringMeasures').value,
+                respiratoryEquipment: document.getElementById('respiratoryEquipment').value,
+                handProtection: document.getElementById('handProtection').value,
+                eyeProtection: document.getElementById('eyeProtection').value,
+                otherProtection: document.getElementById('otherProtection').value,
+                hygieneMeasures: document.getElementById('hygieneMeasures').value,
+                personalProtection: document.getElementById('personalProtection').value,
+                skinProtection: document.getElementById('skinProtection').value,
+                environmentalExposure: document.getElementById('environmentalExposure').value,
+
+                // Section 10: Stability & Reactivity
+                reactivityInfo: document.getElementById('reactivityInfo').value,
+                chemicalStability: document.getElementById('chemicalStability').value,
+                hazardousReactions: document.getElementById('hazardousReactions').value,
+                conditionsToAvoid: document.getElementById('conditionsToAvoid').value,
+                incompatibleMaterials: document.getElementById('incompatibleMaterials').value,
+                hazardousDecomposition: document.getElementById('hazardousDecomposition').value,
+
+                // Section 12: Ecological
+                ecoToxicity: document.getElementById('ecoToxicity').value,
+                persistenceDegradability: document.getElementById('persistenceDegradability').value,
+                bioaccumulationPotential: document.getElementById('bioaccumulationPotential').value,
+                soilMobility: document.getElementById('soilMobility').value,
+                pbtAssessment: document.getElementById('pbtAssessment').value,
+                otherAdverseEffects: document.getElementById('otherAdverseEffects').value,
+
+                // Section 14: Transport
+                unRoad: document.getElementById('unRoad').value,
+                unSea: document.getElementById('unSea').value,
+                unAir: document.getElementById('unAir').value,
+                shippingName: document.getElementById('shippingName').value,
+                hazardClass: document.getElementById('hazardClass').value,
+                packingGroup: document.getElementById('packingGroup').value,
+                environmentalHazards: document.getElementById('environmentalHazards').value,
+
+                // Section 16: Other Information
+                otherInformation: document.getElementById('otherInformation').value, *@
+
+                //Ckeditor 
+                // Section 1: Identification
+                productName: CKEDITOR.instances.productName.getData(),
+                productCode: CKEDITOR.instances.productCode.getData(),
+                biologicalDefinition: CKEDITOR.instances.biologicalDefinition.getData(),
+                inciName: CKEDITOR.instances.inciName.getData(),
+                casNumber: CKEDITOR.instances.casNumber.getData(),
+                femaNumber: CKEDITOR.instances.femaNumber.getData(),
+                einecsNumber: CKEDITOR.instances.einecsNumber.getData(),
+                identifiedUses: CKEDITOR.instances.identifiedUses.getData(),
+                supplierDetails: CKEDITOR.instances.supplierDetails.getData(),
+                emergencyPhone: CKEDITOR.instances.emergencyPhone.getData(),
+
+                // Section 2: Hazard Identification
+                classificationContent: CKEDITOR.instances.classificationContent.getData(),
+                labelContent: CKEDITOR.instances.labelContent.getData(),
+                signalWord: CKEDITOR.instances.signalWord.getData(),
+                containsInfo: CKEDITOR.instances.containsInfo.getData(),
+                hazardStatements: CKEDITOR.instances.hazardStatements.getData(),
+                otherHazards: CKEDITOR.instances.otherHazards.getData(),
+
+                // Section 3: Composition
+                substancesContent: CKEDITOR.instances.substancesContent.getData(),
+
+                // Section 4: First Aid
+                inhalationFirstAid: CKEDITOR.instances.inhalationFirstAid.getData(),
+                ingestionFirstAid: CKEDITOR.instances.ingestionFirstAid.getData(),
+                skinContactFirstAid: CKEDITOR.instances.skinContactFirstAid.getData(),
+                eyeContactFirstAid: CKEDITOR.instances.eyeContactFirstAid.getData(),
+                symptomsEffects: CKEDITOR.instances.symptomsEffects.getData(),
+                medicalAttention: CKEDITOR.instances.medicalAttention.getData(),
+
+                // Section 5: Firefighting
+                extinguishingMediaContent: CKEDITOR.instances.extinguishingMediaContent.getData(),
+                specialHazardsContent: CKEDITOR.instances.specialHazardsContent.getData(),
+                firefighterAdviceContent: CKEDITOR.instances.firefighterAdviceContent.getData(),
+
+                // Section 6: Accidental Release
+                personalPrecautions: CKEDITOR.instances.personalPrecautions.getData(),
+                environmentalPrecautions: CKEDITOR.instances.environmentalPrecautions.getData(),
+                containmentMethods: CKEDITOR.instances.containmentMethods.getData(),
+                sectionReferences: CKEDITOR.instances.sectionReferences.getData(),
+
+                // Section 7: Handling & Storage
+                safeHandlingPrecautions: CKEDITOR.instances.safeHandlingPrecautions.getData(),
+                safeStorageConditions: CKEDITOR.instances.safeStorageConditions.getData(),
+                specificEndUses: CKEDITOR.instances.specificEndUses.getData(),
+
+                // Section 8: Exposure Controls
+                processConditions: CKEDITOR.instances.processConditions.getData(),
+                engineeringMeasures: CKEDITOR.instances.engineeringMeasures.getData(),
+                respiratoryEquipment: CKEDITOR.instances.respiratoryEquipment.getData(),
+                handProtection: CKEDITOR.instances.handProtection.getData(),
+                eyeProtection: CKEDITOR.instances.eyeProtection.getData(),
+                otherProtection: CKEDITOR.instances.otherProtection.getData(),
+                hygieneMeasures: CKEDITOR.instances.hygieneMeasures.getData(),
+                personalProtection: CKEDITOR.instances.personalProtection.getData(),
+                skinProtection: CKEDITOR.instances.skinProtection.getData(),
+                environmentalExposure: CKEDITOR.instances.environmentalExposure.getData(),
+
+                // Section 9: Physical Properties
+                appearance: CKEDITOR.instances.appearance.getData(),
+                colour: CKEDITOR.instances.colour.getData(),
+                odour: CKEDITOR.instances.odour.getData(),
+                relativeDensity: CKEDITOR.instances.relativeDensity.getData(),
+                flashPoint: CKEDITOR.instances.flashPoint.getData(),
+                meltingPoint: CKEDITOR.instances.meltingPoint.getData(),
+                refractiveIndex: CKEDITOR.instances.refractiveIndex.getData(),
+                boilingPoint: CKEDITOR.instances.boilingPoint.getData(),
+                vapourPressure: CKEDITOR.instances.vapourPressure.getData(),
+                solubilityInWater: CKEDITOR.instances.solubilityInWater.getData(),
+                autoIgnitionTemp: CKEDITOR.instances.autoIgnitionTemp.getData(),
+                otherChemicalInfo: CKEDITOR.instances.otherChemicalInfo.getData(),
+
+                // Section 10: Stability & Reactivity
+                reactivityInfo: CKEDITOR.instances.reactivityInfo.getData(),
+                chemicalStability: CKEDITOR.instances.chemicalStability.getData(),
+                hazardousReactions: CKEDITOR.instances.hazardousReactions.getData(),
+                conditionsToAvoid: CKEDITOR.instances.conditionsToAvoid.getData(),
+                incompatibleMaterials: CKEDITOR.instances.incompatibleMaterials.getData(),
+                hazardousDecomposition: CKEDITOR.instances.hazardousDecomposition.getData(),
+
+                // Section 11: Toxicological
+                toxicologicalEffects: CKEDITOR.instances.toxicologicalEffects.getData(),
+
+                // Section 12: Ecological
+                ecoToxicity: CKEDITOR.instances.ecoToxicity.getData(),
+                persistenceDegradability: CKEDITOR.instances.persistenceDegradability.getData(),
+                bioaccumulationPotential: CKEDITOR.instances.bioaccumulationPotential.getData(),
+                soilMobility: CKEDITOR.instances.soilMobility.getData(),
+                pbtAssessment: CKEDITOR.instances.pbtAssessment.getData(),
+                otherAdverseEffects: CKEDITOR.instances.otherAdverseEffects.getData(),
+
+                // Section 13: Disposal
+                wasteTreatmentMethod: CKEDITOR.instances.wasteTreatmentMethod.getData(),
+
+                // Section 14: Transport
+                unRoad: CKEDITOR.instances.unRoad.getData(),
+                unSea: CKEDITOR.instances.unSea.getData(),
+                unAir: CKEDITOR.instances.unAir.getData(),
+                shippingName: CKEDITOR.instances.shippingName.getData(),
+                hazardClass: CKEDITOR.instances.hazardClass.getData(),
+                packingGroup: CKEDITOR.instances.packingGroup.getData(),
+                environmentalHazards: CKEDITOR.instances.environmentalHazards.getData(),
+
+                // Section 15: Regulatory
+                safetyRegulations: CKEDITOR.instances.safetyRegulations.getData(),
+                chemicalSafetyAssessment: CKEDITOR.instances.chemicalSafetyAssessment.getData(),
+
+                // Section 16: Other Information
+                otherInformation: CKEDITOR.instances.otherInformation.getData(),
+
+
+                // Images data
+                imagesByContentID: {
+                productImage: imageData.productImages,
+                    labelImage: imageData.labelImages,
+                        protectiveEquipmentImage: imageData.protectiveEquipment,
+                            hazardClassImage: imageData.hazardClass,
+                                environmentalHazardsImage: imageData.environmentalHazards
+            }
+        };
+
+        // Send data to server
+        fetch('/SafetyDataSheet/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': '@ViewData["CSRFToken"]'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Safety Data Sheet saved successfully! Product ID: ' + data.productId);
+                    // Redirect to index or another page
+                    window.location.href = '/SafetyDataSheet';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the data. Please try again.');
+            });
+                                                    });
+
+        // Cancel button click handler
+        document.getElementById('cancelButton').addEventListener('click', function () {
+            if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                window.location.href = '/SafetyDataSheet';
+            }
+        });
+    </script>
+}

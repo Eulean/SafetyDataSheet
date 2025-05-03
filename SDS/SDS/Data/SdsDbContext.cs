@@ -11,6 +11,7 @@ public class SdsDbContext : DbContext
 
     }
 
+    public DbSet<SDSContent> SDSContents { get; set; } // SDSContent table
     public DbSet<Product> Products { get; set; }
     public DbSet<Headers> Headers { get; set; }
     public DbSet<HeadersH> HeadersH { get; set; }

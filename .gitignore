@@ -1,6 +1,2 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
 
-/SDS/.vs
-/SDS/SDS/appsettings.json
+.vs

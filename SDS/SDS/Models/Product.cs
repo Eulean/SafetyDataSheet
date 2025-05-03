@@ -9,22 +9,23 @@ public class Product
     public int Id { get; set; }
 
     [MaxLength(50)]
-    public string ProductCode { get; set; }
-    public string ProductName { get; set; }
-    public string? BioDef { get; set; } // Biological Definition
-    public string? InciName { get; set; }
+    public string ProductCode { get; set; } // from input
+    public string ProductNo { get; set; } // from autogenerate
+    public string ProductName { get; set; } // just product name
+    // public string? BioDef { get; set; } // Biological Definition
+    // public string? InciName { get; set; }
 
-    [MaxLength(50)]
-    public string? Cas { get; set; }
+    // [MaxLength(50)]
+    // public string? Cas { get; set; }
 
-    [MaxLength(50)]
-    public string? Fema { get; set; }
+    // [MaxLength(50)]
+    // public string? Fema { get; set; }
 
-    [MaxLength(50)]
-    public string? Einecs { get; set; }
+    // [MaxLength(50)]
+    // public string? Einecs { get; set; }
 
-    public string? CreatedBy { get; set; }
-    public string? UpdatedBy { get; set; }
+    // public string? CreatedBy { get; set; }
+    // public string? UpdatedBy { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
