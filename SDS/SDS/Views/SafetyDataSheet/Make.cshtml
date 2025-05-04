@@ -1,0 +1,1795 @@
+﻿@model SdsViewModel
+@{
+    ViewData["Title"] = "Create Safety Data Sheet";
+}
+
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Floating Navigation Menu -->
+           <div class="col-md-3 col-lg-2 px-0">
+            <div id="sidebar" class="bg-light border-end p-3 sticky-top" style="height: calc(100vh - 56px); overflow-y: auto;">
+                <h5 class="text-center mb-3">MSDS Sections</h5>
+                <div class="list-group">
+                    <a href="#section-identification" class="list-group-item list-group-item-action">01. Identification</a>
+                    <a href="#section-hazards" class="list-group-item list-group-item-action">02. Hazards</a>
+                    <a href="#section-composition" class="list-group-item list-group-item-action">03. Composition</a>
+                    <a href="#section-firstaid" class="list-group-item list-group-item-action">04. First Aid</a>
+                    <a href="#section-firefighting" class="list-group-item list-group-item-action">05. Firefighting</a>
+                    <a href="#section-accidental" class="list-group-item list-group-item-action">06. Accidental Release</a>
+                    <a href="#section-handling" class="list-group-item list-group-item-action">07. Handling & Storage</a>
+                    <a href="#section-exposure" class="list-group-item list-group-item-action">08. Exposure Controls</a>
+                    <a href="#section-physical" class="list-group-item list-group-item-action">09. Physical & Chemical</a>
+                    <a href="#section-stability" class="list-group-item list-group-item-action">10. Stability & Reactivity</a>
+                    <a href="#section-toxicological" class="list-group-item list-group-item-action">11. Toxicological</a>
+                    <a href="#section-ecological" class="list-group-item list-group-item-action">12. Ecological</a>
+                    <a href="#section-disposal" class="list-group-item list-group-item-action">13. Disposal</a>
+                    <a href="#section-transport" class="list-group-item list-group-item-action">14. Transport</a>
+                    <a href="#section-regulatory" class="list-group-item list-group-item-action">15. Regulatory</a>
+                    <a href="#section-other" class="list-group-item list-group-item-action">16. Other Information</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="col-md-9 col-lg-10 ms-auto p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Create Safety Data Sheet</h1>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary" type="button" id="saveButton">Save</button>
+                    <button class="btn btn-outline-secondary" type="button" id="cancelButton">Cancel</button>
+                </div>
+            </div>
+
+            <form id="sdsForm">
+                <!-- Anti-forgery token -->
+                <input type="hidden" id="csrfToken" value="@ViewData["CSRFToken"]" />
+
+                <!-- Product Image Section -->
+                <div class="card mb-4" id="section-product">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Product Information</h3>
+                        <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#productInfoCollapse">
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="productInfoCollapse">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="productName" class="form-label">Product Name</label>
+                                        <textarea class="form-control" id="productName"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="productCode" class="form-label">Product Code</label>
+                                        <input type="text" class="form-control" id="productCode" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Product Image</label>
+                                    <div class="input-group mb-3">
+                                        <input type="file" class="form-control" id="productImageUpload" accept="image/*">
+                                        <button class="btn btn-outline-secondary" type="button" id="uploadProductImage">Upload</button>
+                                    </div>
+                                    <div id="productImagePreview" class="mt-2 border rounded p-2 text-center">
+                                        <small class="text-muted">Product image preview will appear here</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Sections in Accordion Style -->
+                <div class="row">
+                    <div class="col-md-12">
+                          <!-- Section 1: Identification -->
+                        <div class="card mb-4" id="section-identification">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">01. IDENTIFICATION</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#identificationCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse show" id="identificationCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="biologicalDefinition" class="form-label">Biological Definition</label>
+                                            <input type="text" class="form-control" id="biologicalDefinition" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="inciName" class="form-label">INCI Name</label>
+                                            <input type="text" class="form-control" id="inciName" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="casNumber" class="form-label">CAS #</label>
+                                            <input type="text" class="form-control" id="casNumber" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="femaNumber" class="form-label">FEMA #</label>
+                                            <input type="text" class="form-control" id="femaNumber" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="einecsNumber" class="form-label">EINECS #</label>
+                                            <input type="text" class="form-control" id="einecsNumber" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="identifiedUses" class="form-label">Identified Uses</label>
+                                        <input type="text" class="form-control" id="identifiedUses" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 mb-3">
+                                            <label for="supplierDetails" class="form-label">Supplier Details</label>
+                                            <input type="text" class="form-control" id="supplierDetails" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="emergencyPhone" class="form-label">Emergency Tel. No.</label>
+                                            <input type="text" class="form-control" id="emergencyPhone" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Section 2: Hazards -->
+                        <div class="card mb-4" id="section-hazards">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">02. HAZARDS</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#hazardsCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="hazardsCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="classificationContent" class="form-label">Classification</label>
+                                        <textarea class="form-control" id="classificationContent" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="labelContent" class="form-label">Label Elements</label>
+                                        <textarea class="form-control" id="labelContent" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Label Images</label>
+                                        <div class="input-group mb-2">
+                                            <input type="file" class="form-control" id="labelImageUpload" accept="image/*">
+                                            <button class="btn btn-outline-secondary" type="button" id="uploadLabelImage">Add</button>
+                                        </div>
+                                        <div id="labelImagesPreview" class="d-flex flex-wrap gap-2 mt-2 border rounded p-2"></div>
+                                        <input type="hidden" id="labelImagesData" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="signalWord" class="form-label">Signal Word</label>
+                                            <textarea class="form-control" id="signalWord"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="containsInfo" class="form-label">Contains</label>
+                                            <textarea class="form-control" id="containsInfo"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="hazardStatements" class="form-label">Hazard Statements</label>
+                                        <textarea class="form-control" id="hazardStatements"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="otherHazards" class="form-label">Other Hazards</label>
+                                        <textarea class="form-control" id="otherHazards"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                           <!-- Section 3: Composition -->
+                        <div class="card mb-4" id="section-composition">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">03. COMPOSITION</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#compositionCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="compositionCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="substancesContent" class="form-label">Substances</label>
+                                        <textarea class="form-control" id="substancesContent" rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: First Aid -->
+                        <div class="card mb-4" id="section-firstaid">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">04. FIRST AID</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#firstaidCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="firstaidCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="inhalationFirstAid" class="form-label">Inhalation</label>
+                                            <textarea class="form-control" id="inhalationFirstAid"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="ingestionFirstAid" class="form-label">Ingestion</label>
+                                            <textarea class="form-control" id="ingestionFirstAid"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="skinContactFirstAid" class="form-label">Skin Contact</label>
+                                            <textarea class="form-control" id="skinContactFirstAid"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="eyeContactFirstAid" class="form-label">Eye Contact</label>
+                                            <textarea class="form-control" id="eyeContactFirstAid"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="symptomsEffects" class="form-label">Symptoms & Effects</label>
+                                        <textarea class="form-control" id="symptomsEffects"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="medicalAttention" class="form-label">Medical Attention</label>
+                                        <textarea class="form-control" id="medicalAttention"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Section 5: Firefighting -->
+                        <div class="card mb-4" id="section-firefighting">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">05. FIREFIGHTING</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#firefightingCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="firefightingCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="extinguishingMediaContent" class="form-label">Extinguishing Media</label>
+                                        <input type="text" class="form-control" id="extinguishingMediaContent" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="specialHazardsContent" class="form-label">Special Hazards</label>
+                                        <input type="text" class="form-control" id="specialHazardsContent" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="firefighterAdviceContent" class="form-label">Advice for Firefighters</label>
+                                        <input type="text" class="form-control" id="firefighterAdviceContent" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                           <!-- Section 6: Accidental Release -->
+                        <div class="card mb-4" id="section-accidental">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">06. ACCIDENTAL RELEASE</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#accidentalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="accidentalCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="personalPrecautions" class="form-label">Personal Precautions</label>
+                                        <textarea class="form-control" id="personalPrecautions"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="environmentalPrecautions" class="form-label">Environmental Precautions</label>
+                                        <textarea class="form-control" id="environmentalPrecautions"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="containmentMethods" class="form-label">Containment Methods</label>
+                                        <textarea class="form-control" id="containmentMethods"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sectionReferences" class="form-label">Section References</label>
+                                        <textarea class="form-control" id="sectionReferences"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Section 7: Handling and Storage -->
+                        <div class="card mb-4" id="section-handling">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">07. HANDLING & STORAGE</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#handlingCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="handlingCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="safeHandlingPrecautions" class="form-label">Safe Handling</label>
+                                        <input type="text" class="form-control" id="safeHandlingPrecautions" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="safeStorageConditions" class="form-label">Storage Conditions</label>
+                                        <input type="text" class="form-control" id="safeStorageConditions" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="specificEndUses" class="form-label">Specific End Uses</label>
+                                        <input type="text" class="form-control" id="specificEndUses" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                         <!-- Section 8: Exposure Controls -->
+                        <div class="card mb-4" id="section-exposure">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">08. EXPOSURE CONTROLS</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#exposureCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="exposureCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Protective Equipment Images</label>
+                                        <div class="input-group mb-2">
+                                            <input type="file" class="form-control" id="protectiveEquipmentUpload" accept="image/*">
+                                            <button class="btn btn-outline-secondary" type="button" id="uploadProtectiveEquipment">Add</button>
+                                        </div>
+                                        <div id="protectiveEquipmentPreview" class="d-flex flex-wrap gap-2 mt-2 border rounded p-2"></div>
+                                        <input type="hidden" id="protectiveEquipmentData" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="processConditions" class="form-label">Process Conditions</label>
+                                            <textarea class="form-control" id="processConditions"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="engineeringMeasures" class="form-label">Engineering Measures</label>
+                                            <textarea class="form-control" id="engineeringMeasures"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="respiratoryEquipment" class="form-label">Respiratory Equipment</label>
+                                            <textarea class="form-control" id="respiratoryEquipment"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="handProtection" class="form-label">Hand Protection</label>
+                                            <textarea class="form-control" id="handProtection"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="eyeProtection" class="form-label">Eye Protection</label>
+                                            <textarea class="form-control" id="eyeProtection"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="otherProtection" class="form-label">Other Protection</label>
+                                            <textarea class="form-control" id="otherProtection"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hygieneMeasures" class="form-label">Hygiene Measures</label>
+                                            <textarea class="form-control" id="hygieneMeasures"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="personalProtection" class="form-label">Personal Protection</label>
+                                            <textarea class="form-control" id="personalProtection"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="skinProtection" class="form-label">Skin Protection</label>
+                                            <textarea class="form-control" id="skinProtection"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="environmentalExposure" class="form-label">Environmental Exposure</label>
+                                            <textarea class="form-control" id="environmentalExposure"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Section 9: Physical Properties -->
+                        <div class="card mb-4" id="section-physical">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">09. PHYSICAL PROPERTIES</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#physicalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="physicalCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="appearance" class="form-label">Appearance</label>
+                                            <input type="text" class="form-control" id="appearance" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="colour" class="form-label">Colour</label>
+                                            <input type="text" class="form-control" id="colour" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="odour" class="form-label">Odour</label>
+                                            <input type="text" class="form-control" id="odour" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="relativeDensity" class="form-label">Relative Density</label>
+                                            <input type="text" class="form-control" id="relativeDensity" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="flashPoint" class="form-label">Flash Point (°C)</label>
+                                            <input type="text" class="form-control" id="flashPoint" />
+                                        </div>
+                                                                                <div class="col-md-6 mb-3">
+                                            <label for="meltingPoint" class="form-label">Melting Point (°C)</label>
+                                            <input type="text" class="form-control" id="meltingPoint" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="refractiveIndex" class="form-label">Refractive Index</label>
+                                            <input type="text" class="form-control" id="refractiveIndex" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="boilingPoint" class="form-label">Boiling Point (°C)</label>
+                                            <input type="text" class="form-control" id="boilingPoint" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="vapourPressure" class="form-label">Vapour Pressure</label>
+                                            <input type="text" class="form-control" id="vapourPressure" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="solubilityInWater" class="form-label">Solubility in Water</label>
+                                            <input type="text" class="form-control" id="solubilityInWater" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="autoIgnitionTemp" class="form-label">Auto-ignition Temp (°C)</label>
+                                            <input type="text" class="form-control" id="autoIgnitionTemp" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="otherChemicalInfo" class="form-label">Other Information</label>
+                                            <input type="text" class="form-control" id="otherChemicalInfo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 10: Stability -->
+                        <div class="card mb-4" id="section-stability">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">10. STABILITY & REACTIVITY</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#stabilityCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="stabilityCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="reactivityInfo" class="form-label">Reactivity</label>
+                                            <textarea class="form-control" id="reactivityInfo"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="chemicalStability" class="form-label">Chemical Stability</label>
+                                            <textarea class="form-control" id="chemicalStability"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hazardousReactions" class="form-label">Hazardous Reactions</label>
+                                            <textarea class="form-control" id="hazardousReactions"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="conditionsToAvoid" class="form-label">Conditions to Avoid</label>
+                                            <textarea class="form-control" id="conditionsToAvoid"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="incompatibleMaterials" class="form-label">Incompatible Materials</label>
+                                            <textarea class="form-control" id="incompatibleMaterials"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hazardousDecomposition" class="form-label">Hazardous Decomposition</label>
+                                            <textarea class="form-control" id="hazardousDecomposition"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Section 11: Toxicological -->
+                        <div class="card mb-4" id="section-toxicological">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">11. TOXICOLOGICAL</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#toxicologicalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="toxicologicalCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="toxicologicalEffects" class="form-label">Toxicological Effects</label>
+                                        <input type="text" class="form-control" id="toxicologicalEffects" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Section 12: Ecological -->
+                        <div class="card mb-4" id="section-ecological">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">12. ECOLOGICAL</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#ecologicalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="ecologicalCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="ecoToxicity" class="form-label">Toxicity</label>
+                                            <textarea class="form-control" id="ecoToxicity"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="persistenceDegradability" class="form-label">Persistence & Degradability</label>
+                                            <textarea class="form-control" id="persistenceDegradability"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="bioaccumulationPotential" class="form-label">Bioaccumulation Potential</label>
+                                            <textarea class="form-control" id="bioaccumulationPotential"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="soilMobility" class="form-label">Mobility in Soil</label>
+                                            <textarea class="form-control" id="soilMobility"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="pbtAssessment" class="form-label">PBT Assessment</label>
+                                            <textarea class="form-control" id="pbtAssessment"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="otherAdverseEffects" class="form-label">Other Adverse Effects</label>
+                                            <textarea class="form-control" id="otherAdverseEffects"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 13: Disposal -->
+                        <div class="card mb-4" id="section-disposal">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">13. DISPOSAL</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#disposalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="disposalCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="wasteTreatmentMethod" class="form-label">Waste Treatment Method</label>
+                                        <input type="text" class="form-control" id="wasteTreatmentMethod" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 14: Transport -->
+                        <div class="card mb-4" id="section-transport">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">14. TRANSPORT</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#transportCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="transportCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="unRoad" class="form-label">UN No. Road</label>
+                                            <textarea class="form-control" id="unRoad"></textarea>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="unSea" class="form-label">UN No. Sea</label>
+                                            <textarea class="form-control" id="unSea"></textarea>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="unAir" class="form-label">UN No. Air</label>
+                                            <textarea class="form-control" id="unAir"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="shippingName" class="form-label">Shipping Name</label>
+                                        <textarea class="form-control" id="shippingName"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="hazardClass" class="form-label">Hazard Class</label>
+                                        <textarea class="form-control mb-2" id="hazardClass"></textarea>
+                                        <label class="form-label">Hazard Class Images</label>
+                                        <div class="input-group mb-2">
+                                            <input type="file" class="form-control" id="hazardClassImageUpload" accept="image/*">
+                                            <button class="btn btn-outline-secondary" type="button" id="uploadHazardClassImage">Add</button>
+                                        </div>
+                                        <div id="hazardClassImagesPreview" class="d-flex flex-wrap gap-2 mt-2 border rounded p-2"></div>
+                                        <input type="hidden" id="hazardClassImagesData" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="packingGroup" class="form-label">Packing Group</label>
+                                        <textarea class="form-control" id="packingGroup"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="environmentalHazards" class="form-label">Environmental Hazards</label>
+                                        <textarea class="form-control mb-2" id="environmentalHazards"></textarea>
+                                        <label class="form-label">Environmental Hazards Images</label>
+                                        <div class="input-group mb-2">
+                                            <input type="file" class="form-control" id="environmentalHazardsImageUpload" accept="image/*">
+                                            <button class="btn btn-outline-secondary" type="button" id="uploadEnvironmentalHazardsImage">Add</button>
+                                        </div>
+                                        <div id="environmentalHazardsImagesPreview" class="d-flex flex-wrap gap-2 mt-2 border rounded p-2"></div>
+                                        <input type="hidden" id="environmentalHazardsImagesData" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                          <!-- Section 15: Regulatory -->
+                        <div class="card mb-4" id="section-regulatory">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">15. REGULATORY</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#regulatoryCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="regulatoryCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="safetyRegulations" class="form-label">Safety Regulations</label>
+                                        <input type="text" class="form-control" id="safetyRegulations" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="chemicalSafetyAssessment" class="form-label">Chemical Safety Assessment</label>
+                                        <input type="text" class="form-control" id="chemicalSafetyAssessment" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 16: Other Information -->
+                        <div class="card mb-4" id="section-other">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">16. OTHER INFORMATION</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#otherInfoCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="otherInfoCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="otherInformation" class="form-label">Other Information</label>
+                                        <textarea class="form-control" id="otherInformation" rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    @* <!-- Left Column -->
+                    <div class="col-md-6">
+                        <!-- Section 1: Identification -->
+                        <div class="card mb-4" id="section-identification">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">01. IDENTIFICATION</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#identificationCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse show" id="identificationCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="biologicalDefinition" class="form-label">Biological Definition</label>
+                                            <input type="text" class="form-control" id="biologicalDefinition" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="inciName" class="form-label">INCI Name</label>
+                                            <input type="text" class="form-control" id="inciName" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="casNumber" class="form-label">CAS #</label>
+                                            <input type="text" class="form-control" id="casNumber" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="femaNumber" class="form-label">FEMA #</label>
+                                            <input type="text" class="form-control" id="femaNumber" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="einecsNumber" class="form-label">EINECS #</label>
+                                            <input type="text" class="form-control" id="einecsNumber" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="identifiedUses" class="form-label">Identified Uses</label>
+                                        <input type="text" class="form-control" id="identifiedUses" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 mb-3">
+                                            <label for="supplierDetails" class="form-label">Supplier Details</label>
+                                            <input type="text" class="form-control" id="supplierDetails" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="emergencyPhone" class="form-label">Emergency Tel. No.</label>
+                                            <input type="text" class="form-control" id="emergencyPhone" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Composition -->
+                        <div class="card mb-4" id="section-composition">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">03. COMPOSITION</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#compositionCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="compositionCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="substancesContent" class="form-label">Substances</label>
+                                        <textarea class="form-control" id="substancesContent" rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 5: Firefighting -->
+                        <div class="card mb-4" id="section-firefighting">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">05. FIREFIGHTING</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#firefightingCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="firefightingCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="extinguishingMediaContent" class="form-label">Extinguishing Media</label>
+                                        <input type="text" class="form-control" id="extinguishingMediaContent" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="specialHazardsContent" class="form-label">Special Hazards</label>
+                                        <input type="text" class="form-control" id="specialHazardsContent" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="firefighterAdviceContent" class="form-label">Advice for Firefighters</label>
+                                        <input type="text" class="form-control" id="firefighterAdviceContent" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 7: Handling and Storage -->
+                        <div class="card mb-4" id="section-handling">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">07. HANDLING & STORAGE</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#handlingCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="handlingCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="safeHandlingPrecautions" class="form-label">Safe Handling</label>
+                                        <input type="text" class="form-control" id="safeHandlingPrecautions" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="safeStorageConditions" class="form-label">Storage Conditions</label>
+                                        <input type="text" class="form-control" id="safeStorageConditions" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="specificEndUses" class="form-label">Specific End Uses</label>
+                                        <input type="text" class="form-control" id="specificEndUses" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 9: Physical Properties -->
+                        <div class="card mb-4" id="section-physical">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">09. PHYSICAL PROPERTIES</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#physicalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="physicalCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="appearance" class="form-label">Appearance</label>
+                                            <input type="text" class="form-control" id="appearance" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="colour" class="form-label">Colour</label>
+                                            <input type="text" class="form-control" id="colour" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="odour" class="form-label">Odour</label>
+                                            <input type="text" class="form-control" id="odour" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="relativeDensity" class="form-label">Relative Density</label>
+                                            <input type="text" class="form-control" id="relativeDensity" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="flashPoint" class="form-label">Flash Point (°C)</label>
+                                            <input type="text" class="form-control" id="flashPoint" />
+                                        </div>
+                                                                                <div class="col-md-6 mb-3">
+                                            <label for="meltingPoint" class="form-label">Melting Point (°C)</label>
+                                            <input type="text" class="form-control" id="meltingPoint" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="refractiveIndex" class="form-label">Refractive Index</label>
+                                            <input type="text" class="form-control" id="refractiveIndex" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="boilingPoint" class="form-label">Boiling Point (°C)</label>
+                                            <input type="text" class="form-control" id="boilingPoint" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="vapourPressure" class="form-label">Vapour Pressure</label>
+                                            <input type="text" class="form-control" id="vapourPressure" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="solubilityInWater" class="form-label">Solubility in Water</label>
+                                            <input type="text" class="form-control" id="solubilityInWater" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="autoIgnitionTemp" class="form-label">Auto-ignition Temp (°C)</label>
+                                            <input type="text" class="form-control" id="autoIgnitionTemp" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="otherChemicalInfo" class="form-label">Other Information</label>
+                                            <input type="text" class="form-control" id="otherChemicalInfo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 11: Toxicological -->
+                        <div class="card mb-4" id="section-toxicological">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">11. TOXICOLOGICAL</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#toxicologicalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="toxicologicalCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="toxicologicalEffects" class="form-label">Toxicological Effects</label>
+                                        <input type="text" class="form-control" id="toxicologicalEffects" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 13: Disposal -->
+                        <div class="card mb-4" id="section-disposal">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">13. DISPOSAL</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#disposalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="disposalCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="wasteTreatmentMethod" class="form-label">Waste Treatment Method</label>
+                                        <input type="text" class="form-control" id="wasteTreatmentMethod" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 15: Regulatory -->
+                        <div class="card mb-4" id="section-regulatory">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">15. REGULATORY</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#regulatoryCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="regulatoryCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="safetyRegulations" class="form-label">Safety Regulations</label>
+                                        <input type="text" class="form-control" id="safetyRegulations" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="chemicalSafetyAssessment" class="form-label">Chemical Safety Assessment</label>
+                                        <input type="text" class="form-control" id="chemicalSafetyAssessment" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <!-- Section 2: Hazards -->
+                        <div class="card mb-4" id="section-hazards">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">02. HAZARDS</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#hazardsCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="hazardsCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="classificationContent" class="form-label">Classification</label>
+                                        <textarea class="form-control" id="classificationContent" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="labelContent" class="form-label">Label Elements</label>
+                                        <textarea class="form-control" id="labelContent" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Label Images</label>
+                                        <div class="input-group mb-2">
+                                            <input type="file" class="form-control" id="labelImageUpload" accept="image/*">
+                                            <button class="btn btn-outline-secondary" type="button" id="uploadLabelImage">Add</button>
+                                        </div>
+                                        <div id="labelImagesPreview" class="d-flex flex-wrap gap-2 mt-2 border rounded p-2"></div>
+                                        <input type="hidden" id="labelImagesData" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="signalWord" class="form-label">Signal Word</label>
+                                            <textarea class="form-control" id="signalWord"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="containsInfo" class="form-label">Contains</label>
+                                            <textarea class="form-control" id="containsInfo"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="hazardStatements" class="form-label">Hazard Statements</label>
+                                        <textarea class="form-control" id="hazardStatements"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="otherHazards" class="form-label">Other Hazards</label>
+                                        <textarea class="form-control" id="otherHazards"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: First Aid -->
+                        <div class="card mb-4" id="section-firstaid">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">04. FIRST AID</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#firstaidCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="firstaidCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="inhalationFirstAid" class="form-label">Inhalation</label>
+                                            <textarea class="form-control" id="inhalationFirstAid"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="ingestionFirstAid" class="form-label">Ingestion</label>
+                                            <textarea class="form-control" id="ingestionFirstAid"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="skinContactFirstAid" class="form-label">Skin Contact</label>
+                                            <textarea class="form-control" id="skinContactFirstAid"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="eyeContactFirstAid" class="form-label">Eye Contact</label>
+                                            <textarea class="form-control" id="eyeContactFirstAid"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="symptomsEffects" class="form-label">Symptoms & Effects</label>
+                                        <textarea class="form-control" id="symptomsEffects"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="medicalAttention" class="form-label">Medical Attention</label>
+                                        <textarea class="form-control" id="medicalAttention"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 6: Accidental Release -->
+                        <div class="card mb-4" id="section-accidental">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">06. ACCIDENTAL RELEASE</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#accidentalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="accidentalCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="personalPrecautions" class="form-label">Personal Precautions</label>
+                                        <textarea class="form-control" id="personalPrecautions"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="environmentalPrecautions" class="form-label">Environmental Precautions</label>
+                                        <textarea class="form-control" id="environmentalPrecautions"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="containmentMethods" class="form-label">Containment Methods</label>
+                                        <textarea class="form-control" id="containmentMethods"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sectionReferences" class="form-label">Section References</label>
+                                        <textarea class="form-control" id="sectionReferences"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 8: Exposure Controls -->
+                        <div class="card mb-4" id="section-exposure">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">08. EXPOSURE CONTROLS</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#exposureCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="exposureCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Protective Equipment Images</label>
+                                        <div class="input-group mb-2">
+                                            <input type="file" class="form-control" id="protectiveEquipmentUpload" accept="image/*">
+                                            <button class="btn btn-outline-secondary" type="button" id="uploadProtectiveEquipment">Add</button>
+                                        </div>
+                                        <div id="protectiveEquipmentPreview" class="d-flex flex-wrap gap-2 mt-2 border rounded p-2"></div>
+                                        <input type="hidden" id="protectiveEquipmentData" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="processConditions" class="form-label">Process Conditions</label>
+                                            <textarea class="form-control" id="processConditions"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="engineeringMeasures" class="form-label">Engineering Measures</label>
+                                            <textarea class="form-control" id="engineeringMeasures"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="respiratoryEquipment" class="form-label">Respiratory Equipment</label>
+                                            <textarea class="form-control" id="respiratoryEquipment"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="handProtection" class="form-label">Hand Protection</label>
+                                            <textarea class="form-control" id="handProtection"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="eyeProtection" class="form-label">Eye Protection</label>
+                                            <textarea class="form-control" id="eyeProtection"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="otherProtection" class="form-label">Other Protection</label>
+                                            <textarea class="form-control" id="otherProtection"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hygieneMeasures" class="form-label">Hygiene Measures</label>
+                                            <textarea class="form-control" id="hygieneMeasures"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="personalProtection" class="form-label">Personal Protection</label>
+                                            <textarea class="form-control" id="personalProtection"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="skinProtection" class="form-label">Skin Protection</label>
+                                            <textarea class="form-control" id="skinProtection"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="environmentalExposure" class="form-label">Environmental Exposure</label>
+                                            <textarea class="form-control" id="environmentalExposure"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 10: Stability -->
+                        <div class="card mb-4" id="section-stability">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">10. STABILITY & REACTIVITY</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#stabilityCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="stabilityCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="reactivityInfo" class="form-label">Reactivity</label>
+                                            <textarea class="form-control" id="reactivityInfo"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="chemicalStability" class="form-label">Chemical Stability</label>
+                                            <textarea class="form-control" id="chemicalStability"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hazardousReactions" class="form-label">Hazardous Reactions</label>
+                                            <textarea class="form-control" id="hazardousReactions"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="conditionsToAvoid" class="form-label">Conditions to Avoid</label>
+                                            <textarea class="form-control" id="conditionsToAvoid"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="incompatibleMaterials" class="form-label">Incompatible Materials</label>
+                                            <textarea class="form-control" id="incompatibleMaterials"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hazardousDecomposition" class="form-label">Hazardous Decomposition</label>
+                                            <textarea class="form-control" id="hazardousDecomposition"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 12: Ecological -->
+                        <div class="card mb-4" id="section-ecological">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">12. ECOLOGICAL</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#ecologicalCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="ecologicalCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="ecoToxicity" class="form-label">Toxicity</label>
+                                            <textarea class="form-control" id="ecoToxicity"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="persistenceDegradability" class="form-label">Persistence & Degradability</label>
+                                            <textarea class="form-control" id="persistenceDegradability"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="bioaccumulationPotential" class="form-label">Bioaccumulation Potential</label>
+                                            <textarea class="form-control" id="bioaccumulationPotential"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="soilMobility" class="form-label">Mobility in Soil</label>
+                                            <textarea class="form-control" id="soilMobility"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="pbtAssessment" class="form-label">PBT Assessment</label>
+                                            <textarea class="form-control" id="pbtAssessment"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="otherAdverseEffects" class="form-label">Other Adverse Effects</label>
+                                            <textarea class="form-control" id="otherAdverseEffects"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 14: Transport -->
+                        <div class="card mb-4" id="section-transport">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">14. TRANSPORT</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#transportCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="transportCollapse">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="unRoad" class="form-label">UN No. Road</label>
+                                            <textarea class="form-control" id="unRoad"></textarea>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="unSea" class="form-label">UN No. Sea</label>
+                                            <textarea class="form-control" id="unSea"></textarea>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="unAir" class="form-label">UN No. Air</label>
+                                            <textarea class="form-control" id="unAir"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="shippingName" class="form-label">Shipping Name</label>
+                                        <textarea class="form-control" id="shippingName"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="hazardClass" class="form-label">Hazard Class</label>
+                                        <textarea class="form-control mb-2" id="hazardClass"></textarea>
+                                        <label class="form-label">Hazard Class Images</label>
+                                        <div class="input-group mb-2">
+                                            <input type="file" class="form-control" id="hazardClassImageUpload" accept="image/*">
+                                            <button class="btn btn-outline-secondary" type="button" id="uploadHazardClassImage">Add</button>
+                                        </div>
+                                        <div id="hazardClassImagesPreview" class="d-flex flex-wrap gap-2 mt-2 border rounded p-2"></div>
+                                        <input type="hidden" id="hazardClassImagesData" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="packingGroup" class="form-label">Packing Group</label>
+                                        <textarea class="form-control" id="packingGroup"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="environmentalHazards" class="form-label">Environmental Hazards</label>
+                                        <textarea class="form-control mb-2" id="environmentalHazards"></textarea>
+                                        <label class="form-label">Environmental Hazards Images</label>
+                                        <div class="input-group mb-2">
+                                            <input type="file" class="form-control" id="environmentalHazardsImageUpload" accept="image/*">
+                                            <button class="btn btn-outline-secondary" type="button" id="uploadEnvironmentalHazardsImage">Add</button>
+                                        </div>
+                                        <div id="environmentalHazardsImagesPreview" class="d-flex flex-wrap gap-2 mt-2 border rounded p-2"></div>
+                                        <input type="hidden" id="environmentalHazardsImagesData" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 16: Other Information -->
+                        <div class="card mb-4" id="section-other">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">16. OTHER INFORMATION</h2>
+                                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#otherInfoCollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse" id="otherInfoCollapse">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="otherInformation" class="form-label">Other Information</label>
+                                        <textarea class="form-control" id="otherInformation" rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
+                </div>
+
+                <!-- Floating Action Button for Save -->
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+                    <button class="btn btn-primary btn-lg rounded-circle shadow" id="floatingSaveBtn" title="Save">
+                        <i class="bi bi-save"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Quill CSS -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    
+    <!-- JavaScript for accordion functionality --> 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize all collapse elements
+        var collapseElements = document.querySelectorAll('.collapse');
+                
+        // Close all sections except the first one on page load
+        for (var i = 1; i < collapseElements.length; i++) {
+            collapseElements[i].classList.remove('show');
+        }
+                
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.list-group-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                                
+                let targetId = this.getAttribute('href');
+                let targetElement = document.querySelector(targetId);
+                                
+                if (targetElement) {
+                    // Expand the target section if it's collapsed
+                    let collapseElement = targetElement.querySelector('.collapse');
+                    if (collapseElement && !collapseElement.classList.contains('show')) {
+                        new bootstrap.Collapse(collapseElement).show();
+                    }
+                                        
+                    // Scroll to the target section
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+                
+        // Floating save button functionality
+        document.getElementById('floatingSaveBtn').addEventListener('click', function() {
+            document.getElementById('saveButton').click();
+        });
+    });
+    </script>
+    
+    <script>
+        // Global object to store all Quill editors
+        const quillEditors = {};
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            // List of specific input fields that should have rich text editing
+            const richTextInputs = [
+                // Section 1: Identification
+                'productName', 'productCode', 'biologicalDefinition', 'inciName', 'casNumber',
+                'femaNumber', 'einecsNumber', 'identifiedUses', 'supplierDetails', 'emergencyPhone',
+                // Section 2: Hazard Identification
+                'classificationContent', 'labelContent', 'signalWord', 'containsInfo',
+                'hazardStatements', 'otherHazards',
+                // Section 3: Composition
+                'substancesContent',
+                // Section 4: First Aid
+                'inhalationFirstAid', 'ingestionFirstAid', 'skinContactFirstAid',
+                'eyeContactFirstAid', 'symptomsEffects', 'medicalAttention',
+                // Section 5: Firefighting
+                'extinguishingMediaContent', 'specialHazardsContent', 'firefighterAdviceContent',
+                // Section 6: Accidental Release
+                'personalPrecautions', 'environmentalPrecautions', 'containmentMethods', 'sectionReferences',
+                // Section 7: Handling & Storage
+                'safeHandlingPrecautions', 'safeStorageConditions', 'specificEndUses',
+                // Section 8: Exposure Controls
+                'processConditions', 'engineeringMeasures', 'respiratoryEquipment', 'handProtection',
+                'eyeProtection', 'otherProtection', 'hygieneMeasures', 'personalProtection',
+                'skinProtection', 'environmentalExposure',
+                // Section 9: Physical Properties
+                'appearance', 'colour', 'odour', 'relativeDensity', 'flashPoint', 'meltingPoint',
+                'refractiveIndex', 'boilingPoint', 'vapourPressure', 'solubilityInWater',
+                'autoIgnitionTemp', 'otherChemicalInfo',
+                // Section 10: Stability & Reactivity
+                'reactivityInfo', 'chemicalStability', 'hazardousReactions', 'conditionsToAvoid',
+                'incompatibleMaterials', 'hazardousDecomposition',
+                // Section 11: Toxicological
+                'toxicologicalEffects',
+                // Section 12: Ecological
+                'ecoToxicity', 'persistenceDegradability', 'bioaccumulationPotential',
+                'soilMobility', 'pbtAssessment', 'otherAdverseEffects',
+                // Section 13: Disposal
+                'wasteTreatmentMethod',
+                // Section 14: Transport
+                'unRoad', 'unSea', 'unAir', 'shippingName', 'hazardClass',
+                'packingGroup', 'environmentalHazards',
+                // Section 15: Regulatory
+                'safetyRegulations', 'chemicalSafetyAssessment',
+                // Section 16: Other Information
+                'otherInformation'
+            ];
+            
+            // Initialize Quill for each rich text input
+            richTextInputs.forEach(inputId => {
+                const element = document.getElementById(inputId);
+                if (element) {
+                    // Create a container for Quill
+                    const quillContainer = document.createElement('div');
+                    quillContainer.id = `${inputId}-editor`;
+                    quillContainer.style.height = '200px';
+                    quillContainer.style.marginBottom = '20px';
+                    
+                    // Insert the container before the textarea
+                    element.parentNode.insertBefore(quillContainer, element);
+                    
+                    // Hide the original textarea
+                    element.style.display = 'none';
+                    
+                    // Initialize Quill
+                    const quill = new Quill(`#${inputId}-editor`, {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: [
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                                [{ 'align': [] }],
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['clean']
+                            ]
+                        },
+                        placeholder: 'Enter content here...'
+                    });
+                    
+                    // Set initial content if available
+                    if (element.value) {
+                        quill.clipboard.dangerouslyPasteHTML(element.value);
+                    }
+                    
+                    // Store the Quill instance for later use
+                    quillEditors[inputId] = quill;
+                }
+            });
+            
+            // Also initialize Quill for any regular textareas
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                if (!richTextInputs.includes(textarea.id)) {
+                    // Create a container for Quill
+                    const quillContainer = document.createElement('div');
+                    quillContainer.id = `${textarea.id}-editor`;
+                    quillContainer.style.height = '200px';
+                    quillContainer.style.marginBottom = '20px';
+                    
+                    // Insert the container before the textarea
+                    textarea.parentNode.insertBefore(quillContainer, textarea);
+                    
+                    // Hide the original textarea
+                    textarea.style.display = 'none';
+                    
+                    // Initialize Quill
+                    const quill = new Quill(`#${textarea.id}-editor`, {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: [
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                                [{ 'align': [] }],
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['clean']
+                            ]
+                        },
+                        placeholder: 'Enter content here...'
+                    });
+                    
+                    // Set initial content if available
+                    if (textarea.value) {
+                        quill.clipboard.dangerouslyPasteHTML(textarea.value);
+                    }
+                    
+                    // Store the Quill instance for later use
+                    quillEditors[textarea.id] = quill;
+                }
+            });
+        });
+        
+        // Global object to store all image data
+        const imageData = {
+            productImages: [],
+            labelImages: [],
+            protectiveEquipment: [],
+            hazardClass: [],
+            environmentalHazards: []
+        };
+        
+        // Function to handle image uploads
+        function handleImageUpload(fileInput, previewContainer, dataArray, contentId) {
+            const file = fileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Check if we already have 5 images
+                if (dataArray.length >= 5) {
+                    alert('Maximum 5 images allowed');
+                    return;
+                }
+                // Create image object
+                const imageObj = {
+                    contentId: contentId,
+                    imageName: file.name,
+                    contentType: file.type,
+                    imageData: e.target.result.split(',')[1], // Remove the data:image/jpeg;base64, part
+                    order: dataArray.length + 1
+                };
+                // Add to array
+                dataArray.push(imageObj);
+                // Create preview
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'position-relative';
+                previewDiv.innerHTML = `
+                    <img src="${e.target.result}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" data-index="${dataArray.length - 1}">×</button>
+                `;
+                // Add delete handler
+                previewDiv.querySelector('button').addEventListener('click', function () {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    dataArray.splice(index, 1);
+                    // Reorder remaining images
+                    dataArray.forEach((img, idx) => {
+                        img.order = idx + 1;
+                    });
+                    // Rebuild preview
+                    previewContainer.innerHTML = '';
+                    dataArray.forEach((img, idx) => {
+                        const div = document.createElement('div');
+                        div.className = 'position-relative';
+                        div.innerHTML = `
+                            <img src="data:${img.contentType};base64,${img.imageData}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" data-index="${idx}">×</button>
+                        `;
+                        div.querySelector('button').addEventListener('click', function () {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            dataArray.splice(index, 1);
+                            // Reorder remaining images
+                            dataArray.forEach((img, idx) => {
+                                img.order = idx + 1;
+                            });
+                            // Rebuild preview
+                            previewContainer.innerHTML = '';
+                            dataArray.forEach((img, idx) => {
+                                const newDiv = document.createElement('div');
+                                newDiv.className = 'position-relative';
+                                newDiv.innerHTML = `
+                                    <img src="data:${img.contentType};base64,${img.imageData}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" data-index="${idx}">×</button>
+                                `;
+                                newDiv.querySelector('button').addEventListener('click', arguments.callee);
+                                previewContainer.appendChild(newDiv);
+                            });
+                        });
+                        previewContainer.appendChild(div);
+                    });
+                });
+                previewContainer.appendChild(previewDiv);
+                fileInput.value = ''; // Clear the file input
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Set up event listeners for image uploads
+        document.getElementById('uploadProductImage').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('productImageUpload'), // File input
+                document.getElementById('productImagePreview'), // Preview container
+                imageData.productImages || (imageData.productImages = []), // Initialize dataArray if not already
+                'productImage' // Content ID
+            );
+        });
+        
+        document.getElementById('uploadLabelImage').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('labelImageUpload'), // File input
+                document.getElementById('labelImagesPreview'), // Preview container
+                imageData.labelImages || (imageData.labelImages = []), // Initialize dataArray if not already
+                'labelImage' // Content ID
+            );
+        });
+        
+        document.getElementById('uploadProtectiveEquipment').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('protectiveEquipmentUpload'),
+                document.getElementById('protectiveEquipmentPreview'),
+                imageData.protectiveEquipment,
+                'protectiveEquipmentImage'
+            );
+        });
+        
+        document.getElementById('uploadHazardClassImage').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('hazardClassImageUpload'),
+                document.getElementById('hazardClassImagesPreview'),
+                imageData.hazardClass,
+                'hazardClassImage'
+            );
+        });
+        
+        document.getElementById('uploadEnvironmentalHazardsImage').addEventListener('click', function () {
+            handleImageUpload(
+                document.getElementById('environmentalHazardsImageUpload'),
+                document.getElementById('environmentalHazardsImagesPreview'),
+                imageData.environmentalHazards,
+                'environmentalHazardsImage'
+            );
+        });
+        
+        // Function to get content from Quill editor
+        function getQuillContent(editorId) {
+            if (quillEditors[editorId]) {
+                return quillEditors[editorId].root.innerHTML;
+            }
+            return '';
+        }
+        
+        // Save button click handler
+        document.getElementById('saveButton').addEventListener('click', function () {
+            // Collect all form data
+            const formData = {
+                // Section 1: Identification
+                productName: getQuillContent('productName'),
+                productCode: getQuillContent('productCode'),
+                biologicalDefinition: getQuillContent('biologicalDefinition'),
+                inciName: getQuillContent('inciName'),
+                casNumber: getQuillContent('casNumber'),
+                femaNumber: getQuillContent('femaNumber'),
+                einecsNumber: getQuillContent('einecsNumber'),
+                identifiedUses: getQuillContent('identifiedUses'),
+                supplierDetails: getQuillContent('supplierDetails'),
+                                emergencyPhone: getQuillContent('emergencyPhone'),
+                // Section 2: Hazard Identification
+                classificationContent: getQuillContent('classificationContent'),
+                labelContent: getQuillContent('labelContent'),
+                signalWord: getQuillContent('signalWord'),
+                containsInfo: getQuillContent('containsInfo'),
+                hazardStatements: getQuillContent('hazardStatements'),
+                otherHazards: getQuillContent('otherHazards'),
+                // Section 3: Composition
+                substancesContent: getQuillContent('substancesContent'),
+                // Section 4: First Aid
+                inhalationFirstAid: getQuillContent('inhalationFirstAid'),
+                ingestionFirstAid: getQuillContent('ingestionFirstAid'),
+                skinContactFirstAid: getQuillContent('skinContactFirstAid'),
+                eyeContactFirstAid: getQuillContent('eyeContactFirstAid'),
+                symptomsEffects: getQuillContent('symptomsEffects'),
+                medicalAttention: getQuillContent('medicalAttention'),
+                // Section 5: Firefighting
+                extinguishingMediaContent: getQuillContent('extinguishingMediaContent'),
+                specialHazardsContent: getQuillContent('specialHazardsContent'),
+                firefighterAdviceContent: getQuillContent('firefighterAdviceContent'),
+                // Section 6: Accidental Release
+                personalPrecautions: getQuillContent('personalPrecautions'),
+                environmentalPrecautions: getQuillContent('environmentalPrecautions'),
+                containmentMethods: getQuillContent('containmentMethods'),
+                sectionReferences: getQuillContent('sectionReferences'),
+                // Section 7: Handling & Storage
+                safeHandlingPrecautions: getQuillContent('safeHandlingPrecautions'),
+                safeStorageConditions: getQuillContent('safeStorageConditions'),
+                specificEndUses: getQuillContent('specificEndUses'),
+                // Section 8: Exposure Controls
+                processConditions: getQuillContent('processConditions'),
+                engineeringMeasures: getQuillContent('engineeringMeasures'),
+                respiratoryEquipment: getQuillContent('respiratoryEquipment'),
+                handProtection: getQuillContent('handProtection'),
+                eyeProtection: getQuillContent('eyeProtection'),
+                otherProtection: getQuillContent('otherProtection'),
+                hygieneMeasures: getQuillContent('hygieneMeasures'),
+                personalProtection: getQuillContent('personalProtection'),
+                skinProtection: getQuillContent('skinProtection'),
+                environmentalExposure: getQuillContent('environmentalExposure'),
+                // Section 9: Physical Properties
+                appearance: getQuillContent('appearance'),
+                colour: getQuillContent('colour'),
+                odour: getQuillContent('odour'),
+                relativeDensity: getQuillContent('relativeDensity'),
+                flashPoint: getQuillContent('flashPoint'),
+                meltingPoint: getQuillContent('meltingPoint'),
+                refractiveIndex: getQuillContent('refractiveIndex'),
+                boilingPoint: getQuillContent('boilingPoint'),
+                vapourPressure: getQuillContent('vapourPressure'),
+                solubilityInWater: getQuillContent('solubilityInWater'),
+                autoIgnitionTemp: getQuillContent('autoIgnitionTemp'),
+                otherChemicalInfo: getQuillContent('otherChemicalInfo'),
+                // Section 10: Stability & Reactivity
+                reactivityInfo: getQuillContent('reactivityInfo'),
+                chemicalStability: getQuillContent('chemicalStability'),
+                hazardousReactions: getQuillContent('hazardousReactions'),
+                conditionsToAvoid: getQuillContent('conditionsToAvoid'),
+                incompatibleMaterials: getQuillContent('incompatibleMaterials'),
+                hazardousDecomposition: getQuillContent('hazardousDecomposition'),
+                // Section 11: Toxicological
+                toxicologicalEffects: getQuillContent('toxicologicalEffects'),
+                // Section 12: Ecological
+                ecoToxicity: getQuillContent('ecoToxicity'),
+                persistenceDegradability: getQuillContent('persistenceDegradability'),
+                bioaccumulationPotential: getQuillContent('bioaccumulationPotential'),
+                soilMobility: getQuillContent('soilMobility'),
+                pbtAssessment: getQuillContent('pbtAssessment'),
+                otherAdverseEffects: getQuillContent('otherAdverseEffects'),
+                // Section 13: Disposal
+                wasteTreatmentMethod: getQuillContent('wasteTreatmentMethod'),
+                // Section 14: Transport
+                unRoad: getQuillContent('unRoad'),
+                unSea: getQuillContent('unSea'),
+                unAir: getQuillContent('unAir'),
+                shippingName: getQuillContent('shippingName'),
+                hazardClass: getQuillContent('hazardClass'),
+                packingGroup: getQuillContent('packingGroup'),
+                environmentalHazards: getQuillContent('environmentalHazards'),
+                // Section 15: Regulatory
+                safetyRegulations: getQuillContent('safetyRegulations'),
+                chemicalSafetyAssessment: getQuillContent('chemicalSafetyAssessment'),
+                // Section 16: Other Information
+                otherInformation: getQuillContent('otherInformation'),
+                // Images data
+                imagesByContentID: {
+                    productImage: imageData.productImages,
+                    labelImage: imageData.labelImages,
+                    protectiveEquipmentImage: imageData.protectiveEquipment,
+                    hazardClassImage: imageData.hazardClass,
+                    environmentalHazardsImage: imageData.environmentalHazards
+                }
+            };
+            
+            // Send data to server
+            fetch('/SafetyDataSheet/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': '@ViewData["CSRFToken"]'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Safety Data Sheet saved successfully! Product ID: ' + data.productId);
+                    // Redirect to index or another page
+                    window.location.href = '/SafetyDataSheet';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the data. Please try again.');
+            });
+        });
+        
+        // Cancel button click handler
+        document.getElementById('cancelButton').addEventListener('click', function () {
+            if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                window.location.href = '/SafetyDataSheet';
+            }
+        });
+    </script>
+}
+

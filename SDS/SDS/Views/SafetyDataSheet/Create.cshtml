@@ -1,5 +1,1109 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="csrf-token" content="@ViewData["CSRFToken"]" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
+    <title>SDS Section 1</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        #editor1, #editor2, #editor3, #editor4, #editor5, #editor6, #editor7 {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 400px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Main Header -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="mainHeader">IDENTIFICATION OF THE SUBSTANCE/PREPARATION & THE COMPANY/UNDERTAKING</h2>
+            </div>
+        </div>
+
+        <!-- 01 IDENTIFICATION OF THE SUBSTANCE -->
+        <div class="card mb-3" id="supplierDetailsSection">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">1.1 Product Identifier </h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="productName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="productName" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="biologicalDefinition" class="form-label">Biological Definition</label>
+                        <input type="text" class="form-control" id="biologicalDefinition" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="inciName" class="form-label">INCI Name</label>
+                        <input type="text" class="form-control" id="inciName" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="casNumber" class="form-label">CAS # </label>
+                        <input type="text" class="form-control" id="casNumber" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="femaNumber" class="form-label">FEMA#</label>
+                        <input type="text" class="form-control" id="femaNumber" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="einecsNumber" class="form-label">EINECS #</label>
+                        <input type="text" class="form-control" id="einecsNumber" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="identifiedUses" class="form-label">Relative identified uses of the substance or mixture and uses advised against</label>
+                        <input type="text" class="form-control" id="identifiedUses" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="supplierDetails" class="form-label">Details of the supplier of the safety data sheet</label>
+                        <input type="text" class="form-control" id="supplierDetails" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="emergencyPhone" class="form-label">Emergency Tel. No.</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="text" class="form-control" id="emergencyPhone" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 01 IDENTIFICATION OF THE SUBSTANCE -->
+        <!-- 02. HAZARDS IDENTIFICATION  -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="hazardsIdentificationHeader">HAZARDS IDENTIFICATION</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="hazardsIdentificationSection">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">Classification of the substance or mixture</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <div id="editor1"></div>
+                            <textarea id="classificationContent" name="classificationContent" style="display:none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="labelContent" class="form-label">Label in accordance with (EC) No 1272/2008</label>
+                        <div class="form-group">
+                            <div id="editor2"></div>
+                            <textarea id="labelContent" name="labelContent" style="display:none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="signalWord" class="form-label">Signal Word</label>
+                        <input type="text" class="form-control" id="signalWord" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="containsInfo" class="form-label">Contains</label>
+                        <input type="text" class="form-control" id="containsInfo" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="hazardStatements" class="form-label">Hazard Statements</label>
+                        <input type="text" class="form-control" id="hazardStatements" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="otherHazards" class="form-label">Other Hazards</label>
+                        <input type="text" class="form-control" id="otherHazards" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 02. HAZARDS IDENTIFICATION  -->
+        <!-- 03. COMPOSITION/INFORMATION ON INGREDIENTS -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="compositionHeader">03. COMPOSITION/INFORMATION ON INGREDIENTS</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">3.1 Substances</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <div id="editor3"></div>
+                            <textarea id="substancesContent" name="substancesContent" style="display:none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 03 -->
+        <!-- 04. FIRST AID MEASURES -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="firstAidHeader">04. FIRST AID MEASURES</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="firstAidSection">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">4.1 Description of first aid measures</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inhalationFirstAid" class="form-label">Inhalation</label>
+                        <input type="text" class="form-control" id="inhalationFirstAid" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="ingestionFirstAid" class="form-label">Ingestion</label>
+                        <input type="text" class="form-control" id="ingestionFirstAid" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="skinContactFirstAid" class="form-label">Skin Contact</label>
+                        <input type="text" class="form-control" id="skinContactFirstAid" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="eyeContactFirstAid" class="form-label">Eye Contact</label>
+                        <input type="text" class="form-control" id="eyeContactFirstAid" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="symptomsEffects" class="form-label">4.2 Most important symptoms and effects, both acute and delayed</label>
+                        <input type="text" class="form-control" id="symptomsEffects" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="medicalAttention" class="form-label">4.3 Indication of any immediate medical attention and special treatment needed</label>
+                        <input type="text" class="form-control" id="medicalAttention" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 04. FIRST AID MEASURES  -->
+        <!-- 05. FIRE-FIGHTING MEASURES -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="fireFightingHeader">05. FIRE-FIGHTING MEASURES</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="fireFightingSection">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">5.1 Extinguishing Media</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <div id="editor4"></div>
+                            <input type="text" class="form-control" id="extinguishingMediaContent" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-header bg-light">
+                <h3 class="mb-0">5.2 Special hazards arising from the product</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <div id="editor5"></div>
+                            <input type="text" class="form-control" id="specialHazardsContent" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-header bg-light">
+                <h3 class="mb-0">5.3 Advice for firefighters</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <div id="editor6"></div>
+                            <input type="text" class="form-control" id="firefighterAdviceContent" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 05. FIRE-FIGHTING MEASURES -->
+        <!-- 06. ACCIDENTAL RELEASE MEASURES -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="accidentalReleaseHeader">06. ACCIDENTAL RELEASE MEASURES</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="accidentalReleaseSection">
+            <!-- 6.1 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">6.1 Personal precautions, protective equipment and emergency procedures</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="personalPrecautions">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6.2 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">6.2 Environmental Precautions</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="environmentalPrecautions">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6.3 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">6.3 Methods and material for containment and cleaning up</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="containmentMethods">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6.4 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">6.4 Reference to other sections</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="sectionReferences">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 06. ACCIDENTAL RELEASE MEASURES -->
+        <!-- 07. HANDLING AND STORAGE -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="handlingStorageHeader">07. HANDLING AND STORAGE</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="handlingStorageSection">
+            <!-- 7.1 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">7.1 Precautions for safe handling</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="safeHandlingPrecautions">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7.2 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">7.2 Conditions for safe storage, including any incompatibilities</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="safeStorageConditions">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7.3 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">7.3 Specific end use(s)</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="specificEndUses">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 08. EXPOSURE CONTROLS/PERSONAL PROTECTION -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="exposureControlsHeader">08. EXPOSURE CONTROLS/PERSONAL PROTECTION</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="exposureControlsSection">
+            <!-- 8.1 Control parameters -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">8.1 Control parameters</h3>
+            </div>
+            <div class="card-body">
+                <!-- Protective Equipment (Image Upload) -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <label class="form-label">Protective Equipment</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="protectiveEquipmentImage" accept="image/*">
+                            <button class="btn btn-outline-secondary" type="button" id="uploadProtectiveEquipment">Upload</button>
+                        </div>
+                        <div class="mt-2" id="protectiveEquipmentPreview"></div>
+                    </div>
+                </div>
+
+                <!-- Other Control Parameters -->
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="processConditions" class="form-label">Process Conditions</label>
+                        <input type="text" class="form-control" id="processConditions">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="engineeringMeasures" class="form-label">Engineering Measures</label>
+                        <input type="text" class="form-control" id="engineeringMeasures">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="respiratoryEquipment" class="form-label">Respiratory Equipment</label>
+                        <input type="text" class="form-control" id="respiratoryEquipment">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="handProtection" class="form-label">Hand Protection</label>
+                        <input type="text" class="form-control" id="handProtection">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="eyeProtection" class="form-label">Eye Protection</label>
+                        <input type="text" class="form-control" id="eyeProtection">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="otherProtection" class="form-label">Other Protection</label>
+                        <input type="text" class="form-control" id="otherProtection">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="hygieneMeasures" class="form-label">Hygiene Measures</label>
+                        <input type="text" class="form-control" id="hygieneMeasures">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="personalProtection" class="form-label">Personal Protection</label>
+                        <input type="text" class="form-control" id="personalProtection">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="skinProtection" class="form-label">Skin Protection</label>
+                        <input type="text" class="form-control" id="skinProtection">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="environmentalExposure" class="form-label">Environmental Exposure</label>
+                        <input type="text" class="form-control" id="environmentalExposure">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 09. PHYSICAL AND CHEMICAL PROPERTIES -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="physicalChemicalHeader">09. PHYSICAL AND CHEMICAL PROPERTIES</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="physicalChemicalSection">
+            <!-- 9.1 Information on basic physical and chemical properties -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">9.1 Information on basic physical and chemical properties</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- First Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="appearance" class="form-label">Appearance</label>
+                            <input type="text" class="form-control" id="appearance">
+                        </div>
+                        <div class="mb-3">
+                            <label for="colour" class="form-label">Colour</label>
+                            <input type="text" class="form-control" id="colour">
+                        </div>
+                        <div class="mb-3">
+                            <label for="odour" class="form-label">Odour</label>
+                            <input type="text" class="form-control" id="odour">
+                        </div>
+                        <div class="mb-3">
+                            <label for="relativeDensity" class="form-label">Relative Density</label>
+                            <input type="text" class="form-control" id="relativeDensity">
+                        </div>
+                        <div class="mb-3">
+                            <label for="flashPoint" class="form-label">Flash Point (°C)</label>
+                            <input type="text" class="form-control" id="flashPoint">
+                        </div>
+                    </div>
+
+                    <!-- Second Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="meltingPoint" class="form-label">Melting Point (°C)</label>
+                            <input type="text" class="form-control" id="meltingPoint">
+                        </div>
+                        <div class="mb-3">
+                            <label for="refractiveIndex" class="form-label">Refractive Index</label>
+                            <input type="text" class="form-control" id="refractiveIndex">
+                        </div>
+                        <div class="mb-3">
+                            <label for="boilingPoint" class="form-label">Boiling Point (°C)</label>
+                            <input type="text" class="form-control" id="boilingPoint">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vapourPressure" class="form-label">Vapour Pressure</label>
+                            <input type="text" class="form-control" id="vapourPressure">
+                        </div>
+                        <div class="mb-3">
+                            <label for="solubilityInWater" class="form-label">Solubility in Water 20°C</label>
+                            <input type="text" class="form-control" id="solubilityInWater">
+                        </div>
+                        <div class="mb-3">
+                            <label for="autoIgnitionTemp" class="form-label">Auto-ignition temperature (°C)</label>
+                            <input type="text" class="form-control" id="autoIgnitionTemp">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9.2 Other information -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">9.2 Other information</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="otherChemicalInfo">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 10. STABILITY AND REACTIVITY -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="stabilityReactivityHeader">10. STABILITY AND REACTIVITY</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="stabilityReactivitySection">
+            <!-- 10.1 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">10.1 Reactivity</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="reactivityInfo">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10.2 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">10.2 Chemical stability</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="chemicalStability">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10.3 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">10.3 Possible hazardous reactions</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="hazardousReactions">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10.4 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">10.4 Conditions to Avoid</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="conditionsToAvoid">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10.5 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">10.5 Incompatible materials</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="incompatibleMaterials">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10.6 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">10.6 Hazardous Decomposition Products</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="hazardousDecomposition">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. TOXICOLOGICAL INFORMATION -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="toxicologicalHeader">11. TOXICOLOGICAL INFORMATION</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="toxicologicalSection">
+            <!-- 11.1 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">11.1 Information on toxicological effects</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="toxicologicalEffects">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12. ECOLOGICAL INFORMATION -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="ecologicalHeader">12. ECOLOGICAL INFORMATION</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="ecologicalSection">
+            <!-- 12.1 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">12.1 Toxicity</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="ecoToxicity">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12.2 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">12.2 Persistence & degradability</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="persistenceDegradability">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12.3 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">12.3 Bioaccumulation Potential</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="bioaccumulationPotential">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12.4 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">12.4 Mobility in soil</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="soilMobility">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12.5 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">12.5 Results of PBT and vPvB Assessment</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="pbtAssessment">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12.6 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">12.6 Other adverse effects</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="otherAdverseEffects">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 13. DISPOSAL CONSIDERATIONS -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="disposalHeader">13. DISPOSAL CONSIDERATIONS</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="disposalSection">
+            <!-- 13.1 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">13.1 Waste treatment method</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="wasteTreatmentMethod">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 14. TRANSPORT INFORMATION -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="transportHeader">14. TRANSPORT INFORMATION</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="transportSection">
+            <!-- 14.1 UN number -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">14.1 UN number</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="unRoad" class="form-label small">UN No. Road</label>
+                        <input type="text" class="form-control form-control-sm" id="unRoad">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="unSea" class="form-label small">UN No. SEA</label>
+                        <input type="text" class="form-control form-control-sm" id="unSea">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="unAir" class="form-label small">UN No. AIR</label>
+                        <input type="text" class="form-control form-control-sm" id="unAir">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 14.2 UN proper shipping name -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">14.2 UN proper shipping name</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="shippingName" class="form-label small">Shipping Name</label>
+                        <input type="text" class="form-control form-control-sm" id="shippingName">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 14.3 Transport hazard class(es) -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">14.3 Transport hazard class(es)</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="hazardClass" class="form-label small">Hazard Class</label>
+                        <input type="text" class="form-control form-control-sm" id="hazardClass">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 14.4 Packing group -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">14.4 Packing group</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="packingGroup" class="form-label small">Group</label>
+                        <input type="text" class="form-control form-control-sm" id="packingGroup">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 14.5 Environmental hazards -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">14.5 Environmental hazards</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="environmentalHazards" class="form-label small">Hazards</label>
+                        <input type="text" class="form-control form-control-sm" id="environmentalHazards">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 15. REGULATORY INFORMATION -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="regulatoryHeader">15. REGULATORY INFORMATION</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="regulatorySection">
+            <!-- 15.1 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">15.1 Safety, health and environmental regulations/legislation specific for the substance or mixture</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="safetyRegulations">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 15.2 -->
+            <div class="card-header bg-light">
+                <h3 class="mb-0">15.2 Chemical safety assessment</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <input type="text" class="form-control" id="chemicalSafetyAssessment">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 16. OTHER INFORMATION -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 id="otherInfoHeader">16. OTHER INFORMATION</h2>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h3 class="mb-0"> OTHER INFORMATION</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <div id="editor7"></div>
+                            <textarea id="substancesContent" name="substancesContent" style="display:none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 16. OTHER INFORMATION -->
+        <!-- Submit Button -->
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+            <button class="btn btn-primary me-md-2" type="button" id="saveButton">Save</button>
+            <button class="btn btn-outline-secondary" type="button" id="cancelButton">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+                // Initialize CKEditor for all editor divs
+                document.addEventListener('DOMContentLoaded', function() {
+                    ClassicEditor
+                        .create(document.querySelector('#editor1'))
+                        .then(editor => {
+                            editor.model.document.on('change:data', () => {
+                                document.querySelector('#classificationContent').value = editor.getData();
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                    ClassicEditor
+                        .create(document.querySelector('#editor2'))
+                        .then(editor => {
+                            editor.model.document.on('change:data', () => {
+                                document.querySelector('#labelContent').value = editor.getData();
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                    ClassicEditor
+                        .create(document.querySelector('#editor3'))
+                        .then(editor => {
+                            editor.model.document.on('change:data', () => {
+                                document.querySelector('#substancesContent').value = editor.getData();
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                        ClassicEditor
+                        .create(document.querySelector('#editor4'))
+                        .then(editor => {
+                            editor.model.document.on('change:data', () => {
+                                document.querySelector('#substancesContent').value = editor.getData();
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                        ClassicEditor
+                        .create(document.querySelector('#editor5'))
+                        .then(editor => {
+                            editor.model.document.on('change:data', () => {
+                                document.querySelector('#substancesContent').value = editor.getData();
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                        ClassicEditor
+                        .create(document.querySelector('#editor6'))
+                        .then(editor => {
+                            editor.model.document.on('change:data', () => {
+                                document.querySelector('#substancesContent').value = editor.getData();
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                        ClassicEditor
+                        .create(document.querySelector('#editor7'))
+                        .then(editor => {
+                            editor.model.document.on('change:data', () => {
+                                document.querySelector('#substancesContent').value = editor.getData();
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                });
+
+                document.getElementById('uploadProtectiveEquipment').addEventListener('click', function() {
+            const fileInput = document.getElementById('protectiveEquipmentImage');
+            const previewDiv = document.getElementById('protectiveEquipmentPreview');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    previewDiv.innerHTML = `
+                        <div class="border p-2 d-inline-block">
+                            <img src="${e.target.result}" class="img-thumbnail" style="max-height: 200px;">
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-danger" onclick="document.getElementById('protectiveEquipmentPreview').innerHTML='';">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+
+                 // Helper function to collect form data
+                function collectFormData() {
+                            const formData = [];
+
+                            // 1. Regular inputs
+                            document.querySelectorAll('input, textarea, select').forEach(input => {
+                                if (input.id && !input.id.includes('ContentHtml')) {
+                                    formData.push({
+                                        ContentID: input.id,
+                                        Content: input.value
+                                    });
+                                }
+                            });
+
+                            // 2. CKEditor content
+                            for (let i = 1; i <= 7; i++) {
+                                const editorId = 'editor' + i;
+                                try {
+                                    if (CKEDITOR.instances[editorId]) {
+                                        formData.push({
+                                            ContentID: editorId,
+                                            Content: CKEDITOR.instances[editorId].getData()
+                                        });
+                                    }
+                                } catch (e) {
+                                    console.warn(`CKEditor ${editorId} error:`, e);
+                                }
+                            }
+
+                            return formData;
+                        }
+
+                        // Helper function to send data
+                        function sendFormData(formData) {
+
+                                    console.log("Payload size:",
+                    new TextEncoder().encode(JSON.stringify(formData)).length / 1024 / 1024,
+                    "MB");
+
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                            if (!csrfToken) {
+                                return Promise.reject('CSRF token not found!');
+                            }
+
+                                                                    return fetch('/SafetyDataSheet/Save', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'RequestVerificationToken': csrfToken
+                                },
+                                body: JSON.stringify(formData)
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    return response.text().then(text => {
+                                        throw new Error(`HTTP ${response.status}: ${text || response.statusText}`);
+                                    });
+                                }
+                                return response.json();
+                            });
+                        }
+
+                        // Success handler
+                        function handleSuccess(data) {
+                            if (data?.success) {
+                                alert('Data saved successfully!');
+                                // Optional: Reset form or redirect
+                            } else {
+                                throw new Error(data?.message || 'Invalid server response');
+                            }
+                        }
+
+                        // Error handler
+                        function handleError(error) {
+                            console.error('Full error details:', error);
+                            alert(`Save failed: ${error.message}\nCheck console for details.`);
+
+                            // Optional: Show more detailed error to user
+                            // document.getElementById('errorMessage').textContent = error.message;
+                        }
+
+                document.getElementById('saveButton').addEventListener('click', function() {
+                    // Debug: Log all form elements
+                    console.log('Form elements found:', document.querySelectorAll('input, textarea, select'));
+
+                    // Collect form data
+                    const formData = collectFormData();
+
+                    // Debug: Verify collected data
+                    console.log('Collected form data:', formData);
+
+                    // Validate data before sending
+                    if (formData.length === 0) {
+                        alert('No form data collected! Check console for details.');
+                        return;
+                    }
+
+                    // Send data to server
+                    sendFormData(formData)
+                        .then(handleSuccess)
+                        .catch(handleError);
+                });
+
+
+    </script>
+</body>
+</html>
