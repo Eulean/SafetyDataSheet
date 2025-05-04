@@ -13,32 +13,15 @@ namespace SDS.Controllers
         private readonly SdsDbContext _context;
         private readonly IAntiforgery _antiforgery;
 
-
-
-
         // Combined constructor that takes both dependencies
         public GeneratePdfController(SdsDbContext context, IAntiforgery antiforgery)
         {
             _context = context;
             _antiforgery = antiforgery;
-
-        }
-        
-        [HttpGet("productTable")]
-        public ActionResult ProductTableView()
-        {
-            return View("ProductTableDesign");
         }
 
-        [HttpGet("")]
-        // GET: GeneratePdfController
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        [HttpGet("View/{productId}")]
-        public async Task<IActionResult> View(string productId) /// make suer to change some so that u can call form the page
+        [HttpGet("Preview/{productId}")]
+        public async Task<ActionResult> PreviewAsync(string productId)
         {
             try
             {
@@ -57,7 +40,35 @@ namespace SDS.Controllers
                 }
 
                 // Return the view with the populated ViewModel
-                return View(viewModel);
+                return View("~/Views/GeneratePdf/GeneratePdf.cshtml", viewModel);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error");
+            }
+        }
+
+        [HttpGet("GeneratePdf/{productId}")]
+        public async Task<IActionResult> GeneratePdf(string productId) /// make sure to change some so that u can call form the page
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(productId))
+                {
+                    return BadRequest("Product ID is required");
+                }
+
+                // Get the complete ViewModel for this ProductId
+                var viewModel = await GetSdsViewModelByProductIdAsync(productId);
+
+                // Check if any data was found
+                if (viewModel == null || string.IsNullOrEmpty(viewModel.ProductId))
+                {
+                    return NotFound($"No SDS data found for Product ID: {productId}");
+                }
+
+                // Return the view with the populated ViewModel
+                return View("~/Views/GeneratePdf/GeneratePdf.cshtml", viewModel);
             }
             catch (Exception ex)
             {
