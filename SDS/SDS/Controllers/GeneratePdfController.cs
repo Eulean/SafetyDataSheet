@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PuppeteerSharp.Media;
+using PuppeteerSharp;
 using SDS.Data;
+using SDS.Helper;
 using SDS.Models;
+using Microsoft.CodeAnalysis;
 
 namespace SDS.Controllers
 {
@@ -20,62 +24,142 @@ namespace SDS.Controllers
             _antiforgery = antiforgery;
         }
 
-        [HttpGet("Preview/{productId}")]
-        public async Task<ActionResult> PreviewAsync(string productId)
+        [HttpGet]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        // TODO : Delete after viewModel is successfully work
+        [HttpGet("TestReview")]
+        public ActionResult TestReview()
+        {
+            return View("~/Views/GeneratePdf/GeneratePdf.cshtml");
+        }
+        // TODO : Delete after viewModel is successfully work
+        [HttpGet("Test")]
+        public async Task<ActionResult> Test()
         {
             try
             {
-                if (string.IsNullOrEmpty(productId))
+                // Generate URL to PDF template endpoint
+                var pdfHtmlUrl = Url.Action("TestReview", "GeneratePdf", null, Request.Scheme);
+
+                // Configure PDF options
+                var pdfOptions = new PdfOptions
                 {
-                    return BadRequest("Product ID is required");
-                }
+                    Format = PaperFormat.A4,
+                    PrintBackground = true,
+                    DisplayHeaderFooter = true,
+                    MarginOptions = new MarginOptions
+                    {
+                        Top = "5mm",
+                        Right = "5mm",
+                        Bottom = "5mm",
+                        Left = "5mm"
+                    },
+                    HeaderTemplate = @"
+                         <div style='position: absolute; top: 0; left: 0; right: 0;
+                                    font-size: 8px; text-align: center; color: #888;
+                                    padding: 2mm 0; box-sizing: border-box;'>
+                            <span class='date'></span>
+                            <span><span class='pageNumber'></span>/<span class='totalPages'></span></span>
+                        </div>",
+                    FooterTemplate = @"
+                        <div style='position: absolute; bottom: 0; left: 0; right: 0;
+                                    font-size: 8px; text-align: center; color: #888;
+                                    padding: 2mm 0; box-sizing: border-box;'>
+                            Footer Content
+                        </div>",
+                };
 
-                // Get the complete ViewModel for this ProductId
-                var viewModel = await GetSdsViewModelByProductIdAsync(productId);
+                // Generate PDF using helper
+                var pdfBytes = await HtmlToPdfGenerateHelper.GenerateAsync(pdfHtmlUrl, pdfOptions);
 
-                // Check if any data was found
-                if (viewModel == null || string.IsNullOrEmpty(viewModel.ProductId))
-                {
-                    return NotFound($"No SDS data found for Product ID: {productId}");
-                }
-
-                // Return the view with the populated ViewModel
-                return View("~/Views/GeneratePdf/GeneratePdf.cshtml", viewModel);
+                // Return PDF file
+                return File(pdfBytes, "application/pdf", $"SDS.pdf");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Error");
+                // Log error here
+                return StatusCode(500, "Internal server error");
             }
         }
 
         [HttpGet("GeneratePdf/{productId}")]
-        public async Task<IActionResult> GeneratePdf(string productId) /// make sure to change some so that u can call form the page
+        public async Task<IActionResult> GeneratePdf(string productId)
         {
             try
             {
-                if (string.IsNullOrEmpty(productId))
+                // Generate URL to PDF template endpoint
+                var pdfHtmlUrl = Url.Action("PdfHtml", "GeneratePdf", new { productId }, Request.Scheme);
+
+                // Configure PDF options
+                var pdfOptions = new PdfOptions
                 {
-                    return BadRequest("Product ID is required");
-                }
+                    Format = PaperFormat.A4,
+                    PrintBackground = true,
+                    MarginOptions = new MarginOptions
+                    {
+                        Top = "5mm",
+                        Right = "5mm",
+                        Bottom = "5mm",
+                        Left = "5mm"
+                    },
+                    HeaderTemplate = "<div style=\"border-top: solid 1px #bbb; width: 100%; font-size: 9px;\r\n        padding: 5px 5px 0; color: #bbb; position: relative;\">\r\n        <div style=\"position: absolute; left: 5px; top: 5px;\"><span class=\"date\"></span></div>\r\n        <div style=\"position: absolute; right: 5px; top: 5px;\"><span class=\"pageNumber\"></span>/<span class=\"totalPages\"></span></div>\r\n    </div>",
+                    FooterTemplate = "<div style='font-size: 10px; text-align: center; width: 100%;'>Footer</div>",
+                };
 
-                // Get the complete ViewModel for this ProductId
-                var viewModel = await GetSdsViewModelByProductIdAsync(productId);
+                // Generate PDF using helper
+                var pdfBytes = await HtmlToPdfGenerateHelper.GenerateAsync(pdfHtmlUrl, pdfOptions);
 
-                // Check if any data was found
-                if (viewModel == null || string.IsNullOrEmpty(viewModel.ProductId))
-                {
-                    return NotFound($"No SDS data found for Product ID: {productId}");
-                }
-
-                // Return the view with the populated ViewModel
-                return View("~/Views/GeneratePdf/GeneratePdf.cshtml", viewModel);
+                // Return PDF file
+                return File(pdfBytes, "application/pdf", $"{productId}-SDS.pdf");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Error");
+                // Log error here
+                return StatusCode(500, "Internal server error");
             }
         }
 
+        [HttpGet("PdfHtml/{productId}")]
+        public async Task<IActionResult> PdfHtml(string productId)
+        {
+            try
+            {
+                var viewModel = await GetSdsViewModelByProductIdAsync(productId);
+                return View("~/Views/GeneratePdf/GeneratePdf.cshtml", viewModel);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
 
         #region public mehods
         public SdsViewModel MapFromSDSContentToViewModel(List<SDSContent> sdsContents)

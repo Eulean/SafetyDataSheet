@@ -29,3 +29,20 @@ public static class BrowserFetcherHelper
         }
     }
 }
+
+public static class HtmlToPdfGenerateHelper
+{
+    public static async Task<byte[]> GenerateAsync(string url, PdfOptions pdfOptions)
+    {
+        await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+        {
+            Headless = true,
+            ExecutablePath = await BrowserFetcherHelper.GetExecutablePathAsync(),
+        });
+        await using var page = await browser.NewPageAsync();
+
+        await page.GoToAsync(url, WaitUntilNavigation.Networkidle0);
+
+        return await page.PdfDataAsync(pdfOptions);
+    }
+}
