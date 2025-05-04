@@ -127,15 +127,24 @@ namespace SDS.Controllers
 
             try
             {
-                // Step 1: Generate a new ProductId
+                var products = await _context.Products.ToListAsync();
+
+                var normalizedProductCode = NormalizeText(viewModel.ProductCode);
+                var existingProduct = products.FirstOrDefault(p => NormalizeText(p.ProductCode) == normalizedProductCode);
+                if (existingProduct != null)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Product already exists!"
+                    });
+                }
                 var productId = await GenerateProductIdAsync();
 
-                // Use a transaction to ensure all operations succeed or fail together
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
                 try
                 {
-                    // Step 2: Map and save SDSContent
                     var sdsContents = MapFromViewModelToSDSContent(viewModel, productId);
 
                     if (sdsContents.Any())
@@ -143,14 +152,13 @@ namespace SDS.Controllers
                         _context.SDSContents.AddRange(sdsContents);
                     }
 
-                    // Step 3: Map and save HeaderHImage
+
                     var headerHImages = MapFromViewModelToHeaderHImage(viewModel, productId);
                     if (headerHImages.Any())
                     {
                         _context.HeaderHImages.AddRange(headerHImages);
                     }
 
-                    // step 4: save product
                     var product = new Product
                     {
                         ProductCode = viewModel.ProductCode,
@@ -161,34 +169,27 @@ namespace SDS.Controllers
                         DeletedAt = DateTime.Now,
                         IsDeleted = false
                     };
+
                     _context.Products.Add(product);
-
-
-                    // Step 4: Save changes to the database
                     await _context.SaveChangesAsync();
-
-                    // Commit the transaction
                     await transaction.CommitAsync();
 
-                    // Log the successful operation
                     _logger.LogInformation($"SDS data saved successfully for ProductId: {productId}");
 
-                    // Return success response with the generated ProductId
                     return Json(new { success = true, message = "Data saved successfully.", productId });
                 }
                 catch (Exception ex)
                 {
-                    // Roll back the transaction in case of an error
                     await transaction.RollbackAsync();
-                    throw; // Re-throw to be caught by the outer catch block
+                    throw;
                 }
             }
             catch (Exception ex)
             {
-                // Log the exception
+
                 _logger.LogError(ex, $"Error saving SDS data: {ex.Message}");
 
-                // Return a sanitized error message
+
                 return Json(new
                 {
                     success = false,
@@ -200,9 +201,7 @@ namespace SDS.Controllers
 
         public class SDSContentItem
         {
-            // public string ContentID { get; set; }
-            // public string Content { get; set; }
-            public string ContentID { get; set; }  // this becomes your SDSContent.ContentID
+            public string ContentID { get; set; }
             public string Content { get; set; }
             public int HeadersHId { get; set; }
             public int HeadersHDId { get; set; }
@@ -217,6 +216,16 @@ namespace SDS.Controllers
 
 
         #region Private Methods
+        private string NormalizeText(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            // Remove HTML tags using Regex
+            return Regex.Replace(input, "<.*?>", string.Empty).Trim();
+        }
         private List<HeaderHImage> MapFromViewModelToHeaderHImage(SdsViewModel viewModel, string productId)
         {
             var headerHImages = new List<HeaderHImage>();
@@ -241,19 +250,19 @@ namespace SDS.Controllers
 
                 foreach (var image in images)
                 {
-                    if (image == null || image.ImageData == null || image.ImageData.Length == 0)
+                    if (image == null || image.ImageData == null || image.ImageData.Length == 0 || !IsImageFile(image.ImageName))
                     {
-                        continue; // Skip invalid images
+                        continue;
                     }
 
                     headerHImages.Add(new HeaderHImage
                     {
                         ContentID = contentId,
                         ProductId = productId,
-                        ImageName = image.ImageName ?? "unnamed", // Default name if null
-                        ContentType = image.ContentType ?? "application/octet-stream", // Default MIME type if null
+                        ImageName = image.ImageName ?? "unnamed",
+                        ContentType = image.ContentType ?? "application/octet-stream",
                         ImageData = image.ImageData,
-                        Order = Math.Max(1, Math.Min(5, image.Order)) // Ensure Order is between 1 and 5
+                        Order = Math.Max(1, Math.Min(5, image.Order))
                     });
                 }
             }
@@ -640,7 +649,20 @@ namespace SDS.Controllers
 
             return viewModel;
         }
+
+        private bool IsImageFile(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return false;
+            }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".webp" };
+            var fileExtension = Path.GetExtension(fileName)?.ToLowerInvariant();
+            return allowedExtensions.Contains(fileExtension);
+        }
         #endregion
+
     }
 
 

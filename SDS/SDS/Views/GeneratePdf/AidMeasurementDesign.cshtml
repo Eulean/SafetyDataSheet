@@ -1,0 +1,49 @@
+﻿@{
+	ViewData["Inhalation"] = "Move the exposed person to fresh air at once. Rinse nose and mouth with water. Get medicalattention if any discomfort continues";
+	ViewData["Ingestion"] = "Ingestion may cause nausea and vomiting. Seek medical attention if irritation or symptoms persist.Do not induce vomiting.";
+	ViewData["Skin Contact"] = "Remove affected person from source of contamination. Remove contaminated clothing. Wash the skin immediately with soap and water.Get medical attention if any discomfort continues. ";
+	ViewData["Eye Contact"] = "Remove victim immediately from source of exposure. Make sure to remove any contact lenses from the eyes before rinsing.Promptly wash eyes with plenty of water while lifting the eye lids.Continue to rinse for at least 15 minutes and get medical attention.  ";
+
+}
+			<style>
+				.header-row {
+					background-color: #00285b;
+					color: white;
+					font-weight: bold;
+				}
+				.table-bordered > :not(caption) > * > * {
+					border: 1px solid #dee2e6;
+				}
+				.fw-bold {
+					background-color: #00285b;					
+				}
+				th.fw-bold {
+					background-color: #00285b !important;
+					color: white; /* Add for contrast */
+				}
+			</style>
+
+			<table class="table table-bordered">
+				<tbody>
+					<tr class="header-row">
+						<th class="section-number">4.1 </th>
+						<th colspan="6"> FIRST AID MEASURES </th>
+					</tr>
+					<tr>
+						<th colspan="2" class="fw-bold">Inhalation</th>
+						<td colspan="5">@ViewData["Inhalation"]</td>
+					</tr>
+					<tr>
+						<th colspan="2" class="fw-bold"> Ingestion </th>
+						<td colspan="5">@ViewData["Ingestion"]</td>
+					</tr>
+					<tr>
+						<th colspan="2" class="fw-bold"> Skin Contact </th>
+						<td colspan="5">@ViewData["Skin Contact"]</td>
+					</tr>
+					<tr>
+						<th colspan="2" class="fw-bold">Eye Contact</th>
+						<td colspan="5">@ViewData["Eye Contact"]</td>
+					</tr>
+				</tbody>
+			</table>
