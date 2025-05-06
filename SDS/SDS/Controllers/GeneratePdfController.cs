@@ -53,26 +53,45 @@ namespace SDS.Controllers
                     DisplayHeaderFooter = true,
                     MarginOptions = new MarginOptions
                     {
-                        Top = "5mm",
-                        Right = "5mm",
-                        Bottom = "5mm",
-                        Left = "5mm"
+                        Top = "25mm",
+                        Bottom = "35mm",
                     },
                     HeaderTemplate = @"
-                         <div style='position: absolute; top: 0; left: 0; right: 0;
-                                    font-size: 8px; text-align: center; color: #888;
-                                    padding: 2mm 0; box-sizing: border-box;'>
-                            <span class='date'></span>
-                            <span><span class='pageNumber'></span>/<span class='totalPages'></span></span>
-                        </div>",
+                    <div style='width:100%;font-size: 11px; border-bottom: 1px solid #333; 
+                                padding-bottom: 3mm; line-height: 1.5;'>
+                        <div style='display: flex; justify-content: space-between; 
+                                    align-items: center; margin: 0 5mm;'>
+                            <div>
+                                <strong style='font-size: 12px;'>THE INGREDIENT WAREHOUSE</strong><br>
+                                MATERIAL SAFETY DATA SHEET
+                            </div>
+                            <div>
+                                Page <span class='pageNumber'></span> of <span class='totalPages'></span>
+                            </div>
+                        </div>
+                    </div>",
                     FooterTemplate = @"
-                        <div style='position: absolute; bottom: 0; left: 0; right: 0;
-                                    font-size: 8px; text-align: center; color: #888;
-                                    padding: 2mm 0; box-sizing: border-box;'>
-                            Footer Content
-                        </div>",
+                    <div style='width:100%;font-size: 9px; color: #222; border-top: 1px solid #333;
+                                padding-top: 3mm; line-height: 1.6;'>
+                        <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin: 0 5mm;'>
+                            <div style='line-height: 1.6;'>
+                                <strong>THE INGREDIENT WAREHOUSE</strong><br>
+                                73 National Avenue, Pakenham VIC 3810<br>
+                                AUSTRALIA<br>
+                                Tel: 03 5940 8920 (Int +61 3 5940 8920)
+                            </div>
+                            <div style='text-align: right; line-height: 1.6;'>
+                                <strong>REVISION DETAILS</strong><br>
+                                Date: 07/08/2023<br>
+                                Rev No: SDS Generated 02
+                            </div>
+                        </div>
+                        <div style='font-size: 10px; font-weight: 600; 
+                                    text-align: center; margin-top: 3mm;'>
+                            PAGE <span class='pageNumber'></span> OF <span class='totalPages'></span>
+                        </div>
+                    </div>"
                 };
-
                 // Generate PDF using helper
                 var pdfBytes = await HtmlToPdfGenerateHelper.GenerateAsync(pdfHtmlUrl, pdfOptions);
 
@@ -107,15 +126,47 @@ namespace SDS.Controllers
                 {
                     Format = PaperFormat.A4,
                     PrintBackground = true,
+                    DisplayHeaderFooter = true,
                     MarginOptions = new MarginOptions
                     {
-                        Top = "5mm",
-                        Right = "5mm",
-                        Bottom = "5mm",
-                        Left = "5mm"
+                        Top = "25mm",
+                        Bottom = "35mm",
                     },
-                    HeaderTemplate = "<div style=\"border-top: solid 1px #bbb; width: 100%; font-size: 9px;\r\n        padding: 5px 5px 0; color: #bbb; position: relative;\">\r\n        <div style=\"position: absolute; left: 5px; top: 5px;\"><span class=\"date\"></span></div>\r\n        <div style=\"position: absolute; right: 5px; top: 5px;\"><span class=\"pageNumber\"></span>/<span class=\"totalPages\"></span></div>\r\n    </div>",
-                    FooterTemplate = "<div style='font-size: 10px; text-align: center; width: 100%;'>Footer</div>",
+                    HeaderTemplate = @"
+                    <div style='width:100%;font-size: 11px; border-bottom: 1px solid #333; 
+                                padding-bottom: 3mm; line-height: 1.5;'>
+                        <div style='display: flex; justify-content: space-between; 
+                                    align-items: center; margin: 0 5mm;'>
+                            <div>
+                                <strong style='font-size: 12px;'>THE INGREDIENT WAREHOUSE</strong><br>
+                                MATERIAL SAFETY DATA SHEET
+                            </div>
+                            <div>
+                                Page <span class='pageNumber'></span> of <span class='totalPages'></span>
+                            </div>
+                        </div>
+                    </div>",
+                    FooterTemplate = @"
+                    <div style='width:100%;font-size: 9px; color: #222; border-top: 1px solid #333;
+                                padding-top: 3mm; line-height: 1.6;'>
+                        <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin: 0 5mm;'>
+                            <div style='line-height: 1.6;'>
+                                <strong>THE INGREDIENT WAREHOUSE</strong><br>
+                                73 National Avenue, Pakenham VIC 3810<br>
+                                AUSTRALIA<br>
+                                Tel: 03 5940 8920 (Int +61 3 5940 8920)
+                            </div>
+                            <div style='text-align: right; line-height: 1.6;'>
+                                <strong>REVISION DETAILS</strong><br>
+                                Date: 07/08/2023<br>
+                                Rev No: SDS Generated 02
+                            </div>
+                        </div>
+                        <div style='font-size: 10px; font-weight: 600; 
+                                    text-align: center; margin-top: 3mm;'>
+                            PAGE <span class='pageNumber'></span> OF <span class='totalPages'></span>
+                        </div>
+                    </div>"
                 };
 
                 // Generate PDF using helper
