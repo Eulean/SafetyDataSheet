@@ -30,94 +30,115 @@ namespace SDS.Controllers
             return View();
         }
 
-        // TODO : Delete after viewModel is successfully work
-        [HttpGet("TestReview")]
-        public ActionResult TestReview()
+        [HttpGet("Pdf/{productId}")]
+        public async Task<IActionResult> Pdf(string productNo)
         {
-            return View("~/Views/GeneratePdf/GeneratePdf.cshtml");
-        }
-        // TODO : Delete after viewModel is successfully work
-        [HttpGet("Test")]
-        public async Task<ActionResult> Test()
-        {
-            try
-            {
-                // Generate URL to PDF template endpoint
-                var pdfHtmlUrl = Url.Action("TestReview", "GeneratePdf", null, Request.Scheme);
+            var vm = await GetSdsViewModelByProductIdAsync(productNo);
+            if (vm == null) return NotFound();
 
-                // Configure PDF options
-                var pdfOptions = new PdfOptions
-                {
-                    Format = PaperFormat.A4,
-                    PrintBackground = true,
-                    DisplayHeaderFooter = true,
-                    MarginOptions = new MarginOptions
-                    {
-                        Top = "25mm",
-                        Bottom = "35mm",
-                    },
-                    HeaderTemplate = @"
-                    <div style='width:100%;font-size: 11px; border-bottom: 1px solid #333; 
-                                padding-bottom: 3mm; line-height: 1.5;'>
-                        <div style='display: flex; justify-content: space-between; 
-                                    align-items: center; margin: 0 5mm;'>
-                            <div>
-                                <strong style='font-size: 12px;'>THE INGREDIENT WAREHOUSE</strong><br>
-                                MATERIAL SAFETY DATA SHEET
-                            </div>
-                            <div>
-                                Page <span class='pageNumber'></span> of <span class='totalPages'></span>
-                            </div>
-                        </div>
-                    </div>",
-                    FooterTemplate = @"
-                    <div style='width:100%;font-size: 9px; color: #222; border-top: 1px solid #333;
-                                padding-top: 3mm; line-height: 1.6;'>
-                        <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin: 0 5mm;'>
-                            <div style='line-height: 1.6;'>
-                                <strong>THE INGREDIENT WAREHOUSE</strong><br>
-                                73 National Avenue, Pakenham VIC 3810<br>
-                                AUSTRALIA<br>
-                                Tel: 03 5940 8920 (Int +61 3 5940 8920)
-                            </div>
-                            <div style='text-align: right; line-height: 1.6;'>
-                                <strong>REVISION DETAILS</strong><br>
-                                Date: 07/08/2023<br>
-                                Rev No: SDS Generated 02
-                            </div>
-                        </div>
-                        <div style='font-size: 10px; font-weight: 600; 
-                                    text-align: center; margin-top: 3mm;'>
-                            PAGE <span class='pageNumber'></span> OF <span class='totalPages'></span>
-                        </div>
-                    </div>"
-                };
-                // Generate PDF using helper
-                var pdfBytes = await HtmlToPdfGenerateHelper.GenerateAsync(pdfHtmlUrl, pdfOptions);
-
-                // Return PDF file
-                return File(pdfBytes, "application/pdf", $"SDS.pdf");
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                // Log error here
-                return StatusCode(500, "Internal server error");
-            }
+            return View("~/Views/GeneratePdf/GeneratePdf.cshtml", vm);
         }
+
+
+        // // TODO : Delete after viewModel is successfully work
+        // [HttpGet("TestReview")]
+        // public ActionResult TestReview()
+        // {
+        //     return View("~/Views/GeneratePdf/GeneratePdf.cshtml");
+        // }
+        // // TODO : Delete after viewModel is successfully work
+        // [HttpGet("Test")]
+        // public async Task<ActionResult> Test()
+        // {
+        //     try
+        //     {
+        //         // Generate URL to PDF template endpoint
+        //         var pdfHtmlUrl = Url.Action("TestReview", "GeneratePdf", null, Request.Scheme);
+
+        //         // Configure PDF options
+        //         var pdfOptions = new PdfOptions
+        //         {
+        //             Format = PaperFormat.A4,
+        //             PrintBackground = true,
+        //             DisplayHeaderFooter = true,
+        //             MarginOptions = new MarginOptions
+        //             {
+        //                 Top = "25mm",
+        //                 Bottom = "35mm",
+        //             },
+        //             HeaderTemplate = @"
+        //             <div style='width:100%;font-size: 11px; border-bottom: 1px solid #333; 
+        //                         padding-bottom: 3mm; line-height: 1.5;'>
+        //                 <div style='display: flex; justify-content: space-between; 
+        //                             align-items: center; margin: 0 5mm;'>
+        //                     <div>
+        //                         <strong style='font-size: 12px;'>THE INGREDIENT WAREHOUSE</strong><br>
+        //                         MATERIAL SAFETY DATA SHEET
+        //                     </div>
+        //                     <div>
+        //                         Page <span class='pageNumber'></span> of <span class='totalPages'></span>
+        //                     </div>
+        //                 </div>
+        //             </div>",
+        //             FooterTemplate = @"
+        //             <div style='width:100%;font-size: 9px; color: #222; border-top: 1px solid #333;
+        //                         padding-top: 3mm; line-height: 1.6;'>
+        //                 <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin: 0 5mm;'>
+        //                     <div style='line-height: 1.6;'>
+        //                         <strong>THE INGREDIENT WAREHOUSE</strong><br>
+        //                         73 National Avenue, Pakenham VIC 3810<br>
+        //                         AUSTRALIA<br>
+        //                         Tel: 03 5940 8920 (Int +61 3 5940 8920)
+        //                     </div>
+        //                     <div style='text-align: right; line-height: 1.6;'>
+        //                         <strong>REVISION DETAILS</strong><br>
+        //                         Date: 07/08/2023<br>
+        //                         Rev No: SDS Generated 02
+        //                     </div>
+        //                 </div>
+        //                 <div style='font-size: 10px; font-weight: 600; 
+        //                             text-align: center; margin-top: 3mm;'>
+        //                     PAGE <span class='pageNumber'></span> OF <span class='totalPages'></span>
+        //                 </div>
+        //             </div>"
+        //         };
+        //         // Generate PDF using helper
+        //         var pdfBytes = await HtmlToPdfGenerateHelper.GenerateAsync(pdfHtmlUrl, pdfOptions);
+
+        //         // Return PDF file
+        //         return File(pdfBytes, "application/pdf", $"SDS.pdf");
+        //     }
+        //     catch (ArgumentException ex)
+        //     {
+        //         return BadRequest(ex.Message);
+        //     }
+        //     catch (KeyNotFoundException ex)
+        //     {
+        //         return NotFound(ex.Message);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         // Log error here
+        //         return StatusCode(500, "Internal server error");
+        //     }
+        // }
 
         [HttpGet("GeneratePdf/{productId}")]
         public async Task<IActionResult> GeneratePdf(string productId)
         {
             try
             {
+                if (string.IsNullOrEmpty(productId))
+                {
+                    return BadRequest("Product ID is required.");
+                }
+
+                var vm = await GetSdsViewModelByProductIdAsync(productId);
+                if (vm == null || string.IsNullOrEmpty(vm.ProductId))
+                {
+                    return NotFound($"Product {productId}  not found.");
+                }
+
                 // Generate URL to PDF template endpoint
                 var pdfHtmlUrl = Url.Action("PdfHtml", "GeneratePdf", new { productId }, Request.Scheme);
 
