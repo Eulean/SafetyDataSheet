@@ -28,9 +28,12 @@ namespace SDS.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _context.Products
+                .OrderBy(p => p.CreatedAt)
+                .ToListAsync());
+            // return View();
         }
 
         [HttpGet("Create")]
@@ -130,6 +133,7 @@ namespace SDS.Controllers
                 var products = await _context.Products.ToListAsync();
 
                 var normalizedProductCode = NormalizeText(viewModel.ProductCode);
+                var normalizedProductName = NormalizeText(viewModel.ProductName);
                 var existingProduct = products.FirstOrDefault(p => NormalizeText(p.ProductCode) == normalizedProductCode);
                 if (existingProduct != null)
                 {
@@ -161,9 +165,9 @@ namespace SDS.Controllers
 
                     var product = new Product
                     {
-                        ProductCode = viewModel.ProductCode,
+                        ProductCode = normalizedProductCode,
                         ProductNo = productId,
-                        ProductName = viewModel.ProductName,
+                        ProductName = normalizedProductName,
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
                         DeletedAt = DateTime.Now,
