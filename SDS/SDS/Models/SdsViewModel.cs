@@ -90,5 +90,7 @@ namespace SDS.Models
 
         // New property to hold images for each ContentID
         public Dictionary<string, List<HeaderHImage>> ImagesByContentID { get; set; } = new Dictionary<string, List<HeaderHImage>>();
+
+        public Dictionary<string, List<HeaderHImage>> ProtectiveEquipment  { get; set; } = new Dictionary<string, List<HeaderHImage>>();
     }
 }
