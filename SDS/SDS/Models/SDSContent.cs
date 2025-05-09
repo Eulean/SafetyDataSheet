@@ -16,5 +16,11 @@ public class SDSContent
     public string? ProductId { get; set; } // Foreign key to Product table
 
 
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
+    public bool IsDeleted { get; set; }
+
+
 }
 

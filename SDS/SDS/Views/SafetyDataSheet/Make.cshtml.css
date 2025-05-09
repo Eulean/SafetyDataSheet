@@ -53,3 +53,7 @@
 textarea {
   min-height: 80px;
 }
+
+/* .ql-date::after {
+  content: "📅";
+} */

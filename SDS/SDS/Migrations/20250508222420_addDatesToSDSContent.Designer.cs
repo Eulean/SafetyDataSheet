@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SDS.Data;
 
@@ -11,9 +12,11 @@ using SDS.Data;
 namespace SDS.Migrations
 {
     [DbContext(typeof(SdsDbContext))]
-    partial class SdsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250508222420_addDatesToSDSContent")]
+    partial class addDatesToSDSContent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

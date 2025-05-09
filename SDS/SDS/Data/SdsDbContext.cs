@@ -13,11 +13,12 @@ public class SdsDbContext : DbContext
 
     public DbSet<SDSContent> SDSContents { get; set; } // SDSContent table
     public DbSet<Product> Products { get; set; }
+    public DbSet<HeaderHImage> HeaderHImages { get; set; }
+    // public DbSet<SdsModel> SdsModels { get; set; }
     // public DbSet<Headers> Headers { get; set; }
     // public DbSet<HeadersH> HeadersH { get; set; }
     // public DbSet<HeadersHD> HeadersHD { get; set; }
     // public DbSet<HeadersData> HeadersData { get; set; }
-    public DbSet<HeaderHImage> HeaderHImages { get; set; }
     // protected override void OnModelCreating(ModelBuilder modelBuilder)
     // {
     //     modelBuilder.Entity<HeadersH>()

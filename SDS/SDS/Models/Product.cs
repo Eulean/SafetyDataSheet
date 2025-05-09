@@ -8,7 +8,7 @@ public class Product
     [Key]
     public int Id { get; set; }
 
-    [MaxLength(50)]
+    // [MaxLength(50)]
     public string ProductCode { get; set; } // from input
     public string ProductNo { get; set; } // from autogenerate
     public string ProductName { get; set; } // just product name
@@ -28,8 +28,8 @@ public class Product
     //public string? UpdatedBy { get; set; }
 
     public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public DateTime DeletedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
     public bool IsDeleted { get; set; }
 }
 

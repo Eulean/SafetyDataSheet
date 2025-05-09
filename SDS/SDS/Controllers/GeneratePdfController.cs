@@ -159,8 +159,8 @@ namespace SDS.Controllers
             }
         }
 
-        #region public mehods
-        public SdsViewModel MapFromSDSContentToViewModel(List<SDSContent> sdsContents)
+        #region private mehods
+        private SdsViewModel MapFromSDSContentToViewModel(List<SDSContent> sdsContents)
         {
             var viewModel = new SdsViewModel();
 
@@ -201,6 +201,8 @@ namespace SDS.Controllers
             SetPropertyIfExists("signalWord", value => viewModel.SignalWord = value);
             SetPropertyIfExists("containsInfo", value => viewModel.ContainsInfo = value);
             SetPropertyIfExists("hazardStatements", value => viewModel.HazardStatements = value);
+            SetPropertyIfExists("precautionary", value => viewModel.Precautionary = value); // new
+            SetPropertyIfExists("supplementary", value => viewModel.Supplementary = value); // new
             SetPropertyIfExists("otherHazards", value => viewModel.OtherHazards = value);
 
             // Section 3: Composition
@@ -231,6 +233,7 @@ namespace SDS.Controllers
             SetPropertyIfExists("specificEndUses", value => viewModel.SpecificEndUses = value);
 
             // Section 8: Exposure Controls/Personal Protection
+            SetPropertyIfExists("controlParameters", value => viewModel.ControlParameters = value); // new
             SetPropertyIfExists("protectiveEquipmentImage", value => viewModel.ProtectiveEquipmentImage = value);
             SetPropertyIfExists("processConditions", value => viewModel.ProcessConditions = value);
             SetPropertyIfExists("engineeringMeasures", value => viewModel.EngineeringMeasures = value);
@@ -267,6 +270,18 @@ namespace SDS.Controllers
 
             // Section 11: Toxicological Information
             SetPropertyIfExists("toxicologicalEffects", value => viewModel.ToxicologicalEffects = value);
+            SetPropertyIfExists("acuteToxicity", value => viewModel.AcuteToxicity = value); // new
+            SetPropertyIfExists("skinCorrosion", value => viewModel.SkinCorrosion = value); // new
+            SetPropertyIfExists("eyeDamage", value => viewModel.EyeDamage = value); // new
+            SetPropertyIfExists("skinSensitization", value => viewModel.SkinSensitization = value); // new
+            SetPropertyIfExists("germCell", value => viewModel.GermCell = value); // new
+            SetPropertyIfExists("carcinogenicity", value => viewModel.Carcinogenicity = value); // new
+            SetPropertyIfExists("reproductiveToxicity", value => viewModel.ReproductiveToxicity = value); // new
+            SetPropertyIfExists("singleExposure", value => viewModel.SingleExposure = value); // new
+            SetPropertyIfExists("repeatedExposure", value => viewModel.RepeatedExposure = value); // new
+            SetPropertyIfExists("aspirationHazard", value => viewModel.AspirationHazard = value); // new
+            SetPropertyIfExists("photoToxicity", value => viewModel.PhotoToxicity = value); // new
+            SetPropertyIfExists("otherInfo", value => viewModel.OtherInfo = value); // new
 
             // Section 12: Ecological Information
             SetPropertyIfExists("ecoToxicity", value => viewModel.EcoToxicity = value);
@@ -287,6 +302,9 @@ namespace SDS.Controllers
             SetPropertyIfExists("hazardClass", value => viewModel.HazardClass = value);
             SetPropertyIfExists("packingGroup", value => viewModel.PackingGroup = value);
             SetPropertyIfExists("environmentalHazards", value => viewModel.EnvironmentalHazards = value);
+            SetPropertyIfExists("specialPrecautions", value => viewModel.SpecialPrecautions = value); // new
+            SetPropertyIfExists("bulkTranprt", value => viewModel.BulkTranprt = value); // new
+            SetPropertyIfExists("ibcCode", value => viewModel.IbcCode = value); // new
 
             // Section 15: Regulatory Information
             SetPropertyIfExists("safetyRegulations", value => viewModel.SafetyRegulations = value);
@@ -294,11 +312,15 @@ namespace SDS.Controllers
 
             // Section 16: Other Information
             SetPropertyIfExists("otherInformation", value => viewModel.OtherInformation = value);
+            SetPropertyIfExists("precautionaryStatements", value => viewModel.PrecautionaryStatements = value); // new
+            SetPropertyIfExists("revisionDate", value => viewModel.RevisionDate = DateTime.TryParse(value, out var date) ? date : null); // new
+            SetPropertyIfExists("revisionReason", value => viewModel.RevisionReason = value); // new
+            SetPropertyIfExists("revNo", value => viewModel.RevNo = value); // new
 
             return viewModel;
         }
 
-        public void MapFromHeaderHImageToViewModel(List<HeaderHImage> headerHImages, SdsViewModel viewModel)
+        private void MapFromHeaderHImageToViewModel(List<HeaderHImage> headerHImages, SdsViewModel viewModel)
         {
             if (headerHImages == null || !headerHImages.Any())
             {
@@ -335,13 +357,14 @@ namespace SDS.Controllers
                         ImageName = image.ImageName,
                         ContentType = image.ContentType,
                         ImageData = image.ImageData,
+                        Base64Image = image.Base64Image, // new
                         Order = image.Order
                     });
                 }
             }
         }
 
-        public async Task<SdsViewModel> GetSdsViewModelByProductIdAsync(string productId)
+        private async Task<SdsViewModel> GetSdsViewModelByProductIdAsync(string productId)
         {
             // Retrieve all SDSContent items for this ProductId
             var sdsContents = await _context.SDSContents
@@ -374,10 +397,12 @@ namespace SDS.Controllers
         }
         #endregion
 
-        [HttpGet("aidMeasurement")]
-        public ActionResult AidMeasurementView()
-        {
-            return View("AidMeasurementDesign");
-        }
+
+//         [HttpGet("aidMeasurement")]
+//         public ActionResult AidMeasurementView()
+//         {
+//             return View("AidMeasurementDesign");
+//         }
+
     }
 }

@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using SDS.Data;
+using SDS.Models;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using SDS.Data;
-using Microsoft.EntityFrameworkCore;
-using SDS.Models; // For HTML parsing 
+using SDS.Helpers; // For HTML parsing 
+
 
 namespace SDS.Controllers
 {
@@ -27,189 +29,279 @@ namespace SDS.Controllers
             _logger = logger;
         }
 
-        [HttpGet("")]
-        public async Task<IActionResult> Index()
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Products
-                .OrderBy(p => p.CreatedAt)
-                .ToListAsync());
-            // return View();
+            int pageSize = 20;
+            int skip = (page - 1) * pageSize;
+
+            var totalItems = await _context.Products.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var products = await _context.Products
+                .Skip(skip)
+                .Take(pageSize)
+                .Select(p => new ProductViewModel
+                {
+                    ProductNo = p.ProductNo,
+                    ProductCode = p.ProductCode,
+                    ProductName = p.ProductName,
+                })
+                .ToListAsync();
+
+            var model = new ProductListViewModel
+            {
+                Products = products,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pageSize,
+                TotalItems = totalItems
+            };
+
+            return View(model);
         }
 
+
         [HttpGet("Create")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(string id = null)
         {
             // Get the CSRF tokens for the current request
             var tokens = _antiforgery.GetAndStoreTokens(HttpContext);
-
-            // Pass the CSRF token to the view using ViewData
             ViewData["CSRFToken"] = tokens.RequestToken;
 
-            return View("Make");
-            // return View("Date");
+            var model = new SdsViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                // Edit mode - load existing data
+                model = await GetSdsViewModelByProductIdAsync(id);
+                ViewBag.IsEdit = true;
+            }
+            else
+            {
+                // Create mode
+                ViewBag.IsEdit = false;
+            }
+
+            return View("Make", model); // ← make sure model is passed to the view
         }
 
-
-        // [HttpPost("save")]
-        // public async Task<IActionResult> Save([FromBody] List<SDSContentItem> items)
+        // // GET: SafetyDataSheet/Delete/
+        // public async Task<IActionResult> Delete(string? id)
         // {
-        //     try
-        //     {
-        //         foreach (var item in items)
-        //         {
-        //             var sdsContent = new SDSContent
-        //             {
-        //                 // HeadersHDId = item.ContentID,
-        //                 // Content = item.Content,
+        //     if (id == null)
+        //         return BadRequest();
 
-        //                 // // Auto-generate ProductId (example => P00001)
-        //                 // ProductId = await GenerateProductIdAsync()
-        //                 Content = item.Content,
-        //                 ContentID = item.ContentID,    // <-- don’t forget this or you’ll get NULL
-        //                 HeadersHId = item.HeadersHId.ToString(),
-        //                 HeadersHDId = item.HeadersHDId.ToString(),
-        //                 ProductId = await GenerateProductIdAsync()
-        //             };
-        //             _context.Add(sdsContent);
-        //         }
+        //     var product = await _context.Products
+        //         .FirstOrDefaultAsync(p => p.ProductNo == id);
 
-        //         await _context.SaveChangesAsync();
-        //         return Json(new { success = true });
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return Json(new { success = false, message = ex.Message });
-        //     }
+        //     if (product == null)
+        //         return NotFound();
+
+        //     return View(product); // Show confirmation page
         // }
 
-        //copilot
-        // [HttpPost("save")]
-        // public async Task<IActionResult> Save([FromBody] SdsViewModel viewModel)
+        // // POST: SafetyDataSheet/Delete/
+        // [HttpPost, ActionName("Delete")]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> DeleteConfirmed(string id)
         // {
-        //     try
-        //     {
-        //         // Step 1: Generate a new ProductId
-        //         var productId = await GenerateProductIdAsync();
+        //     var product = await _context.Products
+        //         .FirstOrDefaultAsync(p => p.ProductNo == id);
 
-        //         // Step 2: Map and save SDSContent
-        //         var sdsContents = MapFromViewModelToSDSContent(viewModel, productId);
-        //         if (sdsContents.Any())
-        //         {
-        //             _context.SDSContents.AddRange(sdsContents);
-        //         }
+        //     if (product == null)
+        //         return NotFound();
 
-        //         // Step 3: Map and save HeaderHImage
-        //         var headerHImages = MapFromViewModelToHeaderHImage(viewModel, productId);
-        //         if (headerHImages.Any())
-        //         {
-        //             _context.HeaderHImages.AddRange(headerHImages);
-        //         }
+        //     _context.Products.Remove(product);
+        //     await _context.SaveChangesAsync();
 
-        //         // Step 4: Save changes to the database
-        //         await _context.SaveChangesAsync();
-
-        //         // Return success response with the generated ProductId
-        //         return Json(new { success = true, message = "Data saved successfully.", productId });
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         // Return error response in case of an exception
-        //         return Json(new { success = false, message = ex.Message });
-        //     }
+        //     return RedirectToAction(nameof(Index));
         // }
 
-        //cody
         [HttpPost("save")]
         public async Task<IActionResult> Save([FromBody] SdsViewModel viewModel)
         {
-            // // Validate the model
-            // if (!ModelState.IsValid)
-            // {
-            //     return BadRequest(new { success = false, message = "Invalid data", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
-            // }
-
             try
             {
-                var products = await _context.Products.ToListAsync();
+                if (string.IsNullOrEmpty(viewModel.ProductName))
+                {
+                    return BadRequest(new { success = false, message = "Product Name is required." });
+                }
 
                 var normalizedProductCode = NormalizeText(viewModel.ProductCode);
-                var normalizedProductName = NormalizeText(viewModel.ProductName);
-                var existingProduct = products.FirstOrDefault(p => NormalizeText(p.ProductCode) == normalizedProductCode);
-                if (existingProduct != null)
-                {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = "Product already exists!"
-                    });
-                }
-                var productId = await GenerateProductIdAsync();
+                var normalizeProductName = NormalizeText(viewModel.ProductName);
+
+                // Determine if this is an update or create
+                bool isUpdate = !string.IsNullOrEmpty(viewModel.ProductId);
+                var productId = isUpdate ? viewModel.ProductId : await GenerateProductIdAsync();
+
+                var products = await _context.Products.ToListAsync();
+                var existingProduct = products.FirstOrDefault(p => p.ProductNo == viewModel.ProductId);
 
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
                 try
                 {
+                    if (isUpdate)
+                    {
+
+                        if (existingProduct == null)
+                        {
+                            return NotFound(new { success = false, message = "Product not found" });
+                        }
+
+                        // Update existing product
+                        existingProduct.ProductName = normalizeProductName;
+                        existingProduct.ProductCode = normalizedProductCode;
+                        existingProduct.UpdatedAt = DateTime.Now;
+                        _context.Products.Update(existingProduct);
+                    }
+                    else
+                    {
+                        if (existingProduct != null)
+                        {
+                            return BadRequest(new { success = false, message = "Product already exists!" });
+                        }
+
+                        var product = new Product
+                        {
+                            ProductCode = normalizedProductCode,
+                            ProductNo = productId,
+                            ProductName = normalizeProductName,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = null,
+                            DeletedAt = null,
+                            IsDeleted = false
+                        };
+                        _context.Products.Add(product);
+                    }
+
+                    // Remove existing content if updating
+                    if (isUpdate)
+                    {
+                        var existingContents = await _context.SDSContents
+                            .Where(c => c.ProductId == viewModel.ProductId)
+                            .ToListAsync();
+
+                        _context.SDSContents.RemoveRange(existingContents);
+
+                        // var existingImages = await _context.HeaderHImages
+                        //     .Where(i => i.ProductId == viewModel.ProductId)
+                        //     .ToListAsync();
+
+                        // _context.HeaderHImages.RemoveRange(existingImages);
+                        var product = new Product
+                        {
+                            ProductCode = normalizedProductCode,
+                            ProductNo = productId,
+                            // ProductName = normalizedProductName,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                            DeletedAt = DateTime.Now,
+                            IsDeleted = false
+                        };
+
+                        // Get all existing images for this product
+                        var existingImages = await _context.HeaderHImages
+                            .Where(i => i.ProductId == viewModel.ProductId)
+                            .ToListAsync();
+
+                        // List of ContentIds that might have images
+                        var imageContentIds = new List<string>
+                        {
+                            "productImage",
+                            "labelImage",
+                            "protectiveEquipmentImage",
+                            "hazardClassImage",
+                            "environmentalHazardsImage"
+                        };
+
+                        // List to track images that need to be removed
+                        var imagesToRemove = new List<HeaderHImage>();
+
+                        if (viewModel.ImagesByContentID != null)
+                        {
+                            foreach (var contentId in imageContentIds)
+                            {
+                                // Check if this contentId has images in the viewModel
+                                if (viewModel.ImagesByContentID.ContainsKey(contentId) &&
+                                    viewModel.ImagesByContentID[contentId] != null &&
+                                    viewModel.ImagesByContentID[contentId].Any())
+                                {
+                                    // Find existing images with this contentId and add them to removal list
+                                    var imagesForThisContentId = existingImages
+                                        .Where(img => img.ContentID == contentId)
+                                        .ToList();
+
+                                    imagesToRemove.AddRange(imagesForThisContentId);
+                                }
+                            }
+                        }
+
+                        // Remove the identified images
+                        if (imagesToRemove.Any())
+                        {
+                            _context.HeaderHImages.RemoveRange(imagesToRemove);
+                        }
+                    }
+
+                    // Add new content
                     var sdsContents = MapFromViewModelToSDSContent(viewModel, productId);
+                    var headerHImages = MapFromViewModelToHeaderHImage(viewModel, productId);
+
+                    sdsContents = ApplyTimestamps(sdsContents, isUpdate);
 
                     if (sdsContents.Any())
                     {
                         _context.SDSContents.AddRange(sdsContents);
                     }
 
-
-                    var headerHImages = MapFromViewModelToHeaderHImage(viewModel, productId);
                     if (headerHImages.Any())
                     {
                         _context.HeaderHImages.AddRange(headerHImages);
                     }
 
-                    var product = new Product
-                    {
-                        ProductCode = normalizedProductCode,
-                        ProductNo = productId,
-                        ProductName = normalizedProductName,
-                        CreatedAt = DateTime.Now,
-                        UpdatedAt = DateTime.Now,
-                        DeletedAt = DateTime.Now,
-                        IsDeleted = false
-                    };
+                    // reopen if u want the database to horizontal 
+                    // var sdsModel = SdsMapper.MapToSdsModel(viewModel);
+                    // sdsModel.ProductId = productId;
+                    // // sdsModel.ProductName = normalizeProductName;
+                    // // sdsModel.ProductCode = normalizedProductCode;
+                    // _context.SdsModels.Add(sdsModel);
 
-                    _context.Products.Add(product);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    _logger.LogInformation($"SDS data saved successfully for ProductId: {productId}");
+                    _logger.LogInformation($"SDS data {(isUpdate ? "updated" : "saved")} successfully for ProductId: {(isUpdate ? viewModel.ProductId : productId)}");
 
-                    return Json(new { success = true, message = "Data saved successfully.", productId });
+                    return Ok(new
+                    {
+                        success = true,
+                        message = $"Data {(isUpdate ? "updated" : "saved")} successfully.",
+                        productId = viewModel.ProductId
+                    });
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    throw;
+                    _logger.LogError(ex, $"Error {(isUpdate ? "updating" : "saving")} SDS data: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = $"An error occurred while {(isUpdate ? "updating" : "saving")} the data."
+                    });
                 }
             }
             catch (Exception ex)
             {
-
-                _logger.LogError(ex, $"Error saving SDS data: {ex.Message}");
-
-
-                return Json(new
+                _logger.LogError(ex, $"Error processing SDS data: {ex.Message}");
+                return StatusCode(500, new
                 {
                     success = false,
-                    message = "An error occurred while saving the data. Please try again or contact support."
+                    message = "An error occurred while processing the data. Please try again or contact support."
                 });
             }
         }
 
-
-        public class SDSContentItem
-        {
-            public string ContentID { get; set; }
-            public string Content { get; set; }
-            public int HeadersHId { get; set; }
-            public int HeadersHDId { get; set; }
-        }
 
         [HttpGet("Error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -220,6 +312,43 @@ namespace SDS.Controllers
 
 
         #region Private Methods
+
+        private List<SDSContent> ApplyTimestamps(List<SDSContent> sDSContents, bool isUpdate)
+        {
+            var now = DateTime.UtcNow;
+            foreach (var content in sDSContents)
+            {
+                if (isUpdate)
+                {
+                    content.UpdatedAt = now;
+
+                    if (content.IsDeleted)
+                    {
+                        content.DeletedAt = null;
+                        content.IsDeleted = false;
+                    }
+                }
+                else
+                {
+                    content.CreatedAt = now;
+                    content.IsDeleted = false;
+                }
+            }
+
+            return sDSContents;
+        }
+        private bool IsImageFile(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return false;
+            }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".webp" };
+            var fileExtension = Path.GetExtension(fileName)?.ToLowerInvariant();
+            return allowedExtensions.Contains(fileExtension);
+        }
+
         private string NormalizeText(string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -233,6 +362,7 @@ namespace SDS.Controllers
         private List<HeaderHImage> MapFromViewModelToHeaderHImage(SdsViewModel viewModel, string productId)
         {
             var headerHImages = new List<HeaderHImage>();
+            const int MaxImageSize = 5 * 1024 * 1024; // 5MB
 
             if (viewModel.ImagesByContentID == null || !viewModel.ImagesByContentID.Any())
             {
@@ -254,10 +384,16 @@ namespace SDS.Controllers
 
                 foreach (var image in images)
                 {
-                    if (image == null || image.ImageData == null || image.ImageData.Length == 0 || !IsImageFile(image.ImageName))
+                    if (image == null ||
+                        image.ImageData == null ||
+                        image.ImageData.Length == 0 ||
+                        !IsImageFile(image.ImageName) ||
+                        image.ImageData.Length > MaxImageSize)
                     {
                         continue;
                     }
+
+                    string base64Image = Convert.ToBase64String(image.ImageData);
 
                     headerHImages.Add(new HeaderHImage
                     {
@@ -266,6 +402,8 @@ namespace SDS.Controllers
                         ImageName = image.ImageName ?? "unnamed",
                         ContentType = image.ContentType ?? "application/octet-stream",
                         ImageData = image.ImageData,
+                        Base64Image = base64Image,
+
                         Order = Math.Max(1, Math.Min(5, image.Order))
                     });
                 }
@@ -312,6 +450,8 @@ namespace SDS.Controllers
             AddIfNotEmpty("signalWord", viewModel.SignalWord);
             AddIfNotEmpty("containsInfo", viewModel.ContainsInfo);
             AddIfNotEmpty("hazardStatements", viewModel.HazardStatements);
+            AddIfNotEmpty("precautionary", viewModel.Precautionary); // new
+            AddIfNotEmpty("supplementary", viewModel.Supplementary); // new
             AddIfNotEmpty("otherHazards", viewModel.OtherHazards);
 
             // Section 3: Composition
@@ -342,6 +482,7 @@ namespace SDS.Controllers
             AddIfNotEmpty("specificEndUses", viewModel.SpecificEndUses);
 
             // Section 8: Exposure Controls/Personal Protection
+            AddIfNotEmpty("controlParameters", viewModel.ControlParameters); // new
             AddIfNotEmpty("protectiveEquipmentImage", viewModel.ProtectiveEquipmentImage);
             AddIfNotEmpty("processConditions", viewModel.ProcessConditions);
             AddIfNotEmpty("engineeringMeasures", viewModel.EngineeringMeasures);
@@ -378,6 +519,18 @@ namespace SDS.Controllers
 
             // Section 11: Toxicological Information
             AddIfNotEmpty("toxicologicalEffects", viewModel.ToxicologicalEffects);
+            AddIfNotEmpty("acuteToxicity", viewModel.AcuteToxicity); // new
+            AddIfNotEmpty("skinCorrosion", viewModel.SkinCorrosion); // new
+            AddIfNotEmpty("eyeDamage", viewModel.EyeDamage); // new
+            AddIfNotEmpty("skinSensitization", viewModel.SkinSensitization); // new
+            AddIfNotEmpty("germCell", viewModel.GermCell); // new
+            AddIfNotEmpty("carcinogenicity", viewModel.Carcinogenicity); // new
+            AddIfNotEmpty("reproductiveToxicity", viewModel.ReproductiveToxicity); // new
+            AddIfNotEmpty("singleExposure", viewModel.SingleExposure); // new
+            AddIfNotEmpty("repeatedExposure", viewModel.RepeatedExposure); // new
+            AddIfNotEmpty("aspirationHazard", viewModel.AspirationHazard); // new
+            AddIfNotEmpty("photoToxicity", viewModel.PhotoToxicity); // new
+            AddIfNotEmpty("otherInfo", viewModel.OtherInfo); // new
 
             // Section 12: Ecological Information
             AddIfNotEmpty("ecoToxicity", viewModel.EcoToxicity);
@@ -398,6 +551,9 @@ namespace SDS.Controllers
             AddIfNotEmpty("hazardClass", viewModel.HazardClass);
             AddIfNotEmpty("packingGroup", viewModel.PackingGroup);
             AddIfNotEmpty("environmentalHazards", viewModel.EnvironmentalHazards);
+            AddIfNotEmpty("specialPrecautions", viewModel.SpecialPrecautions); // new
+            AddIfNotEmpty("bulkTranprt", viewModel.BulkTranprt); // new
+            AddIfNotEmpty("ibcCode", viewModel.IbcCode); // new
 
             // Section 15: Regulatory Information
             AddIfNotEmpty("safetyRegulations", viewModel.SafetyRegulations);
@@ -405,6 +561,10 @@ namespace SDS.Controllers
 
             // Section 16: Other Information
             AddIfNotEmpty("otherInformation", viewModel.OtherInformation);
+            AddIfNotEmpty("precautionaryStatements", viewModel.PrecautionaryStatements); // new
+            AddIfNotEmpty("revisionDate", viewModel.RevisionDate?.ToString("yyyy-MM-dd")); // new
+            AddIfNotEmpty("revisionReason", viewModel.RevisionReason); // new
+            AddIfNotEmpty("revNo", viewModel.RevNo);  // new
 
             return sdsContents;
         }
@@ -437,11 +597,7 @@ namespace SDS.Controllers
             }
         }
 
-        #endregion
-
-
-        #region public mehods
-        public SdsViewModel MapFromSDSContentToViewModel(List<SDSContent> sdsContents)
+        private SdsViewModel MapFromSDSContentToViewModel(List<SDSContent> sdsContents)
         {
             var viewModel = new SdsViewModel();
 
@@ -482,6 +638,8 @@ namespace SDS.Controllers
             SetPropertyIfExists("signalWord", value => viewModel.SignalWord = value);
             SetPropertyIfExists("containsInfo", value => viewModel.ContainsInfo = value);
             SetPropertyIfExists("hazardStatements", value => viewModel.HazardStatements = value);
+            SetPropertyIfExists("precautionary", value => viewModel.Precautionary = value); // new
+            SetPropertyIfExists("supplementary", value => viewModel.Supplementary = value); // new
             SetPropertyIfExists("otherHazards", value => viewModel.OtherHazards = value);
 
             // Section 3: Composition
@@ -512,6 +670,7 @@ namespace SDS.Controllers
             SetPropertyIfExists("specificEndUses", value => viewModel.SpecificEndUses = value);
 
             // Section 8: Exposure Controls/Personal Protection
+            SetPropertyIfExists("controlParameters", value => viewModel.ControlParameters = value); // new
             SetPropertyIfExists("protectiveEquipmentImage", value => viewModel.ProtectiveEquipmentImage = value);
             SetPropertyIfExists("processConditions", value => viewModel.ProcessConditions = value);
             SetPropertyIfExists("engineeringMeasures", value => viewModel.EngineeringMeasures = value);
@@ -548,6 +707,19 @@ namespace SDS.Controllers
 
             // Section 11: Toxicological Information
             SetPropertyIfExists("toxicologicalEffects", value => viewModel.ToxicologicalEffects = value);
+            SetPropertyIfExists("acuteToxicity", value => viewModel.AcuteToxicity = value); //new
+            SetPropertyIfExists("skinCorrosion", value => viewModel.SkinCorrosion = value); //new
+            SetPropertyIfExists("eyeDamage", value => viewModel.EyeDamage = value); //new
+            SetPropertyIfExists("skinSensitization", value => viewModel.SkinSensitization = value); //new
+            SetPropertyIfExists("germCell", value => viewModel.GermCell = value); //new
+            SetPropertyIfExists("carcinogenicity", value => viewModel.Carcinogenicity = value); //new
+            SetPropertyIfExists("reproductiveToxicity", value => viewModel.ReproductiveToxicity = value); //new
+            SetPropertyIfExists("singleExposure", value => viewModel.SingleExposure = value); //new
+            SetPropertyIfExists("repeatedExposure", value => viewModel.RepeatedExposure = value); //new
+            SetPropertyIfExists("aspirationHazard", value => viewModel.AspirationHazard = value); //new
+            SetPropertyIfExists("photoToxicity", value => viewModel.PhotoToxicity = value); //new
+            SetPropertyIfExists("otherInfo", value => viewModel.OtherInfo = value); //new
+
 
             // Section 12: Ecological Information
             SetPropertyIfExists("ecoToxicity", value => viewModel.EcoToxicity = value);
@@ -568,6 +740,10 @@ namespace SDS.Controllers
             SetPropertyIfExists("hazardClass", value => viewModel.HazardClass = value);
             SetPropertyIfExists("packingGroup", value => viewModel.PackingGroup = value);
             SetPropertyIfExists("environmentalHazards", value => viewModel.EnvironmentalHazards = value);
+            SetPropertyIfExists("specialPrecautions", value => viewModel.SpecialPrecautions = value); // new
+            SetPropertyIfExists("bulkTranprt", value => viewModel.BulkTranprt = value); // new
+            SetPropertyIfExists("ibcCode", value => viewModel.IbcCode = value); // new
+
 
             // Section 15: Regulatory Information
             SetPropertyIfExists("safetyRegulations", value => viewModel.SafetyRegulations = value);
@@ -575,11 +751,25 @@ namespace SDS.Controllers
 
             // Section 16: Other Information
             SetPropertyIfExists("otherInformation", value => viewModel.OtherInformation = value);
+            SetPropertyIfExists("precautionaryStatements", value => viewModel.PrecautionaryStatements = value); // new
+            SetPropertyIfExists("revisionDate", value =>
+            {
+                if (DateTime.TryParseExact(value, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var parsedDate)) // new
+                {
+                    viewModel.RevisionDate = parsedDate;
+                }
+                else
+                {
+                    viewModel.RevisionDate = null;
+                }
+            });
+            SetPropertyIfExists("revisionReason", value => viewModel.RevisionReason = value); // new
+            SetPropertyIfExists("revNo", value => viewModel.RevNo = value); // new
 
             return viewModel;
         }
 
-        public void MapFromHeaderHImageToViewModel(List<HeaderHImage> headerHImages, SdsViewModel viewModel)
+        private void MapFromHeaderHImageToViewModel(List<HeaderHImage> headerHImages, SdsViewModel viewModel)
         {
             if (headerHImages == null || !headerHImages.Any())
             {
@@ -616,13 +806,14 @@ namespace SDS.Controllers
                         ImageName = image.ImageName,
                         ContentType = image.ContentType,
                         ImageData = image.ImageData,
+                        Base64Image = image.Base64Image != null ? Convert.ToBase64String(image.ImageData) : null,
                         Order = image.Order
                     });
                 }
             }
         }
 
-        public async Task<SdsViewModel> GetSdsViewModelByProductIdAsync(string productId)
+        private async Task<SdsViewModel> GetSdsViewModelByProductIdAsync(string productId)
         {
             // Retrieve all SDSContent items for this ProductId
             var sdsContents = await _context.SDSContents
@@ -652,18 +843,6 @@ namespace SDS.Controllers
             }
 
             return viewModel;
-        }
-
-        private bool IsImageFile(string fileName)
-        {
-            if (string.IsNullOrEmpty(fileName))
-            {
-                return false;
-            }
-
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".webp" };
-            var fileExtension = Path.GetExtension(fileName)?.ToLowerInvariant();
-            return allowedExtensions.Contains(fileExtension);
         }
         #endregion
 
