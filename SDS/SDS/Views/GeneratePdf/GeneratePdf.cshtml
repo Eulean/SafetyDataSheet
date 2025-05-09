@@ -456,33 +456,51 @@
         </tbody>
     </table>
 
-     <!-- Section 4 -->
-     <h5 class="text-decoration-underline ">04. FIRST AID MEASURES</h5>
-     <table class="table table-bordered">
-	    <tbody>
-		<tr class="header-row">
+    <!-- Section 4 -->
+    <h5 class="text-decoration-underline">04. FIRST AID MEASURES</h5>
+    <table class="table table-bordered">
+        <tbody>
+            <tr class="header-row">
                 <th class="section-number">4.1</th>
-                <th colspan="6"> Description of first aid measures </th>
-		</tr>
-		<tr>
-			<th colspan="2" class="four-fw-bold">Inhalation</th>
-            <td colspan="5"> @Html.Raw(Model.InhalationFirstAid)</td>
-		</tr>
-		<tr>
-            <th colspan="2" class="four-fw-bold"> Ingestion </th>
-            <td colspan="5">@Html.Raw(Model.IngestionFirstAid)</td>
-		</tr>
-		<tr>
-            <th colspan="2" class="four-fw-bold"> Skin Contact </th>
-            <td colspan="5">@Html.Raw(Model.SkinContactFirstAid)</td>
-		</tr>
-		<tr>
+                <th colspan="6">Description of first aid measures</th>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold">Inhalation</th>
+                <td colspan="5">@Html.Raw(Model.InhalationFirstAid)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold">Ingestion</th>
+                <td colspan="5">@Html.Raw(Model.IngestionFirstAid)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold">Skin Contact</th>
+                <td colspan="5">@Html.Raw(Model.SkinContactFirstAid)</td>
+            </tr>
+            <tr>
                 <th colspan="2" class="four-fw-bold">Eye Contact</th>
-            <td colspan="4">@Html.Raw(Model.EyeContactFirstAid)</td>
-		</tr>
-           
-	</tbody>        
-</table>
+                <td colspan="5">@Html.Raw(Model.EyeContactFirstAid)</td>
+            </tr>
+
+            <!-- 4.2 -->
+            <tr class="header-row">
+                <th class="section-number">4.2</th>
+                <th colspan="6">Most important symptoms and effects, both acute and delayed</th>
+            </tr>
+            <tr>
+                <td colspan="7">No additional data available.</td>
+            </tr>
+
+            <!-- 4.3 -->
+            <tr class="header-row">
+                <th class="section-number">4.3</th>
+                <th colspan="6">Indication of any immediate medical attention and special treatment needed</th>
+            </tr>
+            <tr>
+                <td colspan="7">No additional data available.</td>
+            </tr>
+        </tbody>
+    </table>
+
 
     <!-- Section 5 Table -->
     <h5 class="text-decoration-underline ">05. FIRE-FIGHTING MEASURES</h5>
