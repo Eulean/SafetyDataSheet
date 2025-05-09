@@ -1,0 +1,276 @@
+﻿@* @model SDS.Models.SdsViewModel; *@
+
+@* <style> *@
+@* 	body { *@
+@* 		font-family: Arial, sans-serif; *@
+@* 	} *@
+
+@* 	.main-title { *@
+@* 		font-weight: bold; *@
+@* 		font-size: 16px; *@
+@* 		margin-bottom: 5px; *@
+@* 		text-decoration: underline; *@
+@* 	} *@
+
+@* 	table { *@
+@* 		width: 100%; *@
+@* 		border-collapse: collapse; *@
+@* 		border: 1px solid #000; *@
+@* 	} *@
+
+@* 	.header-row { *@
+@* 		background-color: #002060; *@
+@* 		color: white; *@
+@* 		font-weight: bold; *@
+@* 	} *@
+
+@* 		.header-row td { *@
+@* 			padding: 5px 10px; *@
+@* 			border: 1px solid #000; *@
+@* 		} *@
+
+@* 	.content-row td { *@
+@* 		padding: 5px 10px; *@
+@* 		border: 1px solid #000; *@
+@* 		background-color: white; *@
+@* 	} *@
+
+@* 	.section-number { *@
+@* 		font-weight: bold; *@
+@* 	} *@
+
+@* 	.category-cell { *@
+@* 		width: 35%; *@
+@* 		font-weight: bold; *@
+@* 	} *@
+
+@* 	.bgBlue { *@
+@* 		background-color: #002060 !important; *@
+@* 		color: white; *@
+@* 	} *@
+
+@* 	.first-col { *@
+@* 		width: 35px; *@
+@* 	} *@
+
+@* 	.second-col { *@
+@* 		width: 30%; *@
+@* 	} *@
+
+@* 	.imgStyle { *@
+@* 		width: 105px; *@
+@* 		height: 105px; *@
+@* 		object-fit: cover; *@
+@* 	} *@
+@* </style> *@
+
+@* <div id="last-section"> *@
+@* 	<div id="section-10" class="mt-3"> *@
+@* 		<h2 class="main-title">10. STABILITY AND REACTIVITY</h2> *@
+@* 		<table id="section-10-data" class="mx-3"></table> *@
+@* 	</div> *@
+@* 	<div id="section-11" class="mt-3"> *@
+@* 		<h2 class="main-title">11. TOXOLOGICAL INFORMATION</h2> *@
+@* 		<table id="section-11-data" class="mx-3"> *@
+@* 		</table> *@
+@* 	</div> *@
+@* 	<div id="section-12" class="mt-3"> *@
+@* 		<h2 class="main-title">12. ECOLOGICAL INFORMATION</h2> *@
+@* 		<table id="section-12-data" class="mx-3"></table> *@
+@* 	</div> *@
+@* 	<div id="section-13" class="mt-3"> *@
+@* 		<h2 class="main-title">13. DISPOSAL CONSIDERATIONS</h2> *@
+@* 		<table id="section-13-data" class="mx-3"></table> *@
+@* 	</div> *@
+@* 	<div id="section-14" class="mt-3"> *@
+@* 		<h2 class="main-title">14. TRANSPORT INFORMATION</h2> *@
+@* 		<table id="section-14-data" class="mx-3"> *@
+@* 		</table> *@
+@* 	</div> *@
+@* 	<div id="section-15" class="mt-3"> *@
+@* 		<h2 class="main-title">15. REGULATORY INFORMATION</h2> *@
+@* 		<table id="section-15-data" class="mx-3"> *@
+@* 		</table> *@
+@* 	</div> *@
+@* 	<div id="section-16" class="mt-3"> *@
+@* 		<h2 class="main-title">16. OTHER INFORMATION</h2> *@
+@* 		<table id="section-16-data" class="mx-3"> *@
+@* 		</table> *@
+@* 	</div> *@
+@* </div> *@
+
+@* @section Scripts { *@
+@* 	<script> *@
+@* 		var imagesByContentID = @Html.Raw(Json.Serialize(Model.ImagesByContentID)); *@
+@* 		function getValueBetweenTags(htmlString, tag) { *@
+@* 		  const regex = new RegExp(`<${tag}[^>]*>(.*?)<\\/${tag}>`, 'i'); *@
+@* 		  const match = htmlString.match(regex); *@
+@* 		  return match ? match[1] : null; *@
+@* 		} *@
+
+@* 		function parseBAndPTags(key, value, htmlString) { *@
+@* 			const tagRegex = new RegExp(`<(${key}|${value})[^>]*>(.*?)<\\/\\1>`, "gi"); *@
+@* 			const matches = [...htmlString.matchAll(tagRegex)]; *@
+
+@* 		  const resultMap = new Map(); *@
+@* 		  let currentKey = null; *@
+
+@* 		  for (const match of matches) { *@
+@* 			const tag = match[1].toLowerCase(); *@
+@* 			const content = match[2]; *@
+
+@* 			if (tag === key) { *@
+@* 			  currentKey = content; *@
+@* 			  resultMap.set(currentKey, null); *@
+@* 			} else if (tag === value && currentKey) { *@
+@* 			  resultMap.set(currentKey, content); *@
+@* 			  currentKey = null; *@
+@* 			} *@
+@* 		  } *@
+
+@* 		  return resultMap; *@
+@* 		} *@
+
+@* 		function printOneLine(no, title, data, important = false, imageTag = null){ *@
+@* 			let content = `<tr class="header-row"> *@
+@* 				<td class="section-number first-col">${no}</td> *@
+@* 				<td colspan="2">${title}</td> *@
+@* 			</tr>` *@
+@* 			let nullText = important ? "No additional data available, but it must be considered that this product may be dangerous for theenvironment." : "No additional data available."; *@
+@* 			if(data == null){ *@
+@* 				content += `<tr class="content-row"> *@
+@* 					<td style="border-right-color: white !important;" class="first-col"></td> *@
+@* 					<td colspan="2">${nullText}</td> *@
+@* 				</tr>` *@
+@* 			}else if(data.length == 0){ *@
+@* 				content += `<tr class="content-row"> *@
+@* 					<td style="border-right-color: white !important;" class="first-col"></td> *@
+@* 					<td colspan="2">${nullText}</td> *@
+@* 				</tr>` *@
+@* 			}else{ *@
+@* 				if(imageTag != null){ *@
+@* 					let imgBinary = imagesByContentID[imageTag]; *@
+@* 					if(imgBinary != null && imgBinary != undefined){ *@
+@* 						if(imgBinary[0] != null){ *@
+@* 							data += addOneImage(imgBinary); *@
+@* 						} *@
+@* 					} *@
+@* 				} *@
+@* 				content += `<tr class="content-row"> *@
+@* 					<td style="border-right-color: white !important;" class="first-col"></td> *@
+@* 					<td colspan="2">${data}</td> *@
+@* 				</tr>` *@
+@* 			} *@
+@* 			return content; *@
+@* 		} *@
+
+@* 		function printSideBySide(title, data, bgBlue = false){ *@
+@* 			let content = `<td class="${bgBlue ? "bgBlue": ""} frist-col" style="border-right-color: ${bgBlue ? "#002060": "white"} !important;"></td><td class="${bgBlue ? "bgBlue": ""} second-col"><b>${title}</b></td>` *@
+@* 			if(data == null){ *@
+@* 				content += `<td>No additional data available.</td>` *@
+@* 			}else if(data.length == 0){ *@
+@* 				content += `<td>No additional data available.</td>` *@
+@* 			}else{ *@
+@* 				content += `<td>${data}</td>` *@
+@* 			} *@
+@* 			let element = `<tr class="content-row">${content}</tr>`; *@
+@* 			return element; *@
+@* 		} *@
+
+@* 		function loopDoubleSection(data, bgBlue = false){ *@
+@* 			let headerTag = 'b' *@
+@* 			let bodyTag = 'p' *@
+@* 			let content = '' *@
+@* 			if(data == null || data.length == 0){ *@
+@* 				content += `<tr class="content-row"><td></td><td>No additional data available.</td></tr>` *@
+@* 			}else{ *@
+@* 				let resultMap = parseBAndPTags(headerTag, bodyTag, data); *@
+@* 				for (const [title, value] of resultMap.entries()) { *@
+@* 					content += printSideBySide(title, value, bgBlue)}; *@
+@* 				} *@
+@* 			} *@
+@* 			return content; *@
+@* 		} *@
+
+@* 		function addOneImage(imgBinary){ *@
+@* 			let content = `` *@
+@* 			if(imgBinary != null){ *@
+@* 				content += `<img *@
+@* 					src="${img.ImageData}" *@
+@* 					alt="${img.ContentId}" *@
+@* 					class="imgStyle" *@
+@* 				/>` *@
+@* 			} *@
+@* 			return content; *@
+@* 		} *@
+
+@* 		const section10 = document.getElementById("section-10-data"); *@
+@* 		section10.innerHTML += printOneLine(10.1, "Reactivity", "@Html.Raw(Model.ReactivityInfo)"); *@
+@* 		section10.innerHTML += printOneLine(10.2, "Chemical stability", "@Html.Raw(Model.ChemicalStability)"); *@
+@* 		section10.innerHTML += printOneLine(10.3, "Possible hazardous reactions", "@Html.Raw(Model.HazardousReactions)"); *@
+@* 		section10.innerHTML += printOneLine(10.4, "Conditions to Avoid", "@Html.Raw(Model.ConditionsToAvoid)"); *@
+@* 		section10.innerHTML += printOneLine(10.5, "Incompatible materials", "@Html.Raw(Model.IncompatibleMaterials)"); *@
+@* 		section10.innerHTML += printOneLine(10.6, "Hazardous Decomposition Products", "@Html.Raw(Model.HazardousDecomposition)"); *@
+
+@* 		const section11 = document.getElementById("section-11-data"); *@
+@* 		section11.innerHTML += `<tr class="header-row"> *@
+@* 					<td class="section-number first-col">11.1</td> *@
+@* 					<td colspan="2">Information on toxicological effects</td> *@
+@* 				</tr>`; *@
+@* 		//TODO: in Model what does ToxicologicalEffects for? *@
+@* 		section11.innerHTML += printSideBySide("Acute Toxicity", "@Html.Raw(Model.AcuteToxicity)"); *@
+@* 		section11.innerHTML += printSideBySide("Skin corrosion/irritation", "@Html.Raw(Model.SkinCorrosion)"); *@
+@* 		section11.innerHTML += printSideBySide("Eye Damage", "@Html.Raw(Model.EyeDamage)"); *@
+@* 		section11.innerHTML += printSideBySide("Respiratory or skin sensitisation", "@Html.Raw(Model.SkinSensitization)"); *@
+@* 		section11.innerHTML += printSideBySide("Germ Cell Mutagenicity", "@Html.Raw(Model.GermCell)"); *@
+@* 		section11.innerHTML += printSideBySide("Carcinogenicity", "@Html.Raw(Model.Carcinogenicity)"); *@
+@* 		section11.innerHTML += printSideBySide("Reproductive toxicity", "@Html.Raw(Model.ReproductiveToxicity)"); *@
+@* 		section11.innerHTML += printSideBySide("STOT-single exposure", "@Html.Raw(Model.SingleExposure)"); *@
+@* 		section11.innerHTML += printSideBySide("STOT-repeated exposure", "@Html.Raw(Model.RepeatedExposure)"); *@
+@* 		section11.innerHTML += printSideBySide("Aspiration hazard", "@Html.Raw(Model.AspirationHazard)"); *@
+@* 		section11.innerHTML += printSideBySide("Photo-toxicity", "@Html.Raw(Model.PhotoToxicity)"); *@
+@* 		section11.innerHTML += printSideBySide("Other Information", "@Html.Raw(Model.OtherInfo)"); *@
+
+@* 		const section12 = document.getElementById("section-12-data"); *@
+@* 		section12.innerHTML += printOneLine(12.1, "Toxicity", "@Html.Raw(Model.EcoToxicity)", true); *@
+@* 		section12.innerHTML += printOneLine(12.2, "Persistence & degradability", "@Html.Raw(Model.PersistenceDegradability)"); *@
+@* 		section12.innerHTML += printOneLine(12.3, "Bioaccumulation Potential", "@Html.Raw(Model.BioaccumulationPotential)"); *@
+@* 		section12.innerHTML += printOneLine(12.4, "Mobility in soil", "@Html.Raw(Model.SoilMobility)"); *@
+@* 		section12.innerHTML += printOneLine(12.5, "Results of PBT and vPvB Assessment", "@Html.Raw(Model.PbtAssessment)"); *@
+@* 		section12.innerHTML += printOneLine(12.6, "Other adverse effects", "@Html.Raw(Model.OtherAdverseEffects)"); *@
+
+@* 		const section13 = document.getElementById("section-13-data"); *@
+@* 		section13.innerHTML += printOneLine(13.1, "Waste treatment  methods ", "@Html.Raw(Model.WasteTreatmentMethod)"); *@
+
+@* 		//TODO: handle for images *@
+@* 		const section14 = document.getElementById("section-14-data"); *@
+@* 		section14.innerHTML += `<tr class="header-row"> *@
+@* 					<td colspan="1" class="section-number first-col">14.1</td> *@
+@* 					<td colspan="2">UN number</td> *@
+@* 				</tr>`; *@
+@* 		//Double Side *@
+@* 		section14.innerHTML += printSideBySide("UN No. Road", "@Html.Raw(Model.UnRoad)", true); *@
+@* 		section14.innerHTML += printSideBySide("UN No. SEA", "@Html.Raw(Model.UnSea)", true); *@
+@* 		section14.innerHTML += printSideBySide("UN No. AIR", "@Html.Raw(Model.UnAir)", true); *@
+
+@* 		section14.innerHTML += printOneLine(14.2, "UN proper shipping name", "@Html.Raw(Model.ShippingName)"); *@
+@* 		section14.innerHTML += printOneLine(14.3, "Transport hazard class(es)", "@Html.Raw(Model.HazardClass)", false, "hazardClass"); *@
+@* 		section14.innerHTML += printOneLine(14.4, "Packing group", "@Html.Raw(Model.PackingGroup)"); *@
+@* 		section14.innerHTML += printOneLine(14.5, "Environmental hazards", "@Html.Raw(Model.EnvironmentalHazards)", false, "environmentalHazards"); *@
+@* 		section14.innerHTML += printOneLine(14.6, "Special precautions for user", "@Html.Raw(Model.SpecialPrecautions)"); *@
+@* 		section14.innerHTML += printOneLine(14.6, "Bulk Transport", "@Html.Raw(Model.BulkTranprt)"); //TODO: need title for this line *@
+@* 		section14.innerHTML += printOneLine(14.7, "Transport in bulk according to Annex II of MARPOL73/78 and the IBC code", "@Html.Raw(Model.IbcCode)"); *@
+
+@* 		const section15 = document.getElementById("section-15-data"); *@
+@* 		section15.innerHTML += printOneLine(15.1, "Safety, health and environmental regulations/legislation specific for the substance or mixture", "@Html.Raw(Model.SafetyRegulations)"); *@
+@* 		section15.innerHTML += printOneLine(15.2, "Chemical safety assessment", "@Html.Raw(Model.ChemicalSafetyAssessment)"); *@
+
+@* 		const section16 = document.getElementById("section-16-data"); *@
+@* 		section16.innerHTML += printSideBySide("Hazard and/or Precautionary Statements in Full", "@Html.Raw(Model.PrecautionaryStatements)", true); *@
+@* 		section16.innerHTML += printSideBySide("Other Information", "@Html.Raw(Model.OtherInformation)", true); *@
+@* 		section16.innerHTML += printSideBySide("Revision Date", "@Html.Raw(Model.RevisionDate)", true); *@
+@* 		section16.innerHTML += printSideBySide("Reason for revision", "@Html.Raw(Model.RevisionReason)", true); *@
+@* 		section16.innerHTML += printSideBySide("Rev No/Repl, SDS Generated", "@Html.Raw(Model.RevNo)", true); *@
+
+@* 	</script> *@
+@* } *@

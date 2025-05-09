@@ -1,0 +1,966 @@
+﻿﻿@using System.Web
+@using Microsoft.AspNetCore.Html
+@using System.Text.RegularExpressions
+@using SDS.Helper
+@model SDS.Models.SdsViewModel;
+
+
+@functions {
+    public static HtmlString HtmlRaw(string? content, string defaultValue = "No additional data available.")
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return new HtmlString(defaultValue);
+
+        var trimmedContent = content.Trim();
+        var isEmptyHtml = Regex.IsMatch(trimmedContent,
+            @"^<p>\s*<br\s*/?>\s*</p>$",
+            RegexOptions.IgnoreCase);
+
+        return new HtmlString(isEmptyHtml ? defaultValue : content);
+    }
+
+    public string ConvertToBase64Image(byte[] imageBytes)
+    {
+        string mimeType = "image/png"; // or "image/jpeg", "image/gif", etc.
+
+        // Convert to Base64 and format as data URL
+        return $"data:{mimeType};base64,{Convert.ToBase64String(imageBytes)}";
+    }
+}
+
+<style>
+    /* p{ */
+    /*     margin:0 !important; */
+    /*     padding: 5px !important; */
+    /* } */
+
+    .header, .footer {
+        display:none;
+    }
+
+    .header-row 
+    {
+        background-color: #00285b;
+        color: white;
+        font-weight: bold;
+    }
+
+    .header-row .header-row-child
+    {
+        background-color: white;
+        color: black;
+    }
+
+     .sec-header-row  {
+        background-color: #00285b !important;
+        font-weight: bold;
+        color: white;
+        padding: 8px;
+
+     }
+
+    .section-number 
+    {
+        width: 65px;
+    }
+
+    .fw-bold 
+    {
+        font-weight: bold;
+    }
+
+    .fst-italic 
+    {
+        font-style: italic;
+    }
+
+    .table 
+    {
+        border: 1px solid #000;
+    }
+
+    tbody, td, tfoot, th, thead 
+    {
+        border: 1px solid gray !important;
+        padding: 5px !important;
+        text-justify: auto !important;
+    }
+
+    .noRightB
+    {
+        border-right: 0px;
+    }
+
+    .four-fw-bold {
+        background-color: #00285b !important;
+        color: white; /* Add for contrast */
+    }
+
+    .safety-data-sheet 
+    {
+        font-weight: bolder;
+        border: 2px solid #000000;
+        font-size: 2rem;
+        font-family: Georgia, serif;
+        background-color: #fcc73b;
+        display: inline-block;
+        padding: 1% 20% !important;
+        margin: 0;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        text-align: justify;
+    }
+
+    .main-title {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
+        text-decoration: underline;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #000;
+    }
+
+    .header-row {
+        background-color: #002060;
+        color: white;
+        font-weight: bold;
+    }
+
+        .header-row td {
+            padding: 5px 10px;
+            border: 1px solid #000;
+        }
+
+    .content-row td {
+        padding: 5px 10px;
+        border: 1px solid #000;
+        background-color: white;
+    }
+
+    .section-number {
+        font-weight: bold;
+    }
+
+    .category-cell {
+        width: 35%;
+        font-weight: bold;
+    }
+
+    .bgBlue {
+        background-color: #002060 !important;
+        color: white;
+    }
+
+    .first-col {
+        width: 35px;
+    }
+
+    .second-col {
+        width: 30%;
+    }
+
+    .imgStyle {
+        width: 105px;
+        height: 105px;
+        object-fit: cover;
+    }
+</style>
+
+<div class="text-center m-4">
+    <p class="safety-data-sheet">Safety Data Sheet</p>
+</div>
+<div>
+    <!-- Section 1 Table -->
+    <h5 class="text-decoration-underline">01. IDENTIFICATION OF THE SUBSTANCE/PREPARATION & THE COMPANY/UNDERTAKING</h5>
+    <table class="table table-bordered mb-3">
+        <tbody>
+            <!-- Section 1.1 -->
+            <tr class="header-row">
+                <th class="section-number">1.1</th>
+                <th colspan="6">Product Identifier</th>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">Product Name</th>
+                <td colspan="5">@HtmlRaw(Model.ProductName)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">Biological Definition</th>
+                <td colspan="5" class="fst-italic">@HtmlRaw(Model.BiologicalDefinition)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">INCI Name</th>
+                <td colspan="5" class="fst-italic">@HtmlRaw(Model.InciName)</td>
+            </tr>
+            <tr>
+                <th class="fw-bold">CAS #</th>
+                <td colspan="2">@HtmlRaw(Model.CasNumber)</td>
+                <th class="fw-bold noRightB">FEMA #</th>
+                <td colspan="1">@HtmlRaw(Model.FemaNumber)</td>
+                <th class="fw-bold noRightB">EINECS #</th>
+                <td colspan="1">@HtmlRaw(Model.EinecsNumber)</td>
+            </tr>
+
+            <!-- Section 1.2 -->
+            <tr class="header-row">
+                <th class="section-number">1.2</th>
+                <th colspan="6">Relative identified uses of the substance or mixture and uses advised against</th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.IdentifiedUses)</td>
+            </tr>
+
+            <!-- Section 1.3 -->
+            <tr class="header-row">
+                <th class="section-number">1.3</th>
+                <th colspan="6">Details of the supplier of the safety data sheet</th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SupplierDetails)</td>
+            </tr>
+
+            <!-- Section 1.4 -->
+            <tr class="header-row">
+                <th class="section-number">1.4</th>
+                <th colspan="2">Emergency Tel. No.</th>
+                <td colspan="4" class="header-row-child">@HtmlRaw(Model.EmergencyPhone)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Section 2 Table -->
+    <h5 class="text-decoration-underline">02. HAZARDS IDENTIFICATION</h5>
+    <table class="table table-bordered mb-3">
+        <tbody>
+            <!-- Section 2.1 -->
+            <tr class="header-row">
+                <th class="section-number">2.1</th>
+                <th colspan="6">Classification of the substance or mixture</th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @HtmlRaw(Model.ClassificationContent)
+                </td>
+            </tr>
+
+            <!-- Section 2.2 -->
+            <tr class="header-row">
+                <th class="section-number">2.2</th>
+                <th colspan="6">Label Elements</th>
+            </tr>
+            <tr class="header-row">
+                <th colspan="7">@HtmlRaw(Model.LabelContent)</th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @if (Model.ImagesByContentID.TryGetValue(ImageIds.labelImage, out var images))
+                    {
+                        <div style="display: flex; flex-direction: row; gap: 1rem;">
+                            @foreach (var image in images)
+                            {
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <img src="@ConvertToBase64Image(image.ImageData)"
+                                    alt="@image.ImageName"
+                                    style="width: 60px; height: 60px;">
+                                    <span style="font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem;">@image.ImageName</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>No additional data available.</p>
+                    }
+                </td>
+            </tr>
+            <tr class="header-row">
+                <th colspan="2">Signal Word</th>
+                <td colspan="5" class="header-row-child">@HtmlRaw(Model.SignalWord)</td>
+            </tr>
+            <tr class="header-row">
+                <th colspan="2">Contains</th>
+                <td colspan="5" class="header-row-child">@HtmlRaw(Model.ContainsInfo)</td>
+            </tr>
+
+            <tr class="header-row">
+                <th colspan="7">Hazard Statements</th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.HazardStatements)</td>
+            </tr>
+
+            <!-- Section 2.3 -->
+            <tr class="header-row">
+                <th class="section-number">2.3</th>
+                <th colspan="6">Other Hazards</th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6" class="text-justify">@Html.Raw(Model.OtherHazards)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Section 3 Table -->
+    <h5 class="text-decoration-underline">03. COMPOSITION/INFORMATION ON INGREDIENTS</h5>
+    <table class="table table-bordered mb-3">
+        <tbody>
+            <!-- Section 3.1 -->
+            <tr class="header-row">
+                <th class="section-number">3.1</th>
+                <th colspan="6">
+                    Substances
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @HtmlRaw(Model.ClassificationContent)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Section 4 -->
+    <h5 class="text-decoration-underline ">04. FIRST AID MEASURES</h5>
+    <table class="table table-bordered">
+        <tbody>
+            <tr class="header-row">
+                <th class="section-number">4.1</th>
+                <th colspan="6"> Description of first aid measures </th>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold">Inhalation</th>
+                <td colspan="5"> @HtmlRaw(Model.InhalationFirstAid)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold"> Ingestion </th>
+                <td colspan="5">@HtmlRaw(Model.IngestionFirstAid)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold"> Skin Contact </th>
+                <td colspan="5">@HtmlRaw(Model.SkinContactFirstAid)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold">Eye Contact</th>
+                <td colspan="5">@HtmlRaw(Model.EyeContactFirstAid)</td>
+            </tr>
+
+            <tr class="header-row">
+                <th class="section-number">4.2</th>
+                <th colspan="6">
+                    Most important symptoms and effects, both acute and delayed
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @HtmlRaw(Model.SymptomsEffects)
+                </td>
+            </tr>
+
+            <tr class="header-row">
+                <th class="section-number">4.3</th>
+                <th colspan="6">
+                    Most important symptoms and effects, both acute and delayed
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @HtmlRaw(Model.MedicalAttention)
+                </td>
+            </tr>
+        </tbody>        
+    </table>
+
+    <!-- Section 5 Table -->
+    <h5 class="text-decoration-underline ">05. FIRE-FIGHTING MEASURES</h5>
+    <table class="table table-bordered mb-3">
+
+        <tbody>
+            <!-- 5.1 -->
+            <tr class="header-row">
+                <th class="section-number">5.1</th>
+                <th colspan="6"> Extinguishing Media </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.ExtinguishingMediaContent)</td>
+            </tr>
+
+            <!-- 5.2 -->
+            <tr class="header-row">
+                <th class="section-number">5.2</th>
+                <th colspan="6"> Special hazards arising from the product </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SpecialHazardsContent)</td>
+            </tr>
+
+            <!-- 5.3 -->
+            <tr class="header-row">
+                <th class="section-number">5.3</th>
+                <th colspan="6"> Advice for firefighters </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @HtmlRaw(Model.FirefighterAdviceContent)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!---Section 6 Table  -->
+    <h5 class="text-decoration-underline ">06. ACCIDENTAL RELEASE MEASURES</h5>
+    <table class="table table-bordered">
+        <tbody>
+            <!-- 6.1 -->
+            <tr class="header-row">
+                <th class="section-number">6.1</th>
+                <th colspan="6"> Personal precautions, protective equipment and emergency procedures </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.PersonalPrecautions)</td>
+            </tr>
+
+            <!-- 6.2 -->
+            <tr class="header-row">
+                <th class="section-number">6.2</th>
+                <th colspan="6"> Environmental Precautions </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.EnvironmentalPrecautions)</td>
+            </tr>
+            <!-- 6.3 -->
+            <tr class="header-row">
+                <th class="section-number">6.3</th>
+                <th colspan="6"> Methods and material for containment and cleaning up. </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.ContainmentMethods)</td>
+            </tr>
+
+            <!-- 6.4 -->
+            <tr class="header-row">
+                <th class="section-number">6.4</th>
+                <th colspan="6"> Reference to other sections  </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SectionReferences)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!---Section 7 Table  -->
+    <h5 class="text-decoration-underline ">07. HANDLING AND STORAGE</h5>
+    <table class="table table-bordered">
+        <tbody>
+            <!-- 7.1 -->
+            <tr class="header-row">
+                <th class="section-number">7.1</th>
+                <th colspan="6"> Precautions for safe handling  </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SafeHandlingPrecautions)</td>
+            </tr>
+
+            <!-- 7.2 -->
+            <tr class="header-row">
+                <th class="section-number">7.2</th>
+                <th colspan="6"> Conditions for safe storage, including any incompatibilities  </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SafeStorageConditions)</td>
+            </tr>
+            <!-- 7.3 -->
+            <tr class="header-row">
+                <th class="section-number">7.3</th>
+                <th colspan="6"> Specific end use(s)   </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SpecificEndUses)</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <!---Section 8 Table  -->
+    <h5 class="text-decoration-underline">08. EXPOSURE CONTROLS/PERSONAL PROTECTION</h5>
+    <table class="table table-bordered">
+        <tr class="header-row">
+            <th class="section-number">8.1</th>
+            <th colspan="6">Control Parameters</th>
+        </tr>
+        <tr>
+            <td style="border-right-color: white !important;"></td>
+            <td colspan="6">No additional data available.</td>
+        </tr>
+
+        <tr class="header-row">
+            <th class="section-number">8.2</th>
+            <th colspan="6">Exposure Controls</th>
+        </tr>
+        <tr>
+            <th colspan="7">Protective Equipment</th>
+        </tr>
+        <tr>
+            <td style="border-right-color: white !important;"></td>
+            <td colspan="6">
+                @if (Model.ProtectiveEquipment.TryGetValue(ImageIds.protectiveEquipmentImage, out var ProtectiveEquipmentImages))
+                {
+                    <div style="display: flex; flex-direction: row; gap: 1rem;">
+                        @foreach (var image in images)
+                        {
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <img src="@ConvertToBase64Image(image.ImageData)"
+                                alt="@image.ImageName"
+                                style="width: 60px; height: 60px;">
+                                <span style="font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem;">@image.ImageName</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No additional data available.</p>
+                }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Process Conditions</td>
+            <td colspan="5">@HtmlRaw(Model.ProcessConditions)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Engineering Measures</td>
+            <td colspan="5">@HtmlRaw(Model.EngineeringMeasures)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Respiratory Equipment</td>
+            <td colspan="5">@HtmlRaw(Model.RespiratoryEquipment)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Hand Protection</td>
+            <td colspan="5">@HtmlRaw(Model.HandProtection)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Eye Protection</td>
+            <td colspan="5">@HtmlRaw(Model.EyeProtection)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Other Protection</td>
+            <td colspan="5">@HtmlRaw(Model.OtherProtection)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Hygiene Measures</td>
+            <td colspan="5">@HtmlRaw(Model.HygieneMeasures)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Personal Protection</td>
+            <td colspan="5">@HtmlRaw(Model.PersonalProtection)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Skin Protection</td>
+            <td colspan="5">@HtmlRaw(Model.SkinProtection)</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="fw-bold">Environmental Exposure Control</td>
+            <td colspan="5">@HtmlRaw(Model.EnvironmentalExposure)</td>
+        </tr>
+    </table>
+
+    <!-- Section 9 Table -->
+    <h5 class="text-decoration-underline">09. PHYSICAL AND CHEMICAL PROPERTIES</h5>
+    <table class="table table-bordered mb-3">
+        <tbody>
+            <!-- Section 9.1 -->
+            <tr class="header-row">
+                <th class="section-number">9.1</th>
+                <th colspan="6">Information on basic physical and chemical properties</th>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Appearance
+                </th>
+                <td colspan="5">@HtmlRaw(Model.Appearance)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Colour
+                </th>
+                <td colspan="5">@HtmlRaw(Model.Colour)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Odour
+                </th>
+                <td colspan="5">@HtmlRaw(Model.Odour)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Relative Density
+                </th>
+                <td colspan="5">@HtmlRaw(Model.RelativeDensity)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Flash Point (°C)
+                </th>
+                <td colspan="5">@HtmlRaw(Model.FlashPoint)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Melting Point (°C)
+                </th>
+                <td colspan="5">@HtmlRaw(Model.MeltingPoint)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Refractive Index
+                </th>
+                <td colspan="5">@HtmlRaw(Model.RefractiveIndex)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Boiling Point (°C)
+                </th>
+                <td colspan="5">@HtmlRaw(Model.BoilingPoint)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Vapour Pressure
+                </th>
+                <td colspan="5">@HtmlRaw(Model.VapourPressure)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Solubility in Water @@ 20°C
+                </th>
+                <td colspan="5">@HtmlRaw(Model.SolubilityInWater)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold">
+                    Auto-ignition temperature (°C)
+                </th>
+                <td colspan="5">@HtmlRaw(Model.AutoIgnitionTemp)</td>
+            </tr>
+
+            <!-- Section 9.2 -->
+            <tr class="header-row">
+                <th class="section-number">9.2</th>
+                <th colspan="6">Other information</th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.OtherChemicalInfo)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Section 10 Table -->
+    <h5 class="text-decoration-underline">10. STABILITY AND REACTIVITY</h5>
+    <table class="table table-bordered mb-3 ">
+        <tbody>
+            <!-- Section 10.1 -->
+            <tr class="header-row">
+                <th class="section-number">10.1</th>
+                <th colspan="6">
+                    Reactivity
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.ReactivityInfo)</td>
+            </tr>
+
+            <!-- Section 10.2 -->
+            <tr class="header-row">
+                <th class="section-number">10.2</th>
+                <th colspan="6">
+                    Chemical stability
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.ChemicalStability)</td>
+            </tr>
+
+            <!-- Section 10.3 -->
+            <tr class="header-row">
+                <th class="section-number">10.3</th>
+                <th colspan="6">
+                    Possible hazardous reactions
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.HazardousReactions)</td>
+            </tr>
+
+            <!-- Section 10.4 -->
+            <tr class="header-row">
+                <th class="section-number">10.4</th>
+                <th colspan="6">
+                    Conditions to Avoid
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.ConditionsToAvoid)</td>
+            </tr>
+
+            <!-- Section 10.5 -->
+            <tr class="header-row">
+                <th class="section-number">10.5</th>
+                <th colspan="6">
+                    Incompatible materials
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.IncompatibleMaterials)</td>
+            </tr>
+
+            <!-- Section 10.6 -->
+            <tr class="header-row">
+                <th class="section-number">10.6</th>
+                <th colspan="6">
+                    Hazardous Decomposition Products
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.HazardousDecomposition)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div id="last-section">
+    <div id="section-10" class="mt-3">
+        <h2 class="main-title">10. STABILITY AND REACTIVITY</h2>
+        <table id="section-10-data" class="mx-3"></table>
+    </div>
+    <div id="section-11" class="mt-3">
+        <h2 class="main-title">11. TOXOLOGICAL INFORMATION</h2>
+        <table id="section-11-data" class="mx-3">
+        </table>
+    </div>
+    <div id="section-12" class="mt-3">
+        <h2 class="main-title">12. ECOLOGICAL INFORMATION</h2>
+        <table id="section-12-data" class="mx-3"></table>
+    </div>
+    <div id="section-13" class="mt-3">
+        <h2 class="main-title">13. DISPOSAL CONSIDERATIONS</h2>
+        <table id="section-13-data" class="mx-3"></table>
+    </div>
+    <div id="section-14" class="mt-3">
+        <h2 class="main-title">14. TRANSPORT INFORMATION</h2>
+        <table id="section-14-data" class="mx-3">
+        </table>
+    </div>
+    <div id="section-15" class="mt-3">
+        <h2 class="main-title">15. REGULATORY INFORMATION</h2>
+        <table id="section-15-data" class="mx-3">
+        </table>
+    </div>
+    <div id="section-16" class="mt-3">
+        <h2 class="main-title">16. OTHER INFORMATION</h2>
+        <table id="section-16-data" class="mx-3">
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var imagesByContentID = @Html.Raw(Json.Serialize(Model.ImagesByContentID));
+        function getValueBetweenTags(htmlString, tag) {
+          const regex = new RegExp(`<${tag}[^>]*>(.*?)<\\/${tag}>`, 'i');
+          const match = htmlString.match(regex);
+          return match ? match[1] : null;
+        }
+
+        function parseBAndPTags(key, value, htmlString) {
+            const tagRegex = new RegExp(`<(${key}|${value})[^>]*>(.*?)<\\/\\1>`, "gi");
+            const matches = [...htmlString.matchAll(tagRegex)];
+
+          const resultMap = new Map();
+          let currentKey = null;
+
+          for (const match of matches) {
+            const tag = match[1].toLowerCase();
+            const content = match[2];
+
+            if (tag === key) {
+              currentKey = content;
+              resultMap.set(currentKey, null);
+            } else if (tag === value && currentKey) {
+              resultMap.set(currentKey, content);
+              currentKey = null;
+            }
+          }
+
+          return resultMap;
+        }
+
+        function printOneLine(no, title, data, important = false, imageTag = null){
+            let content = `<tr class="header-row">
+                <td class="section-number first-col">${no}</td>
+                <td colspan="2">${title}</td>
+            </tr>`
+            let nullText = important ? "No additional data available, but it must be considered that this product may be dangerous for theenvironment." : "No additional data available.";
+            if(data == null){
+                content += `<tr class="content-row">
+                    <td style="border-right-color: white !important;" class="first-col"></td>
+                    <td colspan="2">${nullText}</td>
+                </tr>`
+            }else if(data.length == 0){
+                content += `<tr class="content-row">
+                    <td style="border-right-color: white !important;" class="first-col"></td>
+                    <td colspan="2">${nullText}</td>
+                </tr>`
+            }else{
+                if(imageTag != null){
+                    let imgBinary = imagesByContentID[imageTag];
+                    if(imgBinary != null && imgBinary != undefined){
+                        if(imgBinary[0] != null){
+                            data += addOneImage(imgBinary);
+                        }
+                    }
+                }
+                content += `<tr class="content-row">
+                    <td style="border-right-color: white !important;" class="first-col"></td>
+                    <td colspan="2">${data}</td>
+                </tr>`
+            }
+            return content;
+        }
+
+        function printSideBySide(title, data, bgBlue = false){
+            let content = `<td class="${bgBlue ? "bgBlue": ""} frist-col" style="border-right-color: ${bgBlue ? "#002060": "white"} !important;"></td><td class="${bgBlue ? "bgBlue": ""} second-col"><b>${title}</b></td>`
+            if(data == null){
+                content += `<td>No additional data available.</td>`
+            }else if(data.length == 0){
+                content += `<td>No additional data available.</td>`
+            }else{
+                content += `<td>${data}</td>`
+            }
+            let element = `<tr class="content-row">${content}</tr>`;
+            return element;
+        }
+
+        function loopDoubleSection(data, bgBlue = false){
+            let headerTag = 'b'
+            let bodyTag = 'p'
+            let content = ''
+            if(data == null || data.length == 0){
+                content += `<tr class="content-row"><td></td><td>No additional data available.</td></tr>`
+            }else{
+                let resultMap = parseBAndPTags(headerTag, bodyTag, data);
+                for (const [title, value] of resultMap.entries()) {
+                    content += printSideBySide(title, value, bgBlue)};
+                }
+            }
+            return content;
+        }
+
+        function addOneImage(imgBinary){
+            let content = ``
+            if(imgBinary != null){
+                content += `<img
+                    src="${img.ImageData}"
+                    alt="${img.ContentId}"
+                    class="imgStyle"
+                />`
+            }
+            return content;
+        }
+
+        const section10 = document.getElementById("section-10-data");
+        section10.innerHTML += printOneLine(10.1, "Reactivity", "@Html.Raw(Model.ReactivityInfo)");
+        section10.innerHTML += printOneLine(10.2, "Chemical stability", "@Html.Raw(Model.ChemicalStability)");
+        section10.innerHTML += printOneLine(10.3, "Possible hazardous reactions", "@Html.Raw(Model.HazardousReactions)");
+        section10.innerHTML += printOneLine(10.4, "Conditions to Avoid", "@Html.Raw(Model.ConditionsToAvoid)");
+        section10.innerHTML += printOneLine(10.5, "Incompatible materials", "@Html.Raw(Model.IncompatibleMaterials)");
+        section10.innerHTML += printOneLine(10.6, "Hazardous Decomposition Products", "@Html.Raw(Model.HazardousDecomposition)");
+
+        const section11 = document.getElementById("section-11-data");
+        section11.innerHTML += `<tr class="header-row">
+                    <td class="section-number first-col">11.1</td>
+                    <td colspan="2">Information on toxicological effects</td>
+                </tr>`;
+        //TODO: in Model what does ToxicologicalEffects for?
+        section11.innerHTML += printSideBySide("Acute Toxicity", "@Html.Raw(Model.AcuteToxicity)");
+        section11.innerHTML += printSideBySide("Skin corrosion/irritation", "@Html.Raw(Model.SkinCorrosion)");
+        section11.innerHTML += printSideBySide("Eye Damage", "@Html.Raw(Model.EyeDamage)");
+        section11.innerHTML += printSideBySide("Respiratory or skin sensitisation", "@Html.Raw(Model.SkinSensitization)");
+        section11.innerHTML += printSideBySide("Germ Cell Mutagenicity", "@Html.Raw(Model.GermCell)");
+        section11.innerHTML += printSideBySide("Carcinogenicity", "@Html.Raw(Model.Carcinogenicity)");
+        section11.innerHTML += printSideBySide("Reproductive toxicity", "@Html.Raw(Model.ReproductiveToxicity)");
+        section11.innerHTML += printSideBySide("STOT-single exposure", "@Html.Raw(Model.SingleExposure)");
+        section11.innerHTML += printSideBySide("STOT-repeated exposure", "@Html.Raw(Model.RepeatedExposure)");
+        section11.innerHTML += printSideBySide("Aspiration hazard", "@Html.Raw(Model.AspirationHazard)");
+        section11.innerHTML += printSideBySide("Photo-toxicity", "@Html.Raw(Model.PhotoToxicity)");
+        section11.innerHTML += printSideBySide("Other Information", "@Html.Raw(Model.OtherInfo)");
+
+        const section12 = document.getElementById("section-12-data");
+        section12.innerHTML += printOneLine(12.1, "Toxicity", "@Html.Raw(Model.EcoToxicity)", true);
+        section12.innerHTML += printOneLine(12.2, "Persistence & degradability", "@Html.Raw(Model.PersistenceDegradability)");
+        section12.innerHTML += printOneLine(12.3, "Bioaccumulation Potential", "@Html.Raw(Model.BioaccumulationPotential)");
+        section12.innerHTML += printOneLine(12.4, "Mobility in soil", "@Html.Raw(Model.SoilMobility)");
+        section12.innerHTML += printOneLine(12.5, "Results of PBT and vPvB Assessment", "@Html.Raw(Model.PbtAssessment)");
+        section12.innerHTML += printOneLine(12.6, "Other adverse effects", "@Html.Raw(Model.OtherAdverseEffects)");
+
+        const section13 = document.getElementById("section-13-data");
+        section13.innerHTML += printOneLine(13.1, "Waste treatment  methods ", "@Html.Raw(Model.WasteTreatmentMethod)");
+
+        //TODO: handle for images
+        const section14 = document.getElementById("section-14-data");
+        section14.innerHTML += `<tr class="header-row">
+                    <td colspan="1" class="section-number first-col">14.1</td>
+                    <td colspan="2">UN number</td>
+                </tr>`;
+        //Double Side
+        section14.innerHTML += printSideBySide("UN No. Road", "@Html.Raw(Model.UnRoad)", true);
+        section14.innerHTML += printSideBySide("UN No. SEA", "@Html.Raw(Model.UnSea)", true);
+        section14.innerHTML += printSideBySide("UN No. AIR", "@Html.Raw(Model.UnAir)", true);
+
+        section14.innerHTML += printOneLine(14.2, "UN proper shipping name", "@Html.Raw(Model.ShippingName)");
+        section14.innerHTML += printOneLine(14.3, "Transport hazard class(es)", "@Html.Raw(Model.HazardClass)", false, "hazardClass");
+        section14.innerHTML += printOneLine(14.4, "Packing group", "@Html.Raw(Model.PackingGroup)");
+        section14.innerHTML += printOneLine(14.5, "Environmental hazards", "@Html.Raw(Model.EnvironmentalHazards)", false, "environmentalHazards");
+        section14.innerHTML += printOneLine(14.6, "Special precautions for user", "@Html.Raw(Model.SpecialPrecautions)");
+        section14.innerHTML += printOneLine(14.6, "Bulk Transport", "@Html.Raw(Model.BulkTranprt)"); //TODO: need title for this line
+        section14.innerHTML += printOneLine(14.7, "Transport in bulk according to Annex II of MARPOL73/78 and the IBC code", "@Html.Raw(Model.IbcCode)");
+
+        const section15 = document.getElementById("section-15-data");
+        section15.innerHTML += printOneLine(15.1, "Safety, health and environmental regulations/legislation specific for the substance or mixture", "@Html.Raw(Model.SafetyRegulations)");
+        section15.innerHTML += printOneLine(15.2, "Chemical safety assessment", "@Html.Raw(Model.ChemicalSafetyAssessment)");
+
+        const section16 = document.getElementById("section-16-data");
+        section16.innerHTML += printSideBySide("Hazard and/or Precautionary Statements in Full", "@Html.Raw(Model.PrecautionaryStatements)", true);
+        section16.innerHTML += printSideBySide("Other Information", "@Html.Raw(Model.OtherInformation)", true);
+        section16.innerHTML += printSideBySide("Revision Date", "@Html.Raw(Model.RevisionDate)", true);
+        section16.innerHTML += printSideBySide("Reason for revision", "@Html.Raw(Model.RevisionReason)", true);
+        section16.innerHTML += printSideBySide("Rev No/Repl, SDS Generated", "@Html.Raw(Model.RevNo)", true);
+
+    </script>
+}

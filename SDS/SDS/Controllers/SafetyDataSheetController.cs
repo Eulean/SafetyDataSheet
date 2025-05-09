@@ -190,6 +190,16 @@ namespace SDS.Controllers
                         //     .ToListAsync();
 
                         // _context.HeaderHImages.RemoveRange(existingImages);
+                        var product = new Product
+                        {
+                            ProductCode = normalizedProductCode,
+                            ProductNo = productId,
+                            // ProductName = normalizedProductName,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                            DeletedAt = DateTime.Now,
+                            IsDeleted = false
+                        };
 
                         // Get all existing images for this product
                         var existingImages = await _context.HeaderHImages

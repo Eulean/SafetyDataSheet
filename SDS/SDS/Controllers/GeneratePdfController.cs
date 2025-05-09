@@ -1,8 +1,13 @@
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PuppeteerSharp.Media;
+using PuppeteerSharp;
 using SDS.Data;
+using SDS.Helper;
 using SDS.Models;
+using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace SDS.Controllers
 {
@@ -12,68 +17,147 @@ namespace SDS.Controllers
 
         private readonly SdsDbContext _context;
         private readonly IAntiforgery _antiforgery;
-
-
-
+        private readonly IWebHostEnvironment _env;
 
         // Combined constructor that takes both dependencies
-        public GeneratePdfController(SdsDbContext context, IAntiforgery antiforgery)
+        public GeneratePdfController(SdsDbContext context, 
+            IAntiforgery antiforgery,
+            IWebHostEnvironment env)
         {
             _context = context;
             _antiforgery = antiforgery;
-
+            _env = env;
         }
 
-        
-        //[HttpGet("productTable")]
-        //public ActionResult ProductTableView()
-        //{
-        //    return View("ProductTableDesign");
-        //}
-
-
-        // [HttpGet("productTable")]
-        // public ActionResult ProductTableView()
-        // {
-        //     return View("ProductTableDesign");
-        // }
-
-
-        [HttpGet("")]
-        // GET: GeneratePdfController
+        [HttpGet]
         public ActionResult Index()
         {
             return View();
         }
 
-        [HttpGet("View/{productId}")]
-        public async Task<IActionResult> View(string productId) /// make suer to change some so that u can call form the page
+        [HttpGet("Generate/{productId}")]
+        public async Task<IActionResult> GeneratePdf(string productId)
         {
             try
             {
                 if (string.IsNullOrEmpty(productId))
                 {
-                    return BadRequest("Product ID is required");
+                    return BadRequest("Product ID is required.");
                 }
 
-                // Get the complete ViewModel for this ProductId
-                var viewModel = await GetSdsViewModelByProductIdAsync(productId);
-
-                // Check if any data was found
-                if (viewModel == null || string.IsNullOrEmpty(viewModel.ProductId))
+                var vm = await GetSdsViewModelByProductIdAsync(productId);
+                if (vm == null || string.IsNullOrEmpty(vm.ProductId))
                 {
-                    return NotFound($"No SDS data found for Product ID: {productId}");
+                    return NotFound($"Product {productId}  not found.");
                 }
 
-                // Return the view with the populated ViewModel
-                return View(viewModel);
+                // Generate URL to PDF template endpoint
+                var pdfHtmlUrl = Url.Action("Pdf", "GeneratePdf", new { productId }, Request.Scheme);
+
+                if (string.IsNullOrEmpty(pdfHtmlUrl))
+                {
+                    return BadRequest("Failed to generate PDF template URL");
+                }
+
+                // Configure PDF options
+                var now = DateTime.Now;
+                string imagePath = Path.Combine(_env.WebRootPath, "images", "prooil.jpg");
+                var pdfOptions = new PdfOptions
+                {
+                    Format = PaperFormat.A4,
+                    PrintBackground = true,
+                    DisplayHeaderFooter = true,
+                    MarginOptions = new MarginOptions
+                    {
+                        Top = "25mm",
+                        Bottom = "35mm",
+                    },
+                    HeaderTemplate = @$"
+                    <div style='width:100%;font-size: 11px; border-bottom: 1px solid #333; 
+                        padding-bottom: 3mm; line-height: 1.5; position: relative;'>
+                        <div style='display: flex; justify-content: space-between; align-items: center; margin: 0 5mm;'>
+                            <div>
+                                <strong style='font-size: 12px;'>AROMATHERAPY</strong><br>
+                                MATERIAL SAFETY DATA SHEET
+                            </div>
+                            <div style=""position: absolute; width: 150px; height: 45px; overflow: hidden; left: 50%; top: 40%; transform: translate(-50%, -50%);"">
+                              <img src=""{imagePath}""
+                                   style=""position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; object-fit: cover;"" />
+                            </div>
+                            <div>
+                                Page <span class='pageNumber'></span> of <span class='totalPages'></span>
+                            </div>
+                        </div>
+                    </div>",
+                    FooterTemplate = @$"
+                    <div style='width:100%;font-size: 9px; color: #222; border-top: 1px solid #333;
+                                padding-top: 3mm; line-height: 1.6;'>
+                        <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin: 0 5mm;'>
+                            <div style='line-height: 1.6;'>
+                                <strong>PRO-OILS AROMATHERAPY</strong><br>
+                                {vm.SupplierDetails}
+                                <br>
+                                Tel: {vm.EmergencyPhone}
+                                <br>
+                                
+                            </div>
+                            <div style='text-align: right; line-height: 1.6;'>
+                                <strong>REVISION DETAILS</strong><br>
+                                Date: {now:yyyy-mm-dd}<br>
+                                Rev No: {"Revision Date"}
+                            </div>
+                        </div>
+                        <div style='font-size: 10px; font-weight: 600; 
+                                    text-align: center; margin-top: 3mm;'>
+                            PAGE <span class='pageNumber'></span> OF <span class='totalPages'></span>
+                        </div>
+                    </div>"
+                };
+
+                // Generate PDF using helper
+                var pdfBytes = await HtmlToPdfGenerateHelper.GenerateAsync(pdfHtmlUrl, pdfOptions);
+
+                // Return PDF file
+                return File(pdfBytes, "application/pdf", $"{productId}_{now:yyyy-mm-dd}.pdf");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Error");
+                // Log error here
+                return StatusCode(500, "Internal server error");
             }
         }
 
+        [IgnoreAntiforgeryToken]
+        [HttpGet("Pdf/{productNo}")]
+        public async Task<IActionResult> Pdf(string productNo)
+        {
+            try
+            {
+                var vm = await GetSdsViewModelByProductIdAsync(productNo);
+                if (vm == null) return NotFound();
+                return View("~/Views/GeneratePdf/GeneratePdf.cshtml", vm);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
 
         #region private mehods
         private SdsViewModel MapFromSDSContentToViewModel(List<SDSContent> sdsContents)

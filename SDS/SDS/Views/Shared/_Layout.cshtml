@@ -86,42 +86,56 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">Safety Data Sheet</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar"
-                aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="topNavbar">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
+    <header class="header">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SDS</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
+                                asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Products"
+                            asp-action="Index">Products</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="SafetyDataSheet"
+                            asp-action="Index">SafetyDataSheet</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="GeneratePdf" asp-action="Index">
+                            Pdf View</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="GeneratePdf" asp-action="ProductTableView">
+                           ProductTableView
+                        </a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="GeneratePdf" asp-action="AidMeasurementView">
+                            AidMeasurement
+                        </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="GeneratePdf" asp-action="Pdf" asp-route-productId="P00001-A42A67DC">View PDF</a>
+                           
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
-
-    <div class="wrapper">
-        <!-- Sidebar -->
-        <nav class="sidebar" aria-label="Main navigation">
-            <a asp-area="" asp-controller="SafetyDataSheet" asp-action="Index"
-                class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                Product List
-            </a>
-            <a asp-area="" asp-controller="SafetyDataSheet" asp-action="Create"
-                class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Create" ? "active" : "")">
-                Product Entry
-            </a>
-            @* <a asp-area="" asp-controller="GeneratePdf" asp-action="Index"
-                class="@(ViewContext.RouteData.Values["action"]?.ToString() == "GeneratePdf" ? "active" : "")">
-                PDF View
-            </a> *@
         </nav>
-
-        <!-- Main content -->
-        <main class="content" role="main">
+    </header>
+    <div class="container">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
