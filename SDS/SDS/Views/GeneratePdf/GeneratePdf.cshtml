@@ -17,13 +17,21 @@
 
         return new HtmlString(isEmptyHtml ? defaultValue : content);
     }
+
+    public string ConvertToBase64Image(byte[] imageBytes)
+    {
+        string mimeType = "image/png"; // or "image/jpeg", "image/gif", etc.
+
+        // Convert to Base64 and format as data URL
+        return $"data:{mimeType};base64,{Convert.ToBase64String(imageBytes)}";
+    }
 }
 
 <style>
-    p{
-        margin:0 !important;
-        padding: 5px !important;
-    }
+    /* p{ */
+    /*     margin:0 !important; */
+    /*     padding: 5px !important; */
+    /* } */
 
     .header, .footer {
         display:none;
@@ -99,7 +107,7 @@
         font-family: Georgia, serif;
         background-color: #fcc73b;
         display: inline-block;
-        padding: 1% 20%;
+        padding: 1% 20% !important;
         margin: 0;
     }
 </style>
@@ -198,10 +206,10 @@
                             @foreach (var image in images)
                             {
                                 <div style="display: flex; flex-direction: column; align-items: center;">
-                                    <img src="@image.ImageName"
-                                         alt="@image.ContentID"
+                                    <img src="@ConvertToBase64Image(image.ImageData)"
+                                         alt="@image.ImageName"
                                          style="width: 60px; height: 60px;">
-                                    <span style="font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem;">@image.ContentID</span>
+                                    <span style="font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem;">@image.ImageName</span>
                                 </div>
                             }
                         </div>
@@ -408,13 +416,13 @@
                 @if (Model.ProtectiveEquipment.TryGetValue("LabelContent", out var ProtectiveEquipmentImages))
                 {
                     <div style="display: flex; flex-direction: row; gap: 1rem;">
-                        @foreach (var image in ProtectiveEquipmentImages)
+                        @foreach (var image in images)
                         {
                             <div style="display: flex; flex-direction: column; align-items: center;">
-                                <img src="@image.ImageName"
-                                     alt="@image.ContentID"
+                                <img src="@ConvertToBase64Image(image.ImageData)"
+                                     alt="@image.ImageName"
                                      style="width: 60px; height: 60px;">
-                                <span style="font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem;">@image.ContentID</span>
+                                <span style="font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem;">@image.ImageName</span>
                             </div>
                         }
                     </div>
@@ -422,43 +430,43 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Process Conditions</strong></td>
+            <td colspan="2" class="fw-bold">Process Conditions</td>
             <td colspan="5">@HtmlRaw(Model.ProcessConditions)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Engineering Measures</strong></td>
+            <td colspan="2" class="fw-bold">Engineering Measures</td>
             <td colspan="5">@HtmlRaw(Model.EngineeringMeasures)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Respiratory Equipment</strong></td>
+            <td colspan="2" class="fw-bold">Respiratory Equipment</td>
             <td colspan="5">@HtmlRaw(Model.RespiratoryEquipment)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Hand Protection</strong></td>
+            <td colspan="2" class="fw-bold">Hand Protection</td>
             <td colspan="5">@HtmlRaw(Model.HandProtection)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Eye Protection</strong></td>
+            <td colspan="2" class="fw-bold">Eye Protection</td>
             <td colspan="5">@HtmlRaw(Model.EyeProtection)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Other Protection</strong></td>
+            <td colspan="2" class="fw-bold">Other Protection</td>
             <td colspan="5">@HtmlRaw(Model.OtherProtection)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Hygiene Measures</strong></td>
+            <td colspan="2" class="fw-bold">Hygiene Measures</td>
             <td colspan="5">@HtmlRaw(Model.HygieneMeasures)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Personal Protection</strong></td>
+            <td colspan="2" class="fw-bold">Personal Protection</td>
             <td colspan="5">@HtmlRaw(Model.PersonalProtection)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Skin Protection</strong></td>
+            <td colspan="2" class="fw-bold">Skin Protection</td>
             <td colspan="5">@HtmlRaw(Model.SkinProtection)</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Environmental Exposure Control</strong></td>
+            <td colspan="2" class="fw-bold">Environmental Exposure Control</td>
             <td colspan="5">@HtmlRaw(Model.EnvironmentalExposure)</td>
         </tr>
     </table>

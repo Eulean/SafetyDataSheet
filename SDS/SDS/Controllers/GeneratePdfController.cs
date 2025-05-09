@@ -61,14 +61,17 @@ namespace SDS.Controllers
                         Top = "25mm",
                         Bottom = "35mm",
                     },
-                    HeaderTemplate = @"
+                    HeaderTemplate = @$"
                     <div style='width:100%;font-size: 11px; border-bottom: 1px solid #333; 
-                                padding-bottom: 3mm; line-height: 1.5;'>
-                        <div style='display: flex; justify-content: space-between; 
-                                    align-items: center; margin: 0 5mm;'>
+                        padding-bottom: 3mm; line-height: 1.5; position: relative;'>
+                        <div style='display: flex; justify-content: space-between; align-items: center; margin: 0 5mm;'>
                             <div>
-                                <strong style='font-size: 12px;'>THE INGREDIENT WAREHOUSE</strong><br>
+                                <strong style='font-size: 12px;'>AROMATHERAPY</strong><br>
                                 MATERIAL SAFETY DATA SHEET
+                            </div>
+                            <div style=""position: absolute; width: 150px; height: 45px; overflow: hidden; left: 50%; top: 40%; transform: translate(-50%, -50%);"">
+                              <img src=""https://picsum.photos/id/1/200/300""
+                                   style=""position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; object-fit: cover;"" />
                             </div>
                             <div>
                                 Page <span class='pageNumber'></span> of <span class='totalPages'></span>
