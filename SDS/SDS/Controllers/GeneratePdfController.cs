@@ -81,7 +81,7 @@ namespace SDS.Controllers
                                 MATERIAL SAFETY DATA SHEET
                             </div>
                             <div style=""position: absolute; width: 150px; height: 45px; overflow: hidden; left: 50%; top: 40%; transform: translate(-50%, -50%);"">
-                              <img src=""{imagePath}""
+                              <img src=""data:image/jpg;base64,{imagePath}""
                                    style=""position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; object-fit: cover;"" />
                             </div>
                             <div>

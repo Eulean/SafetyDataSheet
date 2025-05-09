@@ -32,7 +32,7 @@
         if (imgBinary != null)
         {
             string content = $@"<img
-                src=""{imgBinary.ImageData}""
+                src=""data:image/{imgBinary.ContentType};base64,{imgBinary.ImageData}""
                 alt=""{imgBinary.ContentID}""
                 class=""imgStyle""
             />";
@@ -832,12 +832,12 @@
     <div id="section-10" class="mt-3">
         <h2 class="main-title">10. STABILITY AND REACTIVITY</h2>
         <table id="section-10-data" class="mx-3">
-            @PrintOneLine(10.1, "Reactivity", Model.ReactivityInfo)
-            @PrintOneLine(10.2, "Chemical stability", Model.ChemicalStability)
-            @PrintOneLine(10.3, "Possible hazardous reactions", Model.HazardousReactions)
-            @PrintOneLine(10.4, "Conditions to Avoid", Model.ConditionsToAvoid)
-            @PrintOneLine(10.5, "Incompatible materials", Model.IncompatibleMaterials)
-            @PrintOneLine(10.6, "Hazardous Decomposition Products", Model.HazardousDecomposition)
+            @Html.Raw(PrintOneLine(10.1, "Reactivity", Model.ReactivityInfo))
+            @Html.Raw(PrintOneLine(10.2, "Chemical stability", Model.ChemicalStability))
+            @Html.Raw(PrintOneLine(10.3, "Possible hazardous reactions", Model.HazardousReactions))
+            @Html.Raw(PrintOneLine(10.4, "Conditions to Avoid", Model.ConditionsToAvoid))
+            @Html.Raw(PrintOneLine(10.5, "Incompatible materials", Model.IncompatibleMaterials))
+            @Html.Raw(PrintOneLine(10.6, "Hazardous Decomposition Products", Model.HazardousDecomposition))
         </table>
     </div>
 
@@ -848,37 +848,37 @@
                 <td class="section-number first-col">11.1</td>
                 <td colspan="2">Information on toxicological effects</td>
             </tr>
-            @PrintSideBySide("Acute Toxicity", Model.AcuteToxicity)
-            @PrintSideBySide("Skin corrosion/irritation", Model.SkinCorrosion)
-            @PrintSideBySide("Eye Damage", Model.EyeDamage)
-            @PrintSideBySide("Respiratory or skin sensitisation", Model.SkinSensitization)
-            @PrintSideBySide("Germ Cell Mutagenicity", Model.GermCell)
-            @PrintSideBySide("Carcinogenicity", Model.Carcinogenicity)
-            @PrintSideBySide("Reproductive toxicity", Model.ReproductiveToxicity)
-            @PrintSideBySide("STOT-single exposure", Model.SingleExposure)
-            @PrintSideBySide("STOT-repeated exposure", Model.RepeatedExposure)
-            @PrintSideBySide("Aspiration hazard", Model.AspirationHazard)
-            @PrintSideBySide("Photo-toxicity", Model.PhotoToxicity)
-            @PrintSideBySide("Other Information", Model.OtherInfo)
+            @Html.Raw(PrintSideBySide("Acute Toxicity", Model.AcuteToxicity))
+            @Html.Raw(PrintSideBySide("Skin corrosion/irritation", Model.SkinCorrosion))
+            @Html.Raw(PrintSideBySide("Eye Damage", Model.EyeDamage))
+            @Html.Raw(PrintSideBySide("Respiratory or skin sensitisation", Model.SkinSensitization))
+            @Html.Raw(PrintSideBySide("Germ Cell Mutagenicity", Model.GermCell))
+            @Html.Raw(PrintSideBySide("Carcinogenicity", Model.Carcinogenicity))
+            @Html.Raw(PrintSideBySide("Reproductive toxicity", Model.ReproductiveToxicity))
+            @Html.Raw(PrintSideBySide("STOT-single exposure", Model.SingleExposure))
+            @Html.Raw(PrintSideBySide("STOT-repeated exposure", Model.RepeatedExposure))
+            @Html.Raw(PrintSideBySide("Aspiration hazard", Model.AspirationHazard))
+            @Html.Raw(PrintSideBySide("Photo-toxicity", Model.PhotoToxicity))
+            @Html.Raw(PrintSideBySide("Other Information", Model.OtherInfo))
         </table>
     </div>
 
     <div id="section-12" class="mt-3">
         <h2 class="main-title">12. ECOLOGICAL INFORMATION</h2>
         <table id="section-12-data" class="mx-3">
-            @PrintOneLine(12.1, "Toxicity", Model.EcoToxicity, true)
-            @PrintOneLine(12.2, "Persistence & degradability", Model.PersistenceDegradability)
-            @PrintOneLine(12.3, "Bioaccumulation Potential", Model.BioaccumulationPotential)
-            @PrintOneLine(12.4, "Mobility in soil", Model.SoilMobility)
-            @PrintOneLine(12.5, "Results of PBT and vPvB Assessment", Model.PbtAssessment)
-            @PrintOneLine(12.6, "Other adverse effects", Model.OtherAdverseEffects)
+            @Html.Raw(PrintOneLine(12.1, "Toxicity", Model.EcoToxicity, true))
+            @Html.Raw(PrintOneLine(12.2, "Persistence & degradability", Model.PersistenceDegradability))
+            @Html.Raw(PrintOneLine(12.3, "Bioaccumulation Potential", Model.BioaccumulationPotential))
+            @Html.Raw(PrintOneLine(12.4, "Mobility in soil", Model.SoilMobility))
+            @Html.Raw(PrintOneLine(12.5, "Results of PBT and vPvB Assessment", Model.PbtAssessment))
+            @Html.Raw(PrintOneLine(12.6, "Other adverse effects", Model.OtherAdverseEffects))
         </table>
     </div>
 
     <div id="section-13" class="mt-3">
         <h2 class="main-title">13. DISPOSAL CONSIDERATIONS</h2>
         <table id="section-13-data" class="mx-3">
-            @PrintOneLine(13.1, "Waste treatment methods", Model.WasteTreatmentMethod)
+            @Html.Raw(PrintOneLine(13.1, "Waste treatment methods", Model.WasteTreatmentMethod))
         </table>
     </div>
 
@@ -889,35 +889,35 @@
                 <td colspan="1" class="section-number first-col">14.1</td>
                 <td colspan="2">UN number</td>
             </tr>
-            @PrintSideBySide("UN No. Road", Model.UnRoad, true)
-            @PrintSideBySide("UN No. SEA", Model.UnSea, true)
-            @PrintSideBySide("UN No. AIR", Model.UnAir, true)
-            @PrintOneLine(14.2, "UN proper shipping name", Model.ShippingName)
-            @PrintOneLine(14.3, "Transport hazard class(es)", Model.HazardClass, false, "hazardClass", Model.ImagesByContentID)
-            @PrintOneLine(14.4, "Packing group", Model.PackingGroup)
-            @PrintOneLine(14.5, "Environmental hazards", Model.EnvironmentalHazards, false, "environmentalHazards", Model.ImagesByContentID)
-            @PrintOneLine(14.6, "Special precautions for user", Model.SpecialPrecautions)
-            @PrintOneLine(14.6, "Bulk Transport", Model.BulkTranprt) <!-- TODO: Need title for this line -->
-            @PrintOneLine(14.7, "Transport in bulk according to Annex II of MARPOL73/78 and the IBC code", Model.IbcCode)
+            @Html.Raw(PrintSideBySide("UN No. Road", Model.UnRoad, true))
+            @Html.Raw(PrintSideBySide("UN No. SEA", Model.UnSea, true))
+            @Html.Raw(PrintSideBySide("UN No. AIR", Model.UnAir, true))
+            @Html.Raw(PrintOneLine(14.2, "UN proper shipping name", Model.ShippingName))
+            @Html.Raw(PrintOneLine(14.3, "Transport hazard class(es)", Model.HazardClass, false, "hazardClass", Model.ImagesByContentID))
+            @Html.Raw(PrintOneLine(14.4, "Packing group", Model.PackingGroup))
+            @Html.Raw(PrintOneLine(14.5, "Environmental hazards", Model.EnvironmentalHazards, false, "environmentalHazards", Model.ImagesByContentID))
+            @Html.Raw(PrintOneLine(14.6, "Special precautions for user", Model.SpecialPrecautions))
+            @Html.Raw(PrintOneLine(14.6, "Bulk Transport", Model.BulkTranprt)) <!-- TODO: Need title for this line -->
+            @Html.Raw(PrintOneLine(14.7, "Transport in bulk according to Annex II of MARPOL73/78 and the IBC code", Model.IbcCode))
         </table>
     </div>
 
     <div id="section-15" class="mt-3">
         <h2 class="main-title">15. REGULATORY INFORMATION</h2>
         <table id="section-15-data" class="mx-3">
-            @PrintOneLine(15.1, "Safety, health and environmental regulations/legislation specific for the substance or mixture", Model.SafetyRegulations)
-            @PrintOneLine(15.2, "Chemical safety assessment", Model.ChemicalSafetyAssessment)
+            @Html.Raw(PrintOneLine(15.1, "Safety, health and environmental regulations/legislation specific for the substance or mixture", Model.SafetyRegulations))
+            @Html.Raw(PrintOneLine(15.2, "Chemical safety assessment", Model.ChemicalSafetyAssessment))
         </table>
     </div>
 
     <div id="section-16" class="mt-3">
         <h2 class="main-title">16. OTHER INFORMATION</h2>
         <table id="section-16-data" class="mx-3">
-            @PrintSideBySide("Hazard and/or Precautionary Statements in Full", Model.PrecautionaryStatements, true)
-            @PrintSideBySide("Other Information", Model.OtherInformation, true)
-            @PrintSideBySide("Revision Date", Model.RevisionDate.ToString(), true)
-            @PrintSideBySide("Reason for revision", Model.RevisionReason, true)
-            @PrintSideBySide("Rev No/Repl, SDS Generated", Model.RevNo, true)
+            @Html.Raw(PrintSideBySide("Hazard and/or Precautionary Statements in Full", Model.PrecautionaryStatements, true))
+            @Html.Raw(PrintSideBySide("Other Information", Model.OtherInformation, true))
+            @Html.Raw(PrintSideBySide("Revision Date", Model.RevisionDate.ToString(), true))
+            @Html.Raw(PrintSideBySide("Reason for revision", Model.RevisionReason, true))
+            @Html.Raw(PrintSideBySide("Rev No/Repl, SDS Generated", Model.RevNo, true))
         </table>
     </div>
 </div>
