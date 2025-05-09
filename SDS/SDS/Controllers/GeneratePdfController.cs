@@ -17,12 +17,16 @@ namespace SDS.Controllers
 
         private readonly SdsDbContext _context;
         private readonly IAntiforgery _antiforgery;
+        private readonly IWebHostEnvironment _env;
 
         // Combined constructor that takes both dependencies
-        public GeneratePdfController(SdsDbContext context, IAntiforgery antiforgery)
+        public GeneratePdfController(SdsDbContext context, 
+            IAntiforgery antiforgery,
+            IWebHostEnvironment env)
         {
             _context = context;
             _antiforgery = antiforgery;
+            _env = env;
         }
 
         [HttpGet]
@@ -31,7 +35,7 @@ namespace SDS.Controllers
             return View();
         }
 
-        [HttpGet("GeneratePdf/{productId}")]
+        [HttpGet("Generate/{productId}")]
         public async Task<IActionResult> GeneratePdf(string productId)
         {
             try
@@ -48,9 +52,16 @@ namespace SDS.Controllers
                 }
 
                 // Generate URL to PDF template endpoint
-                var pdfHtmlUrl = Url.Action("PdfHtml", "GeneratePdf", new { productId }, Request.Scheme);
+                var pdfHtmlUrl = Url.Action("Pdf", "GeneratePdf", new { productId }, Request.Scheme);
+
+                if (string.IsNullOrEmpty(pdfHtmlUrl))
+                {
+                    return BadRequest("Failed to generate PDF template URL");
+                }
 
                 // Configure PDF options
+                var now = DateTime.Now;
+                string imagePath = Path.Combine(_env.WebRootPath, "images", "prooil.jpg");
                 var pdfOptions = new PdfOptions
                 {
                     Format = PaperFormat.A4,
@@ -70,7 +81,7 @@ namespace SDS.Controllers
                                 MATERIAL SAFETY DATA SHEET
                             </div>
                             <div style=""position: absolute; width: 150px; height: 45px; overflow: hidden; left: 50%; top: 40%; transform: translate(-50%, -50%);"">
-                              <img src=""https://picsum.photos/id/1/200/300""
+                              <img src=""{imagePath}""
                                    style=""position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; object-fit: cover;"" />
                             </div>
                             <div>
@@ -92,7 +103,7 @@ namespace SDS.Controllers
                             </div>
                             <div style='text-align: right; line-height: 1.6;'>
                                 <strong>REVISION DETAILS</strong><br>
-                                Date: {DateTime.Now:yyyy-mm-dd}<br>
+                                Date: {now:yyyy-mm-dd}<br>
                                 Rev No: {"Revision Date"}
                             </div>
                         </div>
@@ -107,7 +118,7 @@ namespace SDS.Controllers
                 var pdfBytes = await HtmlToPdfGenerateHelper.GenerateAsync(pdfHtmlUrl, pdfOptions);
 
                 // Return PDF file
-                return File(pdfBytes, "application/pdf", $"{productId}-SDS.pdf");
+                return File(pdfBytes, "application/pdf", $"{productId}_{now:yyyy-mm-dd}.pdf");
             }
             catch (ArgumentException ex)
             {
@@ -124,8 +135,9 @@ namespace SDS.Controllers
             }
         }
 
-        [HttpGet("PdfHtml/{productNo}")]
-        public async Task<IActionResult> PdfHtml(string productNo)
+        [IgnoreAntiforgeryToken]
+        [HttpGet("Pdf/{productNo}")]
+        public async Task<IActionResult> Pdf(string productNo)
         {
             try
             {

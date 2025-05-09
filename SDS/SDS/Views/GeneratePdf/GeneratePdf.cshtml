@@ -1,6 +1,7 @@
 ﻿﻿@using System.Web
 @using Microsoft.AspNetCore.Html
 @using System.Text.RegularExpressions
+@using SDS.Helper
 @model SDS.Models.SdsViewModel;
 
 
@@ -55,12 +56,12 @@
         font-weight: bold;
         color: white;
         padding: 8px;
-        
+
      }
 
     .section-number 
     {
-        width: 50px;
+        width: 65px;
     }
 
     .fw-bold 
@@ -82,11 +83,7 @@
     {
         border: 1px solid black !important;
         padding: 5px !important;
-    }
-
-    .cas
-    {
-        white-space: nowrap;
+        text-justify: auto !important;
     }
 
     .noRightB
@@ -138,7 +135,7 @@
                 <td colspan="5" class="fst-italic">@HtmlRaw(Model.InciName)</td>
             </tr>
             <tr>
-                <th class="fw-bold cas">CAS #</th>
+                <th class="fw-bold">CAS #</th>
                 <td colspan="2">@HtmlRaw(Model.CasNumber)</td>
                 <th class="fw-bold noRightB">FEMA #</th>
                 <td colspan="1">@HtmlRaw(Model.FemaNumber)</td>
@@ -185,7 +182,8 @@
                 <th colspan="6">Classification of the substance or mixture</th>
             </tr>
             <tr>
-                <td colspan="7">
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
                     @HtmlRaw(Model.ClassificationContent)
                 </td>
             </tr>
@@ -199,20 +197,25 @@
                 <th colspan="7">@HtmlRaw(Model.LabelContent)</th>
             </tr>
             <tr>
-                <td colspan="7">
-                    @if (Model.ImagesByContentID.TryGetValue("LabelContent", out var images))
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @if (Model.ImagesByContentID.TryGetValue(ImageIds.labelImage, out var images))
                     {
                         <div style="display: flex; flex-direction: row; gap: 1rem;">
                             @foreach (var image in images)
                             {
                                 <div style="display: flex; flex-direction: column; align-items: center;">
                                     <img src="@ConvertToBase64Image(image.ImageData)"
-                                         alt="@image.ImageName"
-                                         style="width: 60px; height: 60px;">
+                                    alt="@image.ImageName"
+                                    style="width: 60px; height: 60px;">
                                     <span style="font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem;">@image.ImageName</span>
                                 </div>
                             }
                         </div>
+                    }
+                    else
+                    {
+                        <p>No additional data available.</p>
                     }
                 </td>
             </tr>
@@ -225,12 +228,22 @@
                 <td colspan="5" class="header-row-child">@HtmlRaw(Model.ContainsInfo)</td>
             </tr>
 
-            <!-- Section 2.3 -->
             <tr class="header-row">
                 <th colspan="7">Hazard Statements</th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.HazardStatements)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.HazardStatements)</td>
+            </tr>
+
+            <!-- Section 2.3 -->
+            <tr class="header-row">
+                <th class="section-number">2.3</th>
+                <th colspan="6">Other Hazards</th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6" class="text-justify">@Html.Raw(Model.OtherHazards)</td>
             </tr>
         </tbody>
     </table>
@@ -247,45 +260,71 @@
                 </th>
             </tr>
             <tr>
-                <td colspan="7">
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
                     @HtmlRaw(Model.ClassificationContent)
                 </td>
             </tr>
         </tbody>
     </table>
 
-     <!-- Section 4 -->
-     <h5 class="text-decoration-underline ">04. FIRST AID MEASURES</h5>
-     <table class="table table-bordered">
-	    <tbody>
-		<tr class="header-row">
-            <th class="section-number">4.1</th>
-            <th colspan="6"> Description of first aid measures </th>
-		</tr>
-		<tr>
-			<th colspan="2" class="four-fw-bold">Inhalation</th>
-            <td colspan="5"> @HtmlRaw(Model.InhalationFirstAid)</td>
-		</tr>
-		<tr>
-            <th colspan="2" class="four-fw-bold"> Ingestion </th>
-            <td colspan="5">@HtmlRaw(Model.IngestionFirstAid)</td>
-		</tr>
-		<tr>
-            <th colspan="2" class="four-fw-bold"> Skin Contact </th>
-            <td colspan="5">@HtmlRaw(Model.SkinContactFirstAid)</td>
-		</tr>
-		<tr>
-            <th colspan="2" class="four-fw-bold">Eye Contact</th>
-            <td colspan="5">@HtmlRaw(Model.EyeContactFirstAid)</td>
-		</tr>
-           
-	</tbody>        
-</table>
+    <!-- Section 4 -->
+    <h5 class="text-decoration-underline ">04. FIRST AID MEASURES</h5>
+    <table class="table table-bordered">
+        <tbody>
+            <tr class="header-row">
+                <th class="section-number">4.1</th>
+                <th colspan="6"> Description of first aid measures </th>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold">Inhalation</th>
+                <td colspan="5"> @HtmlRaw(Model.InhalationFirstAid)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold"> Ingestion </th>
+                <td colspan="5">@HtmlRaw(Model.IngestionFirstAid)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold"> Skin Contact </th>
+                <td colspan="5">@HtmlRaw(Model.SkinContactFirstAid)</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="four-fw-bold">Eye Contact</th>
+                <td colspan="5">@HtmlRaw(Model.EyeContactFirstAid)</td>
+            </tr>
+
+            <tr class="header-row">
+                <th class="section-number">4.2</th>
+                <th colspan="6">
+                    Most important symptoms and effects, both acute and delayed
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @HtmlRaw(Model.SymptomsEffects)
+                </td>
+            </tr>
+
+            <tr class="header-row">
+                <th class="section-number">4.3</th>
+                <th colspan="6">
+                    Most important symptoms and effects, both acute and delayed
+                </th>
+            </tr>
+            <tr>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @HtmlRaw(Model.MedicalAttention)
+                </td>
+            </tr>
+        </tbody>        
+    </table>
 
     <!-- Section 5 Table -->
     <h5 class="text-decoration-underline ">05. FIRE-FIGHTING MEASURES</h5>
     <table class="table table-bordered mb-3">
-      
+
         <tbody>
             <!-- 5.1 -->
             <tr class="header-row">
@@ -293,7 +332,8 @@
                 <th colspan="6"> Extinguishing Media </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.ExtinguishingMediaContent)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.ExtinguishingMediaContent)</td>
             </tr>
 
             <!-- 5.2 -->
@@ -302,7 +342,8 @@
                 <th colspan="6"> Special hazards arising from the product </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.SpecialHazardsContent)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SpecialHazardsContent)</td>
             </tr>
 
             <!-- 5.3 -->
@@ -311,8 +352,9 @@
                 <th colspan="6"> Advice for firefighters </th>
             </tr>
             <tr>
-                <td colspan="7">
-                    <div>@HtmlRaw(Model.FirefighterAdviceContent)</div>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">
+                    @HtmlRaw(Model.FirefighterAdviceContent)
                 </td>
             </tr>
         </tbody>
@@ -328,7 +370,8 @@
                 <th colspan="6"> Personal precautions, protective equipment and emergency procedures </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.PersonalPrecautions)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.PersonalPrecautions)</td>
             </tr>
 
             <!-- 6.2 -->
@@ -337,7 +380,8 @@
                 <th colspan="6"> Environmental Precautions </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.EnvironmentalPrecautions)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.EnvironmentalPrecautions)</td>
             </tr>
             <!-- 6.3 -->
             <tr class="header-row">
@@ -345,7 +389,8 @@
                 <th colspan="6"> Methods and material for containment and cleaning up. </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.ContainmentMethods)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.ContainmentMethods)</td>
             </tr>
 
             <!-- 6.4 -->
@@ -354,7 +399,8 @@
                 <th colspan="6"> Reference to other sections  </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.SectionReferences)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SectionReferences)</td>
             </tr>
         </tbody>
     </table>
@@ -369,7 +415,8 @@
                 <th colspan="6"> Precautions for safe handling  </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.SafeHandlingPrecautions)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SafeHandlingPrecautions)</td>
             </tr>
 
             <!-- 7.2 -->
@@ -378,7 +425,8 @@
                 <th colspan="6"> Conditions for safe storage, including any incompatibilities  </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.SafeStorageConditions)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SafeStorageConditions)</td>
             </tr>
             <!-- 7.3 -->
             <tr class="header-row">
@@ -386,7 +434,8 @@
                 <th colspan="6"> Specific end use(s)   </th>
             </tr>
             <tr>
-                <td colspan="7">@HtmlRaw(Model.SpecificEndUses)</td>
+                <td style="border-right-color: white !important;"></td>
+                <td colspan="6">@HtmlRaw(Model.SpecificEndUses)</td>
             </tr>
 
         </tbody>
@@ -399,9 +448,9 @@
             <th class="section-number">8.1</th>
             <th colspan="6">Control Parameters</th>
         </tr>
-        <!---No data method have to add-->
-            <tr>
-            <td colspan="7">No additional data available.</td>
+        <tr>
+            <td style="border-right-color: white !important;"></td>
+            <td colspan="6">No additional data available.</td>
         </tr>
 
         <tr class="header-row">
@@ -412,20 +461,25 @@
             <th colspan="7">Protective Equipment</th>
         </tr>
         <tr>
-            <td colspan="7">
-                @if (Model.ProtectiveEquipment.TryGetValue("LabelContent", out var ProtectiveEquipmentImages))
+            <td style="border-right-color: white !important;"></td>
+            <td colspan="6">
+                @if (Model.ProtectiveEquipment.TryGetValue(ImageIds.protectiveEquipmentImage, out var ProtectiveEquipmentImages))
                 {
                     <div style="display: flex; flex-direction: row; gap: 1rem;">
                         @foreach (var image in images)
                         {
                             <div style="display: flex; flex-direction: column; align-items: center;">
                                 <img src="@ConvertToBase64Image(image.ImageData)"
-                                     alt="@image.ImageName"
-                                     style="width: 60px; height: 60px;">
+                                alt="@image.ImageName"
+                                style="width: 60px; height: 60px;">
                                 <span style="font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem;">@image.ImageName</span>
                             </div>
                         }
                     </div>
+                }
+                else
+                {
+                    <p>No additional data available.</p>
                 }
             </td>
         </tr>
@@ -554,7 +608,7 @@
             </tr>
             <tr>
                 <td style="border-right-color: white !important;"></td>
-                <td colspan="6">@HtmlRaw(Model.OtherChemicalInfo)/td>
+                <td colspan="6">@HtmlRaw(Model.OtherChemicalInfo)</td>
             </tr>
         </tbody>
     </table>
@@ -572,7 +626,7 @@
             </tr>
             <tr>
                 <td style="border-right-color: white !important;"></td>
-                <td colspan="6"> @HtmlRaw(Model.ReactivityInfo)</td>
+                <td colspan="6">@HtmlRaw(Model.ReactivityInfo)</td>
             </tr>
 
             <!-- Section 10.2 -->
