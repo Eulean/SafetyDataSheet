@@ -169,7 +169,6 @@
 
     .noRightB {
         border-right: 0px;
-        white-space: nowrap;
     }
 
     .four-fw-bold {
@@ -280,7 +279,7 @@
                 <th colspan="2" class="fw-bold">INCI Name</th>
                 <td colspan="5" class="fst-italic text-align">@HtmlRaw(Model.InciName)</td>
             </tr>
-            <tr>
+            <tr class="text-nowrap">
                 <th class="fw-bold" class="text-align noRightB">CAS#</th>
                 <td colspan="2" class="text-align">@HtmlRaw(Model.CasNumber)</td>
                 <th class="fw-bold noRightB">FEMA#</th>
