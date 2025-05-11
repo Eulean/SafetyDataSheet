@@ -320,12 +320,12 @@
                 @* <td colspan="1" class="text-align">@HtmlRaw(Model.EinecsNumber)</td> *@
 
                 <td colspan="7" style="padding:0px !important">
-                    <div class="container m-0">
-                        <div class="row">
-                            <div class="info-pair col-4 d-flex align-items-center">
-                                <div class="info-label pr-3">CAS#</div>
-                                <div class="info-value">@Functions.RemoveHtmlTags(Model.CasNumber)</div>
-                            </div>
+                    <div class="container m-0" style="display: flex; flex-direction: row; flex-wrap: nowrap;">
+                        <div class="info-pair" style="width: 386px !important; border-right: 1px solid gray;">
+                            <div class="info-label pr-3">CAS#</div>
+                            <div class="info-value">@Functions.RemoveHtmlTags(Model.CasNumber)</div>
+                        </div>
+                        <div class="" style="flex-wrap: nowrap !important; display: flex; width: 100%;">
                             <div class="info-pair col-4 d-flex">
                                 <div class="info-label pr-3">FEMA#</div>
                                 <div class="info-value">@Functions.RemoveHtmlTags(Model.FemaNumber)</div>
