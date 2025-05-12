@@ -104,8 +104,8 @@ namespace SDS.Controllers
                             <div style='text-align:right; line-height:1.4;'>
                                 <strong style='display:block; margin-bottom:3mm;'>REVISION DETAILS</strong>
                                 <div>
-                                <p style='display:block;> Date: {vm.RevisionDate ?? DateTime.Now:yyyy-MM-dd}</p>
-                                 <p style='display:block;> Rev No: {vm.RevNo}</p>
+                                <p style='display:block;'> Date: {vm.RevisionDate ?? DateTime.Now:yyyy-MM-dd}</p>
+                                 <p style='display:block; white-space: nowrap;'> Rev No: {Functions.RemoveHtmlTags(vm.RevNo)}</p>
                                 </div>
                             </div>
                         </div>
