@@ -254,11 +254,6 @@
         align-items: center;
         white-space: nowrap;
         padding: 10px 9px;
-        border-left:1px solid gray;
-    }
-
-    .info-pair:first-child {
-        border-left: none;
     }
 
     .info-label {
@@ -317,7 +312,7 @@
 
                 <td colspan="7" style="padding:0px !important">
                     <div class="container m-0" style="display: flex; flex-direction: row; flex-wrap: nowrap;">
-                        <div class="info-pair" style="width: 386px !important; border-right: 1px solid gray;">
+                        <div class="info-pair" style="width: 386px !important; border-right: 0.5px solid gray;">
                             <div class="info-label pr-3">CAS#</div>
                             <div class="info-value">@Functions.RemoveHtmlTags(Model.CasNumber)</div>
                         </div>
@@ -326,7 +321,7 @@
                                 <div class="info-label pr-3">FEMA#</div>
                                 <div class="info-value">@Functions.RemoveHtmlTags(Model.FemaNumber)</div>
                             </div>
-                            <div class="info-pair col-4 d-flex">
+                            <div class="info-pair col-4 d-flex" style="border-left: 0.5px solid gray;">
                                 <div class="info-label pr-3">EINECS#</div>
                                 <div class="info-value">@Functions.RemoveHtmlTags(Model.EinecsNumber)</div>
                             </div>

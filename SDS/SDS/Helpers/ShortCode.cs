@@ -1,4 +1,4 @@
-﻿namespace SDS.Helper
+﻿namespace SDS.Helpers
 {
     public readonly struct ImageIds
     {

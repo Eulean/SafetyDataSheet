@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting.Internal;
 using System.Text.RegularExpressions;
 
-namespace SDS.Helper
+namespace SDS.Helpers
 {
     public class Functions
     {
