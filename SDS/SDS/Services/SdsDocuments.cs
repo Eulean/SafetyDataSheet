@@ -106,6 +106,19 @@ namespace SDS.Services
                 // Title
                 column.Item().AlignCenter().PaddingBottom(20).Background(Colors.Yellow.Medium).Border(1).BorderColor(Colors.Black)
                 .Padding(5).Text("Safety Data Sheet").FontFamily("Georgia").FontSize(20).Bold();
+
+                // Section 1
+                column.Item().Element(c => c.Column(column =>
+                {
+                    column.Spacing(5);
+                    column.Item().Text("01. IDENTIFICATION OF THE SUBSTANCE/PREPARATION & THE COMPANY/UNDERTAKING")
+                        .FontSize(10)
+                        .FontColor(Colors.Black)
+                        .Bold()
+                        .Underline();
+                    column.Item().Height(2);
+                }));
+                column.Item().Element(ComposeSection1);
             });
         }
 
@@ -144,6 +157,86 @@ namespace SDS.Services
                         text.TotalPages().Bold().FontSize(10);
                     });
                 });
+        }
+
+        void ComposeSection1(IContainer container)
+        {
+            container.Table(table =>
+            {
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.ConstantColumn(30);   // Section number column
+                    columns.RelativeColumn(2);    // Label column / first content column
+                    columns.RelativeColumn(3);    // Main content column
+                    columns.RelativeColumn(2);    // FEMA label column
+                    columns.RelativeColumn(3);    // FEMA value column
+                    columns.RelativeColumn(2);    // EINECS label column
+                    columns.RelativeColumn(3);    // EINECS value column
+                });
+
+                // Section 1.1 header
+                table.Cell().Background("#002060").Padding(5).Text("1.1")
+                    .FontColor(Colors.White).Bold();
+                table.Cell().ColumnSpan(6).Background("#002060").Padding(5).Text("Product Identifier")
+                    .FontColor(Colors.White).Bold();
+
+                // 1.1 Product Name
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("");
+                table.Cell().ColumnSpan(2).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("Product Name").Bold();
+                table.Cell().ColumnSpan(4).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("Example Product Name");
+
+                // 1.1 Biological Definition
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("");
+                table.Cell().ColumnSpan(2).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("Biological Definition").Bold();
+                table.Cell().ColumnSpan(4).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("Example biological definition of product.");
+
+                // 1.1 INCI Name
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("");
+                table.Cell().ColumnSpan(2).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("INCI Name").Bold();
+                table.Cell().ColumnSpan(4).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("Example INCI Name");
+
+                // 1.1 CAS/FEMA/EINECS
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("");
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("CAS No:");
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("111-22-3");
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("FEMA No:");
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("1234");
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("EINECS No:");
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("234-567-8");
+
+                // Section 1.2 header
+                table.Cell().Background("#002060").Padding(5).Text("1.2")
+                    .FontColor(Colors.White).Bold();
+                table.Cell().ColumnSpan(6).Background("#002060").Padding(5).Text("Identified Uses")
+                    .FontColor(Colors.White).Bold();
+
+                // 1.2 Identified Uses content
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("");
+                table.Cell().ColumnSpan(6).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft()
+                    .Text("Example identified uses or restrictions.");
+
+                // Section 1.3 header
+                table.Cell().Background("#002060").Padding(5).Text("1.3")
+                    .FontColor(Colors.White).Bold();
+                table.Cell().ColumnSpan(6).Background("#002060").Padding(5).Text("Supplier Details")
+                    .FontColor(Colors.White).Bold();
+
+                // 1.3 Supplier Details content
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("");
+                table.Cell().ColumnSpan(6).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft()
+                    .Text("Example Supplier Name\n1234 Example Street\nCity, Country");
+
+                // Section 1.4 header
+                table.Cell().Background("#002060").Padding(5).Text("1.4")
+                    .FontColor(Colors.White).Bold();
+                table.Cell().ColumnSpan(6).Background("#002060").Padding(5).Text("Emergency Telephone Number")
+                    .FontColor(Colors.White).Bold();
+
+                // 1.4 Emergency Tel content
+                table.Cell().Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft().Text("");
+                table.Cell().ColumnSpan(6).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(5).AlignLeft()
+                    .Text("Example: +1-800-123-4567");
+            });
         }
     }
 }
