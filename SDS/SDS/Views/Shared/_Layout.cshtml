@@ -112,7 +112,10 @@
             </a>
             <a asp-area="" asp-controller="SafetyDataSheet" asp-action="Create"
                 class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Create" ? "active" : "")">
-                Product Entry
+                Entry
+            </a>
+            <a asp-area="" asp-controller="GeneratePdf" asp-action="PreviewPage">
+                Preview Pdf Page
             </a>
             @* <a asp-area="" asp-controller="GeneratePdf" asp-action="Index"
                 class="@(ViewContext.RouteData.Values["action"]?.ToString() == "GeneratePdf" ? "active" : "")">

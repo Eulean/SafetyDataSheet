@@ -37,6 +37,10 @@
                     <a asp-controller="GeneratePdf" asp-action="Generate" asp-route-id="@product.ProductNo"
                         class="btn btn-sm btn-warning">Generate
                         PDF</a>
+                    <!-- Change this line in the table -->
+                    <a asp-controller="GeneratePdf" asp-action="PreviewPage" asp-route-productNo="@product.ProductNo"
+                        class="btn btn-sm btn-warning">Preview SDS</a>
+
                 </td>
             </tr>
         }
