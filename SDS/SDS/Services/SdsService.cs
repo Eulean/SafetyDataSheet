@@ -19,6 +19,116 @@ namespace SDS.Services
             _context = context;
         }
 
+        // A better approach to render formatted text with proper underlines
+        // private void RenderSimpleFormattedText(TextDescriptor text, string htmlContent)
+        // {
+        //     if (string.IsNullOrWhiteSpace(htmlContent))
+        //     {
+        //         text.Span("No additional data available.").Italic();
+        //         return;
+        //     }
+
+        //     // Clean the HTML to remove complex formatting
+        //     var cleanedHtml = htmlContent
+        //         .Replace("\r\n", " ")
+        //         .Replace("\n", " ");
+
+        //     // Process the HTML content
+        //     var processedContent = ProcessHtmlContent(cleanedHtml);
+
+        //     // Render the processed content
+        //     foreach (var segment in processedContent)
+        //     {
+        //         var textSpan = text.Span(segment.Text);
+
+        //         if (segment.IsBold)
+        //             textSpan.Bold();
+
+        //         if (segment.IsItalic)
+        //             textSpan.Italic();
+
+        //         if (segment.IsUnderlined)
+        //             textSpan.StyledText(style => style.Underline());
+        //     }
+        // }
+
+        // // Helper class to represent a formatted text segment
+        // private class TextSegment
+        // {
+        //     public string Text { get; set; }
+        //     public bool IsBold { get; set; }
+        //     public bool IsItalic { get; set; }
+        //     public bool IsUnderlined { get; set; }
+        // }
+
+        // // Process HTML content and extract formatted segments
+        // private List<TextSegment> ProcessHtmlContent(string html)
+        // {
+        //     var result = new List<TextSegment>();
+
+        //     try
+        //     {
+        //         // Extract bold text
+        //         ProcessFormattedText(html, @"<(b|strong)>(.*?)</\1>", result, isBold: true);
+
+        //         // Extract italic text
+        //         ProcessFormattedText(html, @"<(i|em)>(.*?)</\1>", result, isItalic: true);
+
+        //         // Extract underlined text
+        //         ProcessFormattedText(html, @"<u>(.*?)</u>", result, isUnderlined: true);
+
+        //         // Extract remaining plain text
+        //         var plainText = Regex.Replace(html, @"<(b|strong|i|em|u)>.*?</\1>", "");
+        //         plainText = Regex.Replace(plainText, "<.*?>", " ").Trim();
+
+        //         if (!string.IsNullOrWhiteSpace(plainText))
+        //         {
+        //             result.Add(new TextSegment
+        //             {
+        //                 Text = plainText,
+        //                 IsBold = false,
+        //                 IsItalic = false,
+        //                 IsUnderlined = false
+        //             });
+        //         }
+        //     }
+        //     catch
+        //     {
+        //         // Fallback if processing fails
+        //         result.Add(new TextSegment
+        //         {
+        //             Text = Regex.Replace(html, "<.*?>", " ").Trim(),
+        //             IsBold = false,
+        //             IsItalic = false,
+        //             IsUnderlined = false
+        //         });
+        //     }
+
+        //     return result;
+        // }
+
+        // // Helper method to process formatted text
+        // private void ProcessFormattedText(string html, string pattern, List<TextSegment> segments,
+        //                                  bool isBold = false, bool isItalic = false, bool isUnderlined = false)
+        // {
+        //     var matches = Regex.Matches(html, pattern, RegexOptions.IgnoreCase);
+        //     foreach (Match match in matches)
+        //     {
+        //         var content = Regex.Replace(match.Groups[2].Value, "<.*?>", "").Trim();
+        //         if (!string.IsNullOrWhiteSpace(content))
+        //         {
+        //             segments.Add(new TextSegment
+        //             {
+        //                 Text = content,
+        //                 IsBold = isBold,
+        //                 IsItalic = isItalic,
+        //                 IsUnderlined = isUnderlined
+        //             });
+        //         }
+        //     }
+        // }
+
+
         public List<SDSContent> ApplyTimestamps(List<SDSContent> sDSContents, bool isUpdate)
         {
             var now = DateTime.UtcNow;
