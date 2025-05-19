@@ -1,14 +1,16 @@
+using HtmlAgilityPack;
+using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using SDS.Data;
+using SDS.Helper;
+using SDS.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
-using SDS.Helper;
-using SDS.Models;
 
 namespace SDS.Services
 {
@@ -17,9 +19,10 @@ namespace SDS.Services
         private readonly SdsViewModel _model;
         private readonly IWebHostEnvironment _env;
         private readonly string _logPath;
+        private readonly SdsDbContext _context;
 
         // Style 
-        
+
 
 
         public SdsDocuments(SdsViewModel model, IWebHostEnvironment env)
@@ -216,7 +219,18 @@ namespace SDS.Services
 
                 // section 5:  fire fighting measures
                 column.Item().Element(ComposeSection5);
+
                 // column.Item().Element(ComposeSection6);
+                column.Item().Element(ComposeSection6);
+
+                // column.Item().Element(ComposeSection6);
+                column.Item().Element(ComposeSection7);
+
+                // column.Item().Element(ComposeSection6);
+                column.Item().Element(ComposeSection8);
+
+
+
             });
         }
 
@@ -599,6 +613,591 @@ namespace SDS.Services
                             container.Text(content);
                         }
                     });
+
+                });
+            });
+        }
+
+
+        private void ComposeSection6(IContainer container)
+        {
+            container.Column(c =>
+            {
+                // Section Title
+                c.Item().PaddingTop(5).PaddingBottom(5).Text("06. ACCIDENTAL RELEASE MEASURES ")
+                    .Underline().FontSize(12);
+
+                // Add spacing
+                c.Spacing(5);
+
+                // Create the table
+                c.Item().Table(table =>
+                {
+                    // Define the columns = one for the section number, one for content
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30); // Section number
+                        columns.RelativeColumn(); // Content
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("6.1").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("Personal precautions, protective equipment and emergency procedures").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.PersonalPrecautions);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("6.2").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("Environmental Precautions").FontColor(Colors.White).Bold();
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.EnvironmentalPrecautions);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+
+                    //header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("6.3").FontColor(Colors.White).Bold();
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                   .Background(Colors.Blue.Darken4)
+                       .Padding(5)
+                       .Text("Methods and material for containment and cleaning up. ").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.ContainmentMethods);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    //header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("6.4").FontColor(Colors.White).Bold();
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                   .Background(Colors.Blue.Darken4)
+                       .Padding(5)
+                       .Text("Reference to other sections ").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.SectionReferences);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                });
+            });
+        }
+
+        private void ComposeSection7(IContainer container)
+        {
+            container.Column(c =>
+            {
+                // Section Title
+                c.Item().PaddingTop(5).PaddingBottom(5).Text("07. HANDLING AND STORAGE")
+                    .Underline().FontSize(12);
+
+                // Add spacing
+                c.Spacing(5);
+
+                // Create the table
+                c.Item().Table(table =>
+                {
+                    // Define the columns = one for the section number, one for content
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30); // Section number
+                        columns.RelativeColumn(); // Content
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("7.1").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("Precautions for safe handling").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.SafeHandlingPrecautions);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("7.2").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("Conditions for safe storage, including any incompatibilities ").FontColor(Colors.White).Bold();
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.SafeStorageConditions);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+
+                    //header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("7.3").FontColor(Colors.White).Bold();
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                   .Background(Colors.Blue.Darken4)
+                       .Padding(5)
+                       .Text("Specific end use(s)").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.SpecificEndUses);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                });
+            });
+        }
+
+        private void ComposeSection8(IContainer container)
+        {
+            container.Column(c =>
+            {
+                // Section Title
+                c.Item().PaddingTop(5).PaddingBottom(5).Text("08. EXPOSURE CONTROLS/PERSONAL PROTECTION")
+                    .Underline().FontSize(12);
+
+                // Add spacing
+                c.Spacing(5);
+
+                // Create the table
+                c.Item().PaddingBottom(0).Table(table =>
+                {
+                    // Define the columns = one for the section number, one for content
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30); // Section number
+                        columns.RelativeColumn(); // Content
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .BorderBottom(0) // Remove bottom border to connect with next table
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("8.1").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .BorderBottom(0) // Remove bottom border to connect with next table
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("Control parameters").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.ControlParameters);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .BorderBottom(0) // Remove bottom border to connect with next table
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("8.2").FontColor(Colors.White).Bold();
+                    
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .BorderBottom(0) // Remove bottom border to connect with next table
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(5)
+                        .Text("Exposure controls").FontColor(Colors.White).Bold();
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                        .BorderBottom(0)
+                       .Padding(10)
+                       .Text("Protective Equipment ");
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                        .BorderBottom(0) // Remove bottom border to connect with next table
+           .Padding(10)
+           .AlignMiddle()
+           .AlignCenter()
+           .Element(container =>
+           {
+               if (_model.ImagesByContentID.TryGetValue(ImageIds.protectiveEquipmentImage, out var images))
+               {
+                   container.Row(row =>
+                   {
+                       foreach (var image in images)
+                       {
+                           row.AutoItem().Column(column =>
+                           {
+                               column.Item().AlignCenter().Width(60).Height(60).Image(image.ImageData);
+                               //column.Item().AlignCenter().Text(image.ImageName)
+                                   //.FontSize(7).FontColor(Colors.Grey.Medium);
+                           });
+                           row.AutoItem().Width(16); // Gap between images
+                       }
+                   });
+               }
+               else
+               {
+                   container.Text("No additional data available.");
+               }
+           });
+
+
+
+                    // Second table for the sub-sections - no top margin
+                    c.Item().PaddingTop(0).Table(table =>
+                    {
+                        // Define different columns for the sub-sections
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(100); // Wider column for "Inhalation"
+                            columns.RelativeColumn(); // Content
+                        });
+
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Process Conditions ").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.ProcessConditions);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Engineering Measures").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.EngineeringMeasures);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Respiratory Equipment").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.RespiratoryEquipment);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Respiratory Equipment ").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.HandProtection);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Eye Protection ").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.EyeProtection);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Other Protection").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.OtherProtection);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Hygiene Measures").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.HygieneMeasures);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Personal Protection ").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.PersonalProtection);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Skin Protection").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.SkinProtection);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+
+                        // sub header row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Background(Colors.Blue.Darken4)
+                            .Padding(10)
+                            .Text("Environmental Exposure Control ").FontColor(Colors.White).Bold();
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                            .BorderTop(0) // Remove top border to connect with previous table
+                            .Padding(10)
+                            .Element(container =>
+                            {
+                                var content = Functions.RemoveHtmlTags(_model.EnvironmentalExposure);
+                                if (string.IsNullOrEmpty(content))
+                                {
+                                    container.Text("No additional data available").Italic();
+                                }
+                                else
+                                {
+                                    container.Text(content);
+                                }
+                            });
+                    });
+
 
                 });
             });
