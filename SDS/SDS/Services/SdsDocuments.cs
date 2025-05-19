@@ -19,7 +19,7 @@ namespace SDS.Services
         private readonly string _logPath;
 
         // Style 
-        
+
 
 
         public SdsDocuments(SdsViewModel model, IWebHostEnvironment env)
@@ -148,10 +148,6 @@ namespace SDS.Services
                     page.Footer().Height(80).Element(ComposeFooter);
                 });
         }
-
-
-
-
         private void ComposeHeader(IContainer container)
         {
             // Increase the header height to accommodate the logo
@@ -194,8 +190,6 @@ namespace SDS.Services
                 });
         }
 
-
-
         private void ComposeContent(IContainer container)
         {
             container.PaddingVertical(10).Column(column =>
@@ -207,6 +201,8 @@ namespace SDS.Services
                 // section 1; Identification
 
                 // section 2: hazards identification
+                column.Item().Element(ComposeSection2);
+
 
                 // section 3: composition/information on ingredients
                 column.Item().Element(ComposeSection3);
@@ -217,8 +213,278 @@ namespace SDS.Services
                 // section 5:  fire fighting measures
                 column.Item().Element(ComposeSection5);
                 // column.Item().Element(ComposeSection6);
+
+
+
+                // section 5:  fire fighting measures
+              
+
             });
         }
+
+
+
+        public void ComposeSection2(IContainer container)
+        {
+            container.Column(c =>
+            {
+               
+                // Section Header
+                c.Item().Text("02. HAZARDS IDENTIFICATION")
+                    .FontSize(Style.SectionHeaderFontSize)
+                    .Underline();
+
+              
+
+                // Section 2.1
+                c.Item().PaddingTop(5).Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 2.1 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("2.1").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("Classification of the substance or mixture").FontColor(Colors.White).Bold();
+
+
+                    //2.1 Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        // check if contetn exists
+                        var content = Functions.RemoveHtmlTags(_model.ClassificationContent);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+                });
+
+                // Section 2.2
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 2.2 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("2.2").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("Label Elements").FontColor(Colors.White).Bold();
+
+                    table.Cell().ColumnSpan(2).Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text(Functions.RemoveHtmlTags(_model.LabelContent)).FontColor(Colors.White).Bold();
+
+                    // Label Images
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                      .Element(container =>
+                        {
+                            if (_model.ImagesByContentID.TryGetValue(ImageIds.labelImage, out var images) && images.Any())
+                            {
+                                container.Row(row =>
+                                {
+                                    foreach (var image in images)
+                                    {
+                                        row.AutoItem().Column(column =>
+                                        {
+                                            column.Item().AlignCenter().Width(70).Height(70).Image(image.ImageData);
+                                            column.Item().AlignCenter().Text(image.ImageName).FontSize(7).FontColor(Colors.White);
+                                        });
+                                        row.AutoItem(); // Gap between images
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                container.Text("No additional data available.").FontColor(Colors.White);
+                            }
+                        });
+
+                });
+                // Signal Word and contains
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(100);
+                        columns.RelativeColumn();
+                    });
+                    // header row
+                    
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .BorderTop(0)
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(Style.Padding)
+                        .Text("Signal Word").FontColor(Colors.White).Bold();
+                    //Content 
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .BorderTop(0)
+                        .Padding(Style.Padding)
+                        .Element(container =>
+                        {
+                            var content = Functions.RemoveHtmlTags(_model.SignalWord);
+                            if (string.IsNullOrEmpty(content))
+                            {
+                                container.Text("No additional data available").Italic();
+                            }
+                            else
+                            {
+                                container.Text(content);
+                            }
+                        });
+
+
+                    // Contains
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .BorderTop(0) 
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(Style.Padding)
+                        .Text("Contains").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .BorderTop(0) 
+                        .Padding(Style.Padding)
+                        .Element(container =>
+                        {
+                            var content = Functions.RemoveHtmlTags(_model.ContainsInfo);
+                            if (string.IsNullOrEmpty(content))
+                            {
+                                container.Text("No additional data available").Italic();
+                            }
+                            else
+                            {
+                                container.Text(content);
+                            }
+                        });
+
+                });
+
+                //Hazard statemens
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                   //Heaader row
+                    table.Cell().ColumnSpan(2).Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                      .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                      .Text("Hazard Statements").FontColor(Colors.White).Bold();
+
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        // check if contetn exists
+                        var content = Functions.RemoveHtmlTags(_model.HazardStatements);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+
+                    // Precautionary Statements
+                    table.Cell().ColumnSpan(2).Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.White).Padding(Style.Padding)
+                        .Text("Precautionary Statements").FontColor(Colors.Black).Bold();
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                   .Padding(10)
+                   .Element(container =>
+                   {
+                       // check if contetn exists
+                       var content = Functions.RemoveHtmlTags(_model.Precautionary);
+
+                       if (string.IsNullOrEmpty(content))
+                       {
+                           container.Text("No additional data available").Italic();
+                       }
+                       else
+                       {
+                           container.Text(content);
+                       }
+                   });
+
+                    // Supplementary Statements
+                    table.Cell().ColumnSpan(2).Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.White).Padding(Style.Padding)
+                        .Text("Supplementary Statements").FontColor(Colors.Black).Bold();
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        // check if contetn exists
+                        var content = Functions.RemoveHtmlTags(_model.Supplementary);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    //OtherHazard
+                    table.Cell().ColumnSpan(2).Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("Supplementary Statements").FontColor(Colors.White).Bold();
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        // check if contetn exists
+                        var content = Functions.RemoveHtmlTags(_model.OtherHazards);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+                });
+            });
+
+        }
+
 
 
         private void ComposeSection3(IContainer container)
@@ -604,6 +870,7 @@ namespace SDS.Services
             });
         }
 
+     
 
         private void ComposeFooter(IContainer container)
         {
