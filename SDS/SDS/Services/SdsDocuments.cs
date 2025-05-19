@@ -1,14 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SDS.Helper;
 using SDS.Models;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SDS.Services
 {
@@ -19,7 +20,7 @@ namespace SDS.Services
         private readonly string _logPath;
 
         // Style 
-        
+
 
 
         public SdsDocuments(SdsViewModel model, IWebHostEnvironment env)
@@ -217,6 +218,9 @@ namespace SDS.Services
                 // section 5:  fire fighting measures
                 column.Item().Element(ComposeSection5);
                 // column.Item().Element(ComposeSection6);
+
+                //section 16: other information
+                column.Item().Element(ComposeSection16);
             });
         }
 
@@ -602,6 +606,139 @@ namespace SDS.Services
 
                 });
             });
+        }
+
+        private void ComposeSection16(IContainer container)
+        {
+            container.Column(c =>
+                {
+                    // Section Title
+                    c.Item().PaddingTop(5).PaddingBottom(5).Text("16. OTHER INFORMATION")
+                        .Underline().FontSize(12);
+
+                    // Add Spacing
+                    c.Spacing(5);
+
+                    // Create the table
+                    c.Item().Table(table =>
+                    {
+                        // Define the columns = one for the section number, one for content
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(110); // Section number
+                            columns.RelativeColumn(); // Content
+                        });
+
+                        // Section 16 Body
+                        // First Row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Text("Hazard and/or Precautionary Statements in Full");
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Element(container =>
+                        {
+                            var content = Functions.RemoveHtmlTags(_model.PrecautionaryStatements);
+                            if (string.IsNullOrEmpty(content))
+                            {
+                                container.Text("No additional data available").Italic();
+                            }
+                            else
+                            {
+                                container.Text(content);
+                            }
+                        });
+
+                        // Second Row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Text("Other Information");
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Element(container =>
+                        {
+                            var content = Functions.RemoveHtmlTags(_model.OtherInformation);
+                            if (string.IsNullOrEmpty(content))
+                            {
+                                container.Text("No additional data available").Italic();
+                            }
+                            else
+                            {
+                                container.Text(content);
+                            }
+                        });
+
+                        // Third Row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Text("Revision Date");
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Element(container =>
+                        {
+                            DateTime? content = _model.RevisionDate;
+                            if (!content.HasValue)
+                            {
+                                container.Text("No additional data available").Italic();
+                            }
+                            else
+                            {
+                                string formattedDate = content.Value.ToString("dd/MM/yyyy"); 
+                                container.Text(formattedDate);
+                            }
+                        });
+
+                        // Fourth Row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Text("Reason for revision");
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Element(container =>
+                        {
+                            var content = Functions.RemoveHtmlTags(_model.RevisionReason);
+                            if (string.IsNullOrEmpty(content))
+                            {
+                                container.Text("No additional data available").Italic();
+                            }
+                            else
+                            {
+                                container.Text(content);
+                            }
+                        });
+
+                        // Fifth Row
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Text("Rev No/Repl, SDS Generated");
+
+                        table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .Padding(10)
+                        .Element(container =>
+                        {
+                            var content = Functions.RemoveHtmlTags(_model.RevNo);
+                            if (string.IsNullOrEmpty(content))
+                            {
+                                container.Text("No additional data available").Italic();
+                            }
+                            else
+                            {
+                                container.Text(content);
+                            }
+                        });
+                    });
+
+                    // Adding More Spacing after the table
+                    c.Spacing(15);
+
+                    // Disclaimer
+                    c.Item().Text("DISCLAIMER: This information relates only to the specific material designated and may not be valid for such material used in combination with any other materials or in any process. Such information is, to the best of the company's knowledge and belief, accurate and reliable as of the date indicated. However, no warranty guarantee or representation is made to its accuracy, reliability or completeness. It is the user's responsibility to satisfy himself as to the suitability of such information for his own particular use.").FontSize(10);
+                }
+            );
         }
 
 
