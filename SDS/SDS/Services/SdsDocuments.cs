@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -217,6 +212,9 @@ namespace SDS.Services
                 // section 5:  fire fighting measures
                 column.Item().Element(ComposeSection5);
                 // column.Item().Element(ComposeSection6);
+                column.Item().Element(GenerateHtmlContainer(@"User will given like these or 
+<p>The Full Text for all Hazard Statements are Displayed in Section 16.</p><p><u>ENVIRONMENT</u></p><p>The product contains a substance which is harmful to aquatic organisms, and which may cause long term adverse effects in the aquatic environment.</p><p><u>HUMAN HEALTH</u></p><p>May cause serious eye damage and skin irritation.</p><p><u>Physical and Chemical Hazards</u>: Not classified.</p><p><u>Human health Asp</u>: Skin Irrit. 2 - H315; Eye Dam. 1 - H318; Skin Sens. 1 - H317</p><p><u>Environment</u>: Aquatic Acute 2 - H401; Aquatic Chronic 2 - H411</p>
+"));
             });
         }
 
@@ -643,6 +641,57 @@ namespace SDS.Services
         }
 
 
+        private Action<IContainer> GenerateHtmlContainer(string htmlContent)
+        {
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(htmlContent);
 
+            return container => container.Padding(10).Column(column =>
+            {
+                var paragraphs = htmlDoc.DocumentNode.SelectNodes("//p");
+
+                if (paragraphs != null)
+                {
+                    foreach (var p in paragraphs)
+                    {
+                        var text = p.InnerText?.Trim();
+                        bool isEmpty = string.IsNullOrWhiteSpace(text)
+                                    || (p.ChildNodes.Count == 1 && p.ChildNodes[0].Name == "br");
+
+                        if (isEmpty)
+                        {
+                            column.Item().Text("No additional data available.");
+                        }
+                        else
+                        {
+                            column.Item().Padding(1).Element(inner =>
+                            {
+                                inner.Text(text =>
+                                {
+                                    text.DefaultTextStyle(x => x.LineHeight(1.2f));
+                                    foreach (var node in p.ChildNodes)
+                                    {
+                                        if (node.Name == "#text")
+                                            text.Span(node.InnerText);
+                                        else if (node.Name == "b")
+                                            text.Span(node.InnerText).Bold();
+                                        else if (node.Name == "u")
+                                            text.Span(node.InnerText).Underline();
+                                        else if (node.Name == "br")
+                                            text.EmptyLine();
+                                        else
+                                            text.Span(node.InnerText); // fallback
+                                    }
+                                });
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    column.Item().Text("No additional data available.");
+                }
+            });
+        }
     }
 }
