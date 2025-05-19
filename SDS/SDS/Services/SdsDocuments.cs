@@ -925,12 +925,12 @@ namespace SDS.Services
 
                     table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
                         .BorderBottom(0)
-                       .Padding(10)
+                       .Padding(5)
                        .Text("Protective Equipment ");
 
                     table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
                         .BorderBottom(0) // Remove bottom border to connect with next table
-           .Padding(10)
+           .Padding(2)
            .AlignMiddle()
            .AlignCenter()
            .Element(container =>
@@ -943,7 +943,7 @@ namespace SDS.Services
                        {
                            row.AutoItem().Column(column =>
                            {
-                               column.Item().AlignCenter().Width(60).Height(60).Image(image.ImageData);
+                               column.Item().AlignCenter().Width(50).Height(50).Image(image.ImageData);
                                //column.Item().AlignCenter().Text(image.ImageName)
                                    //.FontSize(7).FontColor(Colors.Grey.Medium);
                            });
