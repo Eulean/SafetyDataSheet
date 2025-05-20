@@ -19,7 +19,7 @@ namespace SDS.Services
         private readonly string _logPath;
 
         // Style 
-        
+
 
 
         public SdsDocuments(SdsViewModel model, IWebHostEnvironment env)
@@ -162,26 +162,13 @@ namespace SDS.Services
                     row.RelativeItem().Column(column =>
                     {
                         column.Item().Text("PRO-OILS AROMATHERAPY").Bold().FontSize(10);
-                        column.Item().Text("MATERIAL SAFETY DATA SHEET");
+                        column.Item().Text("MATERIAL SAFETY DATA SHEET").FontSize(8);
                     });
 
-                    // // centered logo - make sure height matches container height
-                    row.ConstantItem(220).Height(70).AlignCenter().AlignMiddle()
-                        .Image(_logPath).FitArea();
-                    // In your ComposeHeader method
-                    // centered logo
-                    // if (_logPath != null && File.Exists(_logPath))
-                    // {
-                    //     row.ConstantItem(200).Height(70).AlignCenter().AlignMiddle()
-                    //         .Image(_logPath).FitArea();
-                    // }
-                    // else
-                    // {
-                    //     // Fallback when image is not available
-                    //     row.ConstantItem(220).Height(70).AlignCenter().AlignMiddle()
-                    //         .Text("PRO-OILS").FontSize(16).Bold();
-                    // }
-
+                    // logo
+                    row.ConstantItem(210).Height(70).AlignCenter().AlignMiddle()
+                        .PaddingTop(-10)
+                            .Image(_logPath).FitArea();
 
                     // right text
                     row.RelativeItem().AlignRight().Text(text =>
@@ -216,7 +203,14 @@ namespace SDS.Services
 
                 // section 5:  fire fighting measures
                 column.Item().Element(ComposeSection5);
+
                 // column.Item().Element(ComposeSection6);
+
+                // section 12: ecological information
+                column.Item().Element(ComposeSection12);
+
+                // section 15: regulatory information
+                column.Item().Element(ComposeSection15);
             });
         }
 
@@ -601,6 +595,270 @@ namespace SDS.Services
                     });
 
                 });
+
+            });
+        }
+
+
+        private void ComposeSection12(IContainer container)
+        {
+            // Section Title
+            container.Column(c =>
+            {
+                c.Item().PaddingTop(5).PaddingBottom(5).Text("12. ECOLOGICAL INFORMATION")
+                    .Underline().FontSize(12);
+                // Add spacing
+                c.Spacing(5);
+                // Create the table
+                c.Item().Table(table =>
+                {
+                    // Define the columns = one for the section number, one for content
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30); // Section number
+                        columns.RelativeColumn(); // Content
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("12.1").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("Toxicity").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.EcoToxicity);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("12.2").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("Persistence & degradability").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.PersistenceDegradability);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("12.3").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("Bioaccumulation Potential ").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.BioaccumulationPotential);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("12.4").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("Mobility in soil").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.SoilMobility);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("12.5").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("Results of PBT and vPvB Assessment").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.PbtAssessment);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    // header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("12.6").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Background(Colors.Blue.Darken4)
+                    .Padding(5)
+                    .Text("Other adverse effects ").FontColor(Colors.White).Bold();
+
+                    // Content row
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        var content = Functions.RemoveHtmlTags(_model.OtherAdverseEffects);
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+                });
+            });
+        }
+
+        private void ComposeSection15(IContainer container)
+        {
+            container.Column(c =>
+            {
+                c.Item().PaddingTop(5).PaddingBottom(5).Text("15. REGULATORY INFORMATION")
+                .Underline().FontSize(12);
+
+                // Add spacing
+                c.Spacing(5);
+                // Create the table
+                c.Item().Table(table =>
+          {
+              // Define the columns = one for the section number, one for content
+              table.ColumnsDefinition(columns =>
+              {
+                  columns.ConstantColumn(30); // Section number
+                  columns.RelativeColumn(); // Content
+              });
+
+              // header row
+              table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                  .Background(Colors.Blue.Darken4)
+                  .Padding(5)
+                  .Text("15.1").FontColor(Colors.White).Bold();
+
+              table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                  .Background(Colors.Blue.Darken4)
+                  .Padding(5)
+                  .Text("Safety, health and environmental regulations/legislation specific for the substance or mixture  ").FontColor(Colors.White).Bold();
+
+              // Content row
+              table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+              .Padding(10)
+              .Element(container =>
+              {
+                  var content = Functions.RemoveHtmlTags(_model.SafetyRegulations);
+                  if (string.IsNullOrEmpty(content))
+                  {
+                      container.Text("No additional data available").Italic();
+                  }
+                  else
+                  {
+                      container.Text(content).Justify();
+                  }
+              });
+
+              // header row
+              table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                  .Background(Colors.Blue.Darken4)
+                  .Padding(5)
+                  .Text("15.2").FontColor(Colors.White).Bold();
+
+              table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+              .Background(Colors.Blue.Darken4)
+                  .Padding(5)
+                  .Text("Chemical safety assessment ").FontColor(Colors.White).Bold();
+              // Content row
+              table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+              .Padding(10)
+              .Element(container =>
+              {
+                  var content = Functions.RemoveHtmlTags(_model.ChemicalSafetyAssessment);
+
+                  if (string.IsNullOrEmpty(content))
+                  {
+                      container.Text("No additional data available").Italic();
+                  }
+                  else
+                  {
+                      container.Text(content).Justify();
+                  }
+              });
+
+          });
+
             });
         }
 
@@ -617,18 +875,18 @@ namespace SDS.Services
                         // Left side
                         grid.Item().Column(col =>
                         {
-                            col.Item().Text("PRO-OILS AROMATHERAPY").Bold();
-                            col.Item().Text($"Tel: {Functions.RemoveHtmlTags(_model.EmergencyPhone)}");
-                            col.Item().Text("info@prooils.com.au");
-                            col.Item().Text("Unit 6, 163 Newbridge Road, Chipping Norton NSW 2170");
+                            col.Item().Text("PRO-OILS AROMATHERAPY").Bold().FontSize(10);
+                            col.Item().Text($"Tel: {Functions.RemoveHtmlTags(_model.EmergencyPhone)}").FontSize(8);
+                            col.Item().Text("info@prooils.com.au").FontSize(8);
+                            col.Item().Text("Unit 6, 163 Newbridge Road, Chipping Norton NSW 2170").FontSize(8);
                         });
 
                         // Right side
                         grid.Item().AlignRight().Column(col =>
                         {
-                            col.Item().Text("REVISION DETAILS").Bold();
-                            col.Item().Text($"Date: {(_model.RevisionDate ?? DateTime.Now):yyyy-MM-dd}");
-                            col.Item().Text($"Rev No: {_model.RevNo}");
+                            col.Item().Text("REVISION DETAILS").Bold().FontSize(10);
+                            col.Item().Text($"Date: {(_model.RevisionDate ?? DateTime.Now):yyyy-MM-dd}").FontSize(8);
+                            col.Item().Text($"Rev No: {Functions.RemoveHtmlTags(_model.RevNo)}").FontSize(8);
                         });
                     });
 
