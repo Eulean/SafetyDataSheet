@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -212,13 +213,14 @@ namespace SDS.Services
 
                 // section 5:  fire fighting measures
                 column.Item().Element(ComposeSection5);
+
                 // column.Item().Element(ComposeSection6);
 
+                // section 14:  14. TRANSPORT INFORMATION
+                column.Item().Element(ComposeSection14);
+                
 
-
-                // section 5:  fire fighting measures
-              
-
+   
             });
         }
 
@@ -459,27 +461,7 @@ namespace SDS.Services
                         }
                     });
 
-                    //OtherHazard
-                    table.Cell().ColumnSpan(2).Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
-                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
-                        .Text("Supplementary Statements").FontColor(Colors.White).Bold();
-
-                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
-                    .Padding(10)
-                    .Element(container =>
-                    {
-                        // check if contetn exists
-                        var content = Functions.RemoveHtmlTags(_model.OtherHazards);
-
-                        if (string.IsNullOrEmpty(content))
-                        {
-                            container.Text("No additional data available").Italic();
-                        }
-                        else
-                        {
-                            container.Text(content);
-                        }
-                    });
+                   
                 });
             });
 
@@ -736,7 +718,7 @@ namespace SDS.Services
                     // header row
                     table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
                         .Background(Colors.Blue.Darken4)
-                        .Padding(5)
+                        .Padding(10)
                         .Text("4.3").FontColor(Colors.White).Bold();
 
                     table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
@@ -870,7 +852,359 @@ namespace SDS.Services
             });
         }
 
-     
+        private void ComposeSection14(IContainer container)
+        {
+            container.Column(c =>
+            {
+                c.Item().Text("14. TRANSPORT INFORMATION")
+                   .FontSize(Style.SectionHeaderFontSize)
+                   .Underline();
+
+                //Header Row
+                c.Item().PaddingTop(5).Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 14.1 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("14.1").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("UN number").FontColor(Colors.White).Bold();
+
+                });
+
+                //Table
+                c.Item().Table(table =>
+                {
+
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(100);
+                        columns.RelativeColumn();
+                    });
+
+                    //UNRoad
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("UN No. Road").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        // check if contetn exists
+                        var content = Functions.RemoveHtmlTags(_model.UnRoad);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                    //UNSEA
+                   // sub header row
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .BorderTop(0) // Remove top border to connect with previous table
+                        .Background(Colors.Blue.Darken4)
+                        .Padding(10)
+                        .Text("UN No. SEA ").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                        .BorderTop(0) // Remove top border to connect with previous table
+                        .Padding(10)
+                        .Element(container =>
+                        {
+                            var content = Functions.RemoveHtmlTags(_model.UnSea);
+                            if (string.IsNullOrEmpty(content))
+                            {
+                                container.Text("No additional data available").Italic();
+                            }
+                            else
+                            {
+                                container.Text(content);
+                            }
+                        });
+
+                    //UNAir
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("UN No. AIR ").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Grey.Medium)
+                    .Padding(10)
+                    .Element(container =>
+                    {
+                        // check if contetn exists
+                        var content = Functions.RemoveHtmlTags(_model.UnAir);
+
+                        if (string.IsNullOrEmpty(content))
+                        {
+                            container.Text("No additional data available").Italic();
+                        }
+                        else
+                        {
+                            container.Text(content);
+                        }
+                    });
+
+                });
+
+                //14.3 Transport hazard class(es)
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 14.1 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("14.2").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("UN  proper shipping name ").FontColor(Colors.White).Bold();
+
+                   table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                  .Padding(10)
+                  .Element(container =>
+                  {
+                      // check if contetn exists
+                      var content = Functions.RemoveHtmlTags(_model.ShippingName);
+
+                      if (string.IsNullOrEmpty(content))
+                      {
+                          container.Text("No additional data available").Italic();
+                      }
+                      else
+                      {
+                          container.Text(content);
+                      }
+                  });
+
+                });
+                //14.3
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 14.3 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("14.3").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("Transport hazard class(es)").FontColor(Colors.White).Bold();
+
+
+                  table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                 .Padding(10)
+                   .Element(container =>
+                   { 
+                       // need to write 
+
+                       if (_model.ImagesByContentID.TryGetValue(ImageIds.labelImage, out var images) && images.Any())
+                       {
+                           container.Row(row =>
+                           {
+                               foreach (var image in images)
+                               {
+                                   row.AutoItem().Column(column =>
+                                   {
+                                       column.Item().AlignCenter().Width(70).Height(70).Image(image.ImageData);
+                                       column.Item().AlignCenter().Text(image.ImageName).FontSize(7).FontColor(Colors.White);
+                                   });
+                                   row.AutoItem(); // Gap between images
+                               }
+                           });
+                       }
+                       else
+                       {
+                           container.Text("No additional data available.").FontColor(Colors.White);
+                       }
+                   });
+
+                });
+
+                //PackingGroup
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 14.1 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("14.4").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("Packing group ").FontColor(Colors.White).Bold();
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                   .Padding(10)
+                   .Element(container =>
+                   {
+                       // check if contetn exists
+                       var content = Functions.RemoveHtmlTags(_model.PackingGroup);
+
+                       if (string.IsNullOrEmpty(content))
+                       {
+                           container.Text("No additional data available").Italic();
+                       }
+                       else
+                       {
+                           container.Text(content);
+                       }
+                   });
+
+                });
+
+                //14.5 Environmental hazards
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 14.3 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("14.5").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("Environmental hazards ").FontColor(Colors.White).Bold();
+
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                   .Padding(10)
+                     .Element(container =>
+                     {
+                         var content = Functions.RemoveHtmlTags(_model.EnvironmentalHazards);
+
+                         if (_model.ImagesByContentID.TryGetValue(ImageIds.labelImage, out var images) && images.Any())
+                         {
+                             container.Row(row =>
+                             {
+                                 foreach (var image in images)
+                                 {
+                                     row.AutoItem().Column(column =>
+                                     {
+                                         column.Item().AlignCenter().Width(70).Height(70).Image(image.ImageData);
+                                         column.Item().AlignCenter().Text(image.ImageName).FontSize(7).FontColor(Colors.White);
+                                     });
+                                     row.AutoItem(); // Gap between images
+                                 }
+                             });
+                         }
+                         else
+                         {
+                             container.Text("No additional data available.").FontColor(Colors.White);
+                         }
+                     });
+
+                });
+                //14.6
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 14.1 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("14.6").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("Special precautions for user ").FontColor(Colors.White).Bold();
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                   .Padding(10)
+                   .Element(container =>
+                   {
+                       // check if contetn exists
+                       var content = Functions.RemoveHtmlTags(_model.SpecialPrecautions);
+
+                       if (string.IsNullOrEmpty(content))
+                       {
+                           container.Text("No additional data available").Italic();
+                       }
+                       else
+                       {
+                           container.Text(content);
+                       }
+                   });
+
+                });
+
+                //14.7
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30);
+                        columns.RelativeColumn();
+                    });
+
+                    // 14.1 header row
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("14.7").FontColor(Colors.White).Bold();
+
+                    table.Cell().Border(Style.TableBorder).BorderColor(Colors.Grey.Medium)
+                        .Background(Colors.Blue.Darken4).Padding(Style.Padding)
+                        .Text("Transport in bulk according to Annex II of MARPOL73/78 and the IBC code ").FontColor(Colors.White).Bold();
+
+                    table.Cell().ColumnSpan(2).Border(1).BorderColor(Colors.Grey.Medium)
+                   .Padding(10)
+                   .Element(container =>
+                   {
+                       // check if contetn exists
+                       var content = Functions.RemoveHtmlTags(_model.BulkTranprt);
+
+                       if (string.IsNullOrEmpty(content))
+                       {
+                           container.Text("No additional data available").Italic();
+                       }
+                       else
+                       {
+                           container.Text(content);
+                       }
+                   });
+
+                });
+            });
+
+          
+        }
 
         private void ComposeFooter(IContainer container)
         {
